@@ -1,0 +1,21 @@
+name: Daily Discover
+
+on:
+  schedule:
+    - cron: '0 2 * * *'
+  workflow_dispatch:
+
+jobs:
+  discover:
+    name: Discover New Books
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger discover on Droplet
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.DROPLET_HOST }}
+          username: readmigo
+          key: ${{ secrets.DROPLET_SSH_KEY }}
+          script: |
+            cd /home/readmigo/projects/gutenberg/scripts
+            npx ts-node pg-discover.ts --discover-limit=50 --min-downloads=100 2>&1 | tee -a /tmp/pg-discover-$(date +%Y%m%d).log

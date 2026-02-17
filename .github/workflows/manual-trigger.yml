@@ -1,0 +1,35 @@
+name: Manual Trigger
+
+on:
+  workflow_dispatch:
+    inputs:
+      script:
+        description: 'Script to run'
+        required: true
+        type: choice
+        options:
+          - pg-discover
+          - pg-process
+          - pg-batch
+          - pg-sync-readmigo
+          - pg-quality-report
+      args:
+        description: 'Script arguments (e.g., --gutenberg-id=84)'
+        required: false
+        default: ''
+
+jobs:
+  run:
+    name: Run Script
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: Execute on Droplet
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.DROPLET_HOST }}
+          username: readmigo
+          key: ${{ secrets.DROPLET_SSH_KEY }}
+          script: |
+            cd /home/readmigo/projects/gutenberg/scripts
+            npx ts-node ${{ github.event.inputs.script }}.ts ${{ github.event.inputs.args }} 2>&1 | tee -a /tmp/pg-manual-$(date +%Y%m%d).log

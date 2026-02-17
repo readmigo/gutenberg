@@ -1,0 +1,27 @@
+name: Daily Process
+
+on:
+  schedule:
+    - cron: '0 3 * * *'
+  workflow_dispatch:
+    inputs:
+      max_books:
+        description: 'Maximum books to process'
+        required: false
+        default: '10'
+
+jobs:
+  process:
+    name: Process Books
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - name: Trigger batch processing on Droplet
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.DROPLET_HOST }}
+          username: readmigo
+          key: ${{ secrets.DROPLET_SSH_KEY }}
+          script: |
+            cd /home/readmigo/projects/gutenberg/scripts
+            npx ts-node pg-batch.ts --max-books=${{ github.event.inputs.max_books || '10' }} 2>&1 | tee -a /tmp/pg-batch-$(date +%Y%m%d).log
