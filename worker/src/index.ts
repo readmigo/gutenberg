@@ -1,5 +1,8 @@
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';
+import { publicRoutes } from './routes/public';
+import { adminRoutes } from './routes/admin';
+import { internalRoutes } from './routes/internal';
 
 export type Env = {
   Bindings: {
@@ -18,6 +21,11 @@ const app = new Hono<Env>();
 app.use('*', cors());
 
 app.get('/', (c) => c.json({ service: 'gutenberg-api', status: 'ok' }));
+
+// Mount route groups
+app.route('/', publicRoutes);
+app.route('/admin', adminRoutes);
+app.route('/internal', internalRoutes);
 
 export default {
   fetch: app.fetch,
