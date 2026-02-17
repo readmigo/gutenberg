@@ -1,0 +1,11 @@
+{
+  "name": "gutenberg",
+  "private": true,
+  "scripts": {
+    "dev:worker": "pnpm --filter worker dev",
+    "deploy:worker": "pnpm --filter worker deploy",
+    "db:generate": "pnpm --filter worker db:generate",
+    "db:migrate:local": "pnpm --filter worker db:migrate:local",
+    "db:migrate:remote": "pnpm --filter worker db:migrate:remote"
+  }
+}
