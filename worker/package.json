@@ -9,13 +9,13 @@
     "db:migrate:remote": "wrangler d1 migrations apply gutenberg-db --remote"
   },
   "dependencies": {
-    "hono": "^4",
-    "drizzle-orm": "^0.38"
+    "drizzle-orm": "^0.38",
+    "hono": "^4"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4",
     "drizzle-kit": "^0.30",
-    "wrangler": "^3",
-    "typescript": "^5"
+    "typescript": "^5",
+    "wrangler": "^4.66.0"
   }
 }
