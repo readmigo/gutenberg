@@ -1,0 +1,21 @@
+{
+  "name": "worker",
+  "private": true,
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate:local": "wrangler d1 migrations apply gutenberg-db --local",
+    "db:migrate:remote": "wrangler d1 migrations apply gutenberg-db --remote"
+  },
+  "dependencies": {
+    "hono": "^4",
+    "drizzle-orm": "^0.38"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4",
+    "drizzle-kit": "^0.30",
+    "wrangler": "^3",
+    "typescript": "^5"
+  }
+}

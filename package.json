@@ -7,5 +7,12 @@
     "db:generate": "pnpm --filter worker db:generate",
     "db:migrate:local": "pnpm --filter worker db:migrate:local",
     "db:migrate:remote": "pnpm --filter worker db:migrate:remote"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild",
+      "sharp",
+      "workerd"
+    ]
   }
 }

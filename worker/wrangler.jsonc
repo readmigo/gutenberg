@@ -1,0 +1,36 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "gutenberg-api",
+  "main": "src/index.ts",
+  "compatibility_date": "2025-01-01",
+  "compatibility_flags": ["nodejs_compat"],
+
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "gutenberg-db",
+      "database_id": "TO_BE_CREATED",
+      "migrations_dir": "drizzle/migrations"
+    }
+  ],
+
+  "r2_buckets": [
+    {
+      "binding": "R2",
+      "bucket_name": "gutenberg-production"
+    }
+  ],
+
+  "queues": {
+    "producers": [
+      { "binding": "PROCESS_QUEUE", "queue": "gutenberg-process" }
+    ],
+    "consumers": [
+      { "queue": "gutenberg-process", "max_batch_size": 5, "max_retries": 3 }
+    ]
+  },
+
+  "triggers": {
+    "crons": ["0 2 * * *"]
+  }
+}
