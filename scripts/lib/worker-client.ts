@@ -37,17 +37,8 @@ class WorkerClient {
     return (await this.http.put(`/internal/jobs/${id}`, data)).data;
   }
 
-  // NOTE: POST /internal/jobs needs to be added to the worker.
-  // For now, createJob calls the admin endpoint which already supports job creation.
   async createJob(gutenbergId: number, priority: number) {
-    const adminToken = process.env.WORKER_ADMIN_TOKEN || '';
-    return (
-      await this.http.post(
-        `/admin/process/${gutenbergId}`,
-        { priority },
-        { headers: { Authorization: `Bearer ${adminToken}` } },
-      )
-    ).data;
+    return (await this.http.post('/internal/jobs', { gutenbergId, priority })).data;
   }
 
   // Check existing

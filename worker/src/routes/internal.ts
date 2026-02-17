@@ -125,6 +125,26 @@ internalRoutes.get('/jobs', async (c) => {
   return c.json(data);
 });
 
+// POST /jobs - Create a processing job directly (no Queue dependency)
+internalRoutes.post('/jobs', async (c) => {
+  const db = drizzle(c.env.DB);
+  const body = await c.req.json<{ gutenbergId: number; priority?: number }>();
+
+  if (!body.gutenbergId || isNaN(body.gutenbergId)) {
+    return c.json({ error: 'gutenbergId is required' }, 400);
+  }
+
+  const jobId = crypto.randomUUID();
+  await db.insert(processJobs).values({
+    id: jobId,
+    gutenbergId: body.gutenbergId,
+    status: 'queued',
+    priority: body.priority ?? 0,
+  });
+
+  return c.json({ jobId }, 201);
+});
+
 // GET /books/exists - Check existing books by gutenberg IDs
 internalRoutes.get('/books/exists', async (c) => {
   const db = drizzle(c.env.DB);
