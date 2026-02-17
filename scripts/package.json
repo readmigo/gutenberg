@@ -1,0 +1,25 @@
+{
+  "name": "scripts",
+  "private": true,
+  "scripts": {
+    "discover": "npx ts-node pg-discover.ts",
+    "process": "npx ts-node pg-process.ts",
+    "batch": "npx ts-node pg-batch.ts",
+    "sync": "npx ts-node pg-sync-readmigo.ts",
+    "report": "npx ts-node pg-quality-report.ts"
+  },
+  "dependencies": {
+    "axios": "^1",
+    "epub2": "^3",
+    "cheerio": "^1",
+    "@aws-sdk/client-s3": "^3",
+    "dotenv": "^16",
+    "uuid": "^11"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "@types/uuid": "^10",
+    "ts-node": "^10",
+    "typescript": "^5"
+  }
+}
