@@ -1,8 +1,10 @@
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';
+import { drizzle } from 'drizzle-orm/d1';
 import { publicRoutes } from './routes/public';
 import { adminRoutes } from './routes/admin';
 import { internalRoutes } from './routes/internal';
+import { discoverNewBooks } from './services/discover';
 
 export type Env = {
   Bindings: {
@@ -31,8 +33,17 @@ export default {
   fetch: app.fetch,
   async scheduled(controller: ScheduledController, env: any, ctx: ExecutionContext) {
     console.log('cron triggered');
+    const db = drizzle(env.DB);
+    ctx.waitUntil(
+      discoverNewBooks(db, { limit: 50 })
+        .then((result) => console.log('Discover complete:', result))
+        .catch((err) => console.error('Discover failed:', err)),
+    );
   },
   async queue(batch: MessageBatch<any>, env: any) {
-    console.log(`processing ${batch.messages.length} messages`);
+    for (const msg of batch.messages) {
+      console.log('Queue message:', msg.body);
+      msg.ack();
+    }
   },
 };
