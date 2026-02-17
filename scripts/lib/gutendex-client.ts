@@ -22,9 +22,9 @@ interface GutendexResponse {
 }
 
 export async function fetchPage(page: number, languages = 'en'): Promise<GutendexResponse> {
-  const { data } = await axios.get<GutendexResponse>(`${BASE_URL}/books`, {
+  const { data } = await axios.get<GutendexResponse>(`${BASE_URL}/books/`, {
     params: { languages, mime_type: 'application/epub+zip', page },
-    timeout: 60000,
+    timeout: 120000,
   });
   return data;
 }
