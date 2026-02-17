@@ -80,7 +80,7 @@ async function main() {
     console.log(`Syncing: ${book.title} (Gutenberg #${book.gutenberg_id})`);
 
     if (DRY_RUN) {
-      console.log(`  [DRY RUN] Would POST to ${READMIGO_API_URL}/books/import`);
+      console.log(`  [DRY RUN] Would POST to ${READMIGO_API_URL}/books/gutenberg-import`);
       synced++;
       continue;
     }
@@ -92,24 +92,22 @@ async function main() {
       );
       const chapters = Array.isArray(chaptersData) ? chaptersData : chaptersData.chapters || [];
 
-      // POST to Readmigo import endpoint
-      const { data: importResult } = await readmigoApi.post('/books/import', {
-        gutenberg_id: book.gutenberg_id,
+      // POST to Readmigo Gutenberg import endpoint
+      const { data: importResult } = await readmigoApi.post('/books/gutenberg-import', {
         title: book.title,
         author: book.author,
+        gutenbergId: book.gutenberg_id,
         language: book.language,
         subjects: book.subjects,
-        description: book.description,
-        cover_url: book.cover_url,
-        epub_url: book.epub_url,
-        source_url: book.source_url,
-        chapter_count: book.chapter_count,
-        word_count: book.word_count,
+        wordCount: book.word_count,
+        chapterCount: book.chapter_count,
+        coverUrl: book.cover_url,
+        epubUrl: book.epub_url,
         chapters: chapters.map((ch: any) => ({
+          order: ch.order_num,
           title: ch.title,
-          order_num: ch.order_num,
-          content_url: ch.content_url,
-          word_count: ch.word_count,
+          contentUrl: ch.content_url,
+          wordCount: ch.word_count,
         })),
       });
 
