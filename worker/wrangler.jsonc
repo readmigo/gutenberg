@@ -9,7 +9,7 @@
     {
       "binding": "DB",
       "database_name": "gutenberg-db",
-      "database_id": "TO_BE_CREATED",
+      "database_id": "71b65ba7-29da-42a2-8a4b-903f99cc62a4",
       "migrations_dir": "drizzle/migrations"
     }
   ],
@@ -21,14 +21,15 @@
     }
   ],
 
-  "queues": {
-    "producers": [
-      { "binding": "PROCESS_QUEUE", "queue": "gutenberg-process" }
-    ],
-    "consumers": [
-      { "queue": "gutenberg-process", "max_batch_size": 5, "max_retries": 3 }
-    ]
-  },
+  // TODO: Enable queues after activating Cloudflare Queues in dashboard
+  // "queues": {
+  //   "producers": [
+  //     { "binding": "PROCESS_QUEUE", "queue": "gutenberg-process" }
+  //   ],
+  //   "consumers": [
+  //     { "queue": "gutenberg-process", "max_batch_size": 5, "max_retries": 3 }
+  //   ]
+  // },
 
   "triggers": {
     "crons": ["0 2 * * *"]
