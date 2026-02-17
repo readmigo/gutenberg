@@ -1,0 +1,9 @@
+{
+  "name": "gutenberg-web",
+  "private": true,
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "npx wrangler pages dev src --port 8788",
+    "deploy": "npx wrangler pages deploy src --project-name=gutenberg-web"
+  }
+}
