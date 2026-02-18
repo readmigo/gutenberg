@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard - Gutenberg Platform</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f0f2f5;
+      color: #333;
+      min-height: 100vh;
+    }
+
+    /* Navigation */
+    .nav {
+      background: #1a1a2e;
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      height: 56px;
+      gap: 24px;
+    }
+    .nav-brand {
+      color: #fff;
+      font-size: 1.1rem;
+      font-weight: 700;
+      text-decoration: none;
+      margin-right: 16px;
+    }
+    .nav a {
+      color: #a0aec0;
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      padding: 6px 12px;
+      border-radius: 6px;
+      transition: color 0.2s, background 0.2s;
+    }
+    .nav a:hover { color: #fff; background: rgba(255,255,255,0.1); }
+    .nav a.active { color: #fff; background: rgba(255,255,255,0.15); }
+
+    /* Auth bar */
+    .auth-bar {
+      background: #fff;
+      border-bottom: 1px solid #e2e8f0;
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .auth-bar label {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #4a5568;
+    }
+    .auth-bar input {
+      flex: 1;
+      min-width: 200px;
+      max-width: 400px;
+      padding: 8px 12px;
+      border: 1px solid #d1d5db;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-family: monospace;
+    }
+    .auth-bar input:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102,126,234,0.15);
+    }
+    .auth-status {
+      font-size: 0.8rem;
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-weight: 600;
+    }
+    .auth-status.connected { background: #c6f6d5; color: #22543d; }
+    .auth-status.disconnected { background: #fed7d7; color: #9b2c2c; }
+
+    /* Main layout */
+    .main {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+
+    /* Stats grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .stat-card {
+      background: #fff;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    }
+    .stat-card .label {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #718096;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    .stat-card .value {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #1a202c;
+    }
+    .stat-card .detail {
+      font-size: 0.8rem;
+      color: #a0aec0;
+      margin-top: 4px;
+    }
+    .stat-card.primary { border-left: 4px solid #667eea; }
+    .stat-card.success { border-left: 4px solid #48bb78; }
+    .stat-card.warning { border-left: 4px solid #ecc94b; }
+    .stat-card.danger { border-left: 4px solid #f56565; }
+
+    /* Panels */
+    .panel {
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+      margin-bottom: 24px;
+      overflow: hidden;
+    }
+    .panel-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid #e2e8f0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .panel-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #1a202c;
+    }
+    .panel-body { padding: 0; }
+
+    /* Tabs */
+    .tabs {
+      display: flex;
+      gap: 0;
+      border-bottom: 2px solid #e2e8f0;
+    }
+    .tab {
+      padding: 10px 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #718096;
+      cursor: pointer;
+      border: none;
+      background: none;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -2px;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .tab:hover { color: #4a5568; }
+    .tab.active {
+      color: #667eea;
+      border-bottom-color: #667eea;
+    }
+    .tab .badge {
+      display: inline-block;
+      background: #e2e8f0;
+      color: #4a5568;
+      font-size: 0.7rem;
+      padding: 2px 7px;
+      border-radius: 10px;
+      margin-left: 6px;
+      font-weight: 700;
+    }
+    .tab.active .badge {
+      background: #ebf4ff;
+      color: #667eea;
+    }
+
+    /* Table */
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+    }
+    .data-table th {
+      text-align: left;
+      padding: 10px 16px;
+      background: #f7fafc;
+      color: #718096;
+      font-weight: 600;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    .data-table td {
+      padding: 12px 16px;
+      border-bottom: 1px solid #f0f0f0;
+      vertical-align: top;
+    }
+    .data-table tr:last-child td { border-bottom: none; }
+    .data-table tr:hover { background: #f7fafc; }
+
+    /* Status badges */
+    .badge-status {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+    .badge-ready { background: #c6f6d5; color: #22543d; }
+    .badge-pending { background: #fefcbf; color: #744210; }
+    .badge-approved { background: #bee3f8; color: #2a4365; }
+    .badge-rejected { background: #fed7d7; color: #9b2c2c; }
+    .badge-queued { background: #e9d8fd; color: #553c9a; }
+    .badge-done { background: #c6f6d5; color: #22543d; }
+    .badge-failed { background: #fed7d7; color: #9b2c2c; }
+
+    /* Buttons */
+    .btn {
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.1s;
+    }
+    .btn:hover { opacity: 0.85; }
+    .btn:active { transform: scale(0.97); }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .btn-approve { background: #48bb78; color: #fff; }
+    .btn-reject { background: #f56565; color: #fff; }
+    .btn-refresh {
+      background: #edf2f7;
+      color: #4a5568;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .btn-group { display: flex; gap: 8px; }
+
+    /* Filter bar for books */
+    .filter-bar {
+      display: flex;
+      gap: 8px;
+      padding: 12px 20px;
+      border-bottom: 1px solid #e2e8f0;
+      flex-wrap: wrap;
+    }
+    .filter-btn {
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      border: 1px solid #d1d5db;
+      background: #fff;
+      color: #4a5568;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .filter-btn:hover { border-color: #667eea; color: #667eea; }
+    .filter-btn.active {
+      background: #667eea;
+      color: #fff;
+      border-color: #667eea;
+    }
+
+    /* Empty state */
+    .empty-state {
+      text-align: center;
+      padding: 48px 20px;
+      color: #a0aec0;
+    }
+    .empty-state p { font-size: 0.9rem; }
+
+    /* Loading spinner */
+    .loading {
+      text-align: center;
+      padding: 32px;
+      color: #a0aec0;
+    }
+    .spinner {
+      display: inline-block;
+      width: 24px;
+      height: 24px;
+      border: 3px solid #e2e8f0;
+      border-top-color: #667eea;
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Error message */
+    .error-msg {
+      color: #e53e3e;
+      font-size: 0.85rem;
+      word-break: break-all;
+      max-width: 300px;
+    }
+
+    /* Quality score */
+    .quality-score {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-weight: 600;
+      font-size: 0.85rem;
+    }
+    .quality-high { color: #22543d; }
+    .quality-medium { color: #744210; }
+    .quality-low { color: #9b2c2c; }
+
+    /* Toast notification */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #fff;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      z-index: 1000;
+      transform: translateY(100px);
+      opacity: 0;
+      transition: all 0.3s ease;
+    }
+    .toast.show { transform: translateY(0); opacity: 1; }
+    .toast.success { background: #48bb78; }
+    .toast.error { background: #f56565; }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .main { padding: 16px; }
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+      .data-table { font-size: 0.78rem; }
+      .data-table th, .data-table td { padding: 8px 10px; }
+      .auth-bar { padding: 10px 16px; }
+      .nav { padding: 0 16px; gap: 12px; }
+      .panel-header { padding: 12px 16px; }
+      .filter-bar { padding: 10px 16px; }
+    }
+    @media (max-width: 480px) {
+      .stats-grid { grid-template-columns: 1fr; }
+      .btn-group { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav class="nav">
+    <a href="index.html" class="nav-brand">Gutenberg Platform</a>
+    <a href="index.html">Catalog</a>
+    <a href="admin.html" class="active">Admin</a>
+  </nav>
+
+  <!-- Auth bar -->
+  <div class="auth-bar">
+    <label for="admin-token">Admin Token:</label>
+    <input type="password" id="admin-token" placeholder="Enter admin bearer token..." />
+    <span id="auth-status" class="auth-status disconnected">Not verified</span>
+    <button class="btn btn-refresh" id="connect-btn">Connect</button>
+  </div>
+
+  <div class="main">
+
+    <!-- Stats -->
+    <section class="stats-grid" id="stats-grid">
+      <div class="stat-card primary">
+        <div class="label">Total Books</div>
+        <div class="value" id="stat-total">--</div>
+      </div>
+      <div class="stat-card success">
+        <div class="label">Ready</div>
+        <div class="value" id="stat-ready">--</div>
+      </div>
+      <div class="stat-card warning">
+        <div class="label">Pending</div>
+        <div class="value" id="stat-pending">--</div>
+      </div>
+      <div class="stat-card danger">
+        <div class="label">Queued Jobs</div>
+        <div class="value" id="stat-queued">--</div>
+        <div class="detail" id="stat-failed-detail"></div>
+      </div>
+    </section>
+
+    <!-- Job Queue Panel -->
+    <section class="panel">
+      <div class="panel-header">
+        <span class="panel-title">Job Queue</span>
+        <button class="btn btn-refresh" id="refresh-jobs-btn">Refresh</button>
+      </div>
+      <div class="tabs" id="job-tabs">
+        <button class="tab active" data-status="queued">
+          Queued <span class="badge" id="tab-queued-count">0</span>
+        </button>
+        <button class="tab" data-status="done">
+          Done <span class="badge" id="tab-done-count">0</span>
+        </button>
+        <button class="tab" data-status="failed">
+          Failed <span class="badge" id="tab-failed-count">0</span>
+        </button>
+      </div>
+      <div class="panel-body" id="jobs-body"></div>
+    </section>
+
+    <!-- Books Management Panel -->
+    <section class="panel">
+      <div class="panel-header">
+        <span class="panel-title">Books Management</span>
+        <button class="btn btn-refresh" id="refresh-books-btn">Refresh</button>
+      </div>
+      <div class="filter-bar" id="book-filters">
+        <button class="filter-btn active" data-status="">All</button>
+        <button class="filter-btn" data-status="ready">Ready</button>
+        <button class="filter-btn" data-status="pending">Pending</button>
+        <button class="filter-btn" data-status="approved">Approved</button>
+        <button class="filter-btn" data-status="rejected">Rejected</button>
+      </div>
+      <div class="panel-body" id="books-body"></div>
+    </section>
+
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <script>
+    var API_BASE = 'https://gutenberg-api.logan676395.workers.dev';
+    var currentJobStatus = 'queued';
+    var currentBookFilter = '';
+
+    // ── Helpers ──
+
+    function getToken() {
+      return document.getElementById('admin-token').value.trim();
+    }
+
+    function saveToken(token) {
+      localStorage.setItem('gutenberg-admin-token', token);
+    }
+
+    function loadSavedToken() {
+      var saved = localStorage.getItem('gutenberg-admin-token');
+      if (saved) {
+        document.getElementById('admin-token').value = saved;
+      }
+    }
+
+    function authHeaders() {
+      var token = getToken();
+      if (!token) return {};
+      return { 'Authorization': 'Bearer ' + token };
+    }
+
+    function formatDate(dateStr) {
+      if (!dateStr) return '--';
+      var d = new Date(dateStr);
+      return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+    }
+
+    function formatNumber(n) {
+      if (n === undefined || n === null) return '--';
+      return n.toLocaleString();
+    }
+
+    // ── Safe DOM builders ──
+
+    function el(tag, attrs, children) {
+      var node = document.createElement(tag);
+      if (attrs) {
+        for (var key in attrs) {
+          if (key === 'className') node.className = attrs[key];
+          else if (key === 'style' && typeof attrs[key] === 'object') {
+            for (var s in attrs[key]) node.style[s] = attrs[key][s];
+          }
+          else if (key.indexOf('on') === 0) node.addEventListener(key.slice(2).toLowerCase(), attrs[key]);
+          else node.setAttribute(key, attrs[key]);
+        }
+      }
+      if (children !== undefined) {
+        if (typeof children === 'string') node.textContent = children;
+        else if (Array.isArray(children)) {
+          for (var i = 0; i < children.length; i++) {
+            if (children[i]) node.appendChild(children[i]);
+          }
+        } else if (children instanceof Node) {
+          node.appendChild(children);
+        }
+      }
+      return node;
+    }
+
+    function text(str) {
+      return document.createTextNode(str || '');
+    }
+
+    function clearNode(node) {
+      while (node.firstChild) node.removeChild(node.firstChild);
+    }
+
+    function showLoading(container) {
+      clearNode(container);
+      var wrap = el('div', { className: 'loading' });
+      wrap.appendChild(el('div', { className: 'spinner' }));
+      container.appendChild(wrap);
+    }
+
+    function showEmpty(container, msg) {
+      clearNode(container);
+      var wrap = el('div', { className: 'empty-state' });
+      wrap.appendChild(el('p', null, msg));
+      container.appendChild(wrap);
+    }
+
+    // ── Toast ──
+
+    function showToast(message, type) {
+      var toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.className = 'toast ' + type;
+      void toast.offsetWidth;
+      toast.classList.add('show');
+      setTimeout(function() { toast.classList.remove('show'); }, 3000);
+    }
+
+    // ── API ──
+
+    function apiFetch(url, options) {
+      options = options || {};
+      var headers = {};
+      var ah = authHeaders();
+      for (var k in ah) headers[k] = ah[k];
+      if (options.headers) {
+        for (var k2 in options.headers) headers[k2] = options.headers[k2];
+      }
+      return fetch(url, {
+        method: options.method || 'GET',
+        headers: headers,
+        body: options.body || undefined
+      }).then(function(res) {
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        return res.json();
+      });
+    }
+
+    // ── Stats ──
+
+    function loadStats() {
+      apiFetch(API_BASE + '/stats')
+        .then(function(data) {
+          document.getElementById('stat-total').textContent = formatNumber(data.totalBooks);
+          var byStatus = data.byStatus || {};
+          document.getElementById('stat-ready').textContent = formatNumber(byStatus.ready || 0);
+          document.getElementById('stat-pending').textContent = formatNumber(byStatus.pending || 0);
+
+          var langs = data.byLanguage || {};
+          var langParts = [];
+          for (var lang in langs) langParts.push(lang + ': ' + langs[lang]);
+          var readyCard = document.getElementById('stat-ready').parentNode;
+          var existingDetail = readyCard.querySelector('.detail');
+          if (existingDetail) existingDetail.remove();
+          if (langParts.length > 0) {
+            readyCard.appendChild(el('div', { className: 'detail' }, langParts.join(', ')));
+          }
+        })
+        .catch(function() {
+          document.getElementById('stat-total').textContent = '?';
+        });
+
+      loadJobCounts();
+    }
+
+    function loadJobCounts() {
+      var token = getToken();
+      if (!token) return;
+      Promise.all([
+        apiFetch(API_BASE + '/admin/jobs?status=queued&limit=1'),
+        apiFetch(API_BASE + '/admin/jobs?status=failed&limit=1')
+      ]).then(function(results) {
+        var queuedTotal = results[0].total || 0;
+        var failedTotal = results[1].total || 0;
+        document.getElementById('stat-queued').textContent = formatNumber(queuedTotal);
+        document.getElementById('stat-failed-detail').textContent = failedTotal > 0 ? failedTotal + ' failed' : '';
+      }).catch(function() {});
+    }
+
+    // ── Job Queue ──
+
+    function switchJobTab(status, btn) {
+      currentJobStatus = status;
+      var tabs = document.querySelectorAll('#job-tabs .tab');
+      for (var i = 0; i < tabs.length; i++) tabs[i].classList.remove('active');
+      btn.classList.add('active');
+      loadJobs();
+    }
+
+    function loadJobs() {
+      var token = getToken();
+      var body = document.getElementById('jobs-body');
+      if (!token) {
+        showEmpty(body, 'Enter admin token to view jobs');
+        return;
+      }
+
+      showLoading(body);
+
+      Promise.all([
+        apiFetch(API_BASE + '/admin/jobs?status=queued&limit=1'),
+        apiFetch(API_BASE + '/admin/jobs?status=done&limit=1'),
+        apiFetch(API_BASE + '/admin/jobs?status=failed&limit=1')
+      ]).then(function(results) {
+        document.getElementById('tab-queued-count').textContent = results[0].total || 0;
+        document.getElementById('tab-done-count').textContent = results[1].total || 0;
+        document.getElementById('tab-failed-count').textContent = results[2].total || 0;
+      }).catch(function() {});
+
+      apiFetch(API_BASE + '/admin/jobs?status=' + currentJobStatus + '&limit=20')
+        .then(function(data) {
+          renderJobs(data.data || [], data.total || 0);
+        })
+        .catch(function(err) {
+          showEmpty(body, 'Failed to load jobs: ' + err.message);
+        });
+    }
+
+    function renderJobs(jobs, total) {
+      var body = document.getElementById('jobs-body');
+      clearNode(body);
+
+      if (jobs.length === 0) {
+        showEmpty(body, 'No ' + currentJobStatus + ' jobs');
+        return;
+      }
+
+      var table = el('table', { className: 'data-table' });
+
+      // thead
+      var thead = el('thead');
+      var headerRow = el('tr');
+      var cols = ['Gutenberg ID', 'Status', 'Priority', 'Attempts', 'Created'];
+      if (currentJobStatus === 'failed') cols.push('Error');
+      for (var i = 0; i < cols.length; i++) {
+        headerRow.appendChild(el('th', null, cols[i]));
+      }
+      thead.appendChild(headerRow);
+      table.appendChild(thead);
+
+      // tbody
+      var tbody = el('tbody');
+      for (var j = 0; j < jobs.length; j++) {
+        var job = jobs[j];
+        var row = el('tr');
+
+        // Gutenberg ID
+        row.appendChild(el('td', null, el('strong', null, String(job.gutenbergId))));
+
+        // Status badge
+        var badgeTd = el('td');
+        badgeTd.appendChild(el('span', { className: 'badge-status badge-' + job.status }, job.status));
+        row.appendChild(badgeTd);
+
+        // Priority
+        row.appendChild(el('td', null, formatNumber(job.priority)));
+
+        // Attempts
+        row.appendChild(el('td', null, String(job.attempts || 0)));
+
+        // Created
+        row.appendChild(el('td', null, formatDate(job.createdAt)));
+
+        // Error (failed tab only)
+        if (currentJobStatus === 'failed') {
+          var errTd = el('td');
+          errTd.appendChild(el('span', { className: 'error-msg' }, job.errorMessage || '--'));
+          row.appendChild(errTd);
+        }
+
+        tbody.appendChild(row);
+      }
+      table.appendChild(tbody);
+      body.appendChild(table);
+
+      if (total > 20) {
+        body.appendChild(el('div', {
+          style: { padding: '12px 16px', textAlign: 'center', color: '#718096', fontSize: '0.8rem' }
+        }, 'Showing 20 of ' + total + ' jobs'));
+      }
+    }
+
+    // ── Books Management ──
+
+    function switchBookFilter(status, btn) {
+      currentBookFilter = status;
+      var filters = document.querySelectorAll('#book-filters .filter-btn');
+      for (var i = 0; i < filters.length; i++) filters[i].classList.remove('active');
+      btn.classList.add('active');
+      loadBooks();
+    }
+
+    function loadBooks() {
+      var body = document.getElementById('books-body');
+      showLoading(body);
+
+      var url = API_BASE + '/books?limit=50';
+      if (currentBookFilter) url += '&status=' + currentBookFilter;
+
+      apiFetch(url)
+        .then(function(data) {
+          renderBooks(data.data || [], data.total || 0);
+        })
+        .catch(function(err) {
+          showEmpty(body, 'Failed to load books: ' + err.message);
+        });
+    }
+
+    function renderBooks(books, total) {
+      var body = document.getElementById('books-body');
+      clearNode(body);
+
+      if (books.length === 0) {
+        showEmpty(body, 'No books found');
+        return;
+      }
+
+      var table = el('table', { className: 'data-table' });
+
+      // thead
+      var thead = el('thead');
+      var headerRow = el('tr');
+      var cols = ['Title', 'Author', 'Chapters', 'Quality', 'Status', 'Actions'];
+      for (var i = 0; i < cols.length; i++) {
+        headerRow.appendChild(el('th', null, cols[i]));
+      }
+      thead.appendChild(headerRow);
+      table.appendChild(thead);
+
+      // tbody
+      var tbody = el('tbody');
+      for (var j = 0; j < books.length; j++) {
+        var book = books[j];
+        var row = el('tr');
+
+        // Title + Gutenberg ID
+        var titleTd = el('td');
+        titleTd.appendChild(el('strong', null, book.title));
+        titleTd.appendChild(document.createElement('br'));
+        titleTd.appendChild(el('span', {
+          style: { color: '#a0aec0', fontSize: '0.75rem' }
+        }, 'ID: ' + book.gutenbergId));
+        row.appendChild(titleTd);
+
+        // Author
+        row.appendChild(el('td', null, book.author));
+
+        // Chapters
+        row.appendChild(el('td', null, String(book.chapterCount || 0)));
+
+        // Quality score
+        var qualityClass = 'quality-high';
+        if (book.qualityScore < 70) qualityClass = 'quality-low';
+        else if (book.qualityScore < 90) qualityClass = 'quality-medium';
+
+        var qualitySpan = el('span', { className: 'quality-score ' + qualityClass }, (book.qualityScore || 0) + '%');
+        try {
+          var issues = JSON.parse(book.qualityIssues || '[]');
+          if (issues.length > 0) qualitySpan.title = issues.join('; ');
+        } catch(e) {}
+        row.appendChild(el('td', null, qualitySpan));
+
+        // Status badge
+        var statusTd = el('td');
+        statusTd.appendChild(el('span', { className: 'badge-status badge-' + book.status }, book.status));
+        row.appendChild(statusTd);
+
+        // Actions
+        row.appendChild(buildBookActions(book));
+
+        tbody.appendChild(row);
+      }
+      table.appendChild(tbody);
+      body.appendChild(table);
+
+      if (total > 50) {
+        body.appendChild(el('div', {
+          style: { padding: '12px 16px', textAlign: 'center', color: '#718096', fontSize: '0.8rem' }
+        }, 'Showing 50 of ' + total + ' books'));
+      }
+    }
+
+    function buildBookActions(book) {
+      var td = el('td');
+      var token = getToken();
+
+      if (!token) {
+        td.appendChild(el('span', { style: { color: '#a0aec0', fontSize: '0.8rem' } }, 'Login required'));
+        return td;
+      }
+
+      if (book.status === 'approved') {
+        td.appendChild(el('span', { style: { color: '#a0aec0', fontSize: '0.8rem' } }, 'Approved'));
+        return td;
+      }
+
+      var group = el('div', { className: 'btn-group' });
+
+      var approveBtn = el('button', {
+        className: 'btn btn-approve',
+        onClick: function() { approveBook(book.id); }
+      }, 'Approve');
+
+      var rejectBtn = el('button', {
+        className: 'btn btn-reject',
+        onClick: function() { rejectBook(book.id); }
+      }, 'Reject');
+
+      group.appendChild(approveBtn);
+      group.appendChild(rejectBtn);
+      td.appendChild(group);
+      return td;
+    }
+
+    // ── Book Actions ──
+
+    function approveBook(bookId) {
+      if (!getToken()) {
+        showToast('Enter admin token first', 'error');
+        return;
+      }
+
+      apiFetch(API_BASE + '/admin/books/' + bookId + '/approve', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+      })
+        .then(function() {
+          showToast('Book approved successfully', 'success');
+          loadBooks();
+          loadStats();
+        })
+        .catch(function(err) {
+          showToast('Failed to approve: ' + err.message, 'error');
+        });
+    }
+
+    function rejectBook(bookId) {
+      var notes = prompt('Rejection reason (optional):');
+      if (notes === null) return;
+
+      if (!getToken()) {
+        showToast('Enter admin token first', 'error');
+        return;
+      }
+
+      var bodyData = {};
+      if (notes) bodyData.notes = notes;
+
+      apiFetch(API_BASE + '/admin/books/' + bookId + '/reject', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(bodyData)
+      })
+        .then(function() {
+          showToast('Book rejected', 'success');
+          loadBooks();
+          loadStats();
+        })
+        .catch(function(err) {
+          showToast('Failed to reject: ' + err.message, 'error');
+        });
+    }
+
+    // ── Verify & Load ──
+
+    function verifyAndLoad() {
+      var token = getToken();
+      if (!token) {
+        showToast('Please enter an admin token', 'error');
+        return;
+      }
+
+      saveToken(token);
+
+      apiFetch(API_BASE + '/admin/jobs?limit=1')
+        .then(function() {
+          document.getElementById('auth-status').className = 'auth-status connected';
+          document.getElementById('auth-status').textContent = 'Connected';
+          showToast('Authenticated successfully', 'success');
+          loadAll();
+        })
+        .catch(function() {
+          document.getElementById('auth-status').className = 'auth-status disconnected';
+          document.getElementById('auth-status').textContent = 'Invalid token';
+          showToast('Authentication failed', 'error');
+        });
+    }
+
+    function loadAll() {
+      loadStats();
+      loadJobs();
+      loadBooks();
+    }
+
+    // ── Event Listeners ──
+
+    document.getElementById('connect-btn').addEventListener('click', verifyAndLoad);
+
+    document.getElementById('refresh-jobs-btn').addEventListener('click', loadJobs);
+
+    document.getElementById('refresh-books-btn').addEventListener('click', loadBooks);
+
+    document.getElementById('admin-token').addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') verifyAndLoad();
+    });
+
+    // Job tabs
+    var jobTabButtons = document.querySelectorAll('#job-tabs .tab');
+    for (var ti = 0; ti < jobTabButtons.length; ti++) {
+      (function(btn) {
+        btn.addEventListener('click', function() {
+          switchJobTab(btn.getAttribute('data-status'), btn);
+        });
+      })(jobTabButtons[ti]);
+    }
+
+    // Book filter buttons
+    var filterButtons = document.querySelectorAll('#book-filters .filter-btn');
+    for (var fi = 0; fi < filterButtons.length; fi++) {
+      (function(btn) {
+        btn.addEventListener('click', function() {
+          switchBookFilter(btn.getAttribute('data-status'), btn);
+        });
+      })(filterButtons[fi]);
+    }
+
+    // ── Init ──
+    loadSavedToken();
+    loadStats();
+    if (getToken()) {
+      verifyAndLoad();
+    } else {
+      loadBooks();
+    }
+  </script>
+
+</body>
+</html>

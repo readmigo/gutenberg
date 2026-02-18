@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chapter Reader - Gutenberg Library</title>
+  <style>
+    :root {
+      --bg: #faf8f5;
+      --card-bg: #fff;
+      --text: #2c2c2c;
+      --text-muted: #777;
+      --accent: #8b5e3c;
+      --accent-hover: #6d4a2e;
+      --border: #e8e2da;
+      --radius: 6px;
+      --max-w: 720px;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Georgia', 'Times New Roman', serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.8;
+      min-height: 100vh;
+    }
+
+    /* Top nav */
+    .top-nav {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: var(--card-bg);
+      border-bottom: 1px solid var(--border);
+    }
+    .top-nav-inner {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 0.75rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+    }
+    .nav-link {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      text-decoration: none;
+      white-space: nowrap;
+    }
+    .nav-link:hover { color: var(--accent); }
+    .nav-title {
+      font-size: 0.85rem;
+      color: var(--text);
+      text-align: center;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      flex: 1;
+      min-width: 0;
+    }
+
+    /* Reader */
+    main {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 2.5rem 1.5rem;
+    }
+    .chapter-heading {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 0.25rem;
+      text-align: center;
+    }
+    .chapter-meta {
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      margin-bottom: 2rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .chapter-content {
+      font-size: 1.05rem;
+      line-height: 1.9;
+    }
+    .chapter-content p {
+      margin-bottom: 1rem;
+      text-indent: 1.5em;
+    }
+    .chapter-content p:first-child { text-indent: 0; }
+    .chapter-content h2, .chapter-content h3 {
+      margin: 1.5rem 0 0.75rem;
+      font-size: 1.2rem;
+    }
+
+    /* Bottom nav */
+    .bottom-nav {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 2rem 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid var(--border);
+    }
+    .nav-btn {
+      text-decoration: none;
+      color: var(--accent);
+      font-size: 0.9rem;
+      padding: 0.5rem 1rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      font-family: inherit;
+    }
+    .nav-btn:hover {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+    }
+    .nav-btn.disabled {
+      pointer-events: none;
+      opacity: 0.3;
+    }
+
+    .loading, .error-msg {
+      text-align: center;
+      padding: 3rem 1rem;
+      color: var(--text-muted);
+    }
+    .error-msg a { color: var(--accent); }
+
+    @media (max-width: 600px) {
+      main { padding: 1.5rem 1rem; }
+      .chapter-heading { font-size: 1.25rem; }
+      .chapter-content { font-size: 1rem; line-height: 1.75; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="top-nav">
+    <div class="top-nav-inner">
+      <a href="index.html" class="nav-link">Library</a>
+      <span class="nav-title" id="navTitle">Loading...</span>
+      <a href="#" class="nav-link" id="bookLink">Book</a>
+    </div>
+  </nav>
+
+  <main id="content">
+    <div class="loading">Loading chapter...</div>
+  </main>
+
+  <div class="bottom-nav" id="bottomNav"></div>
+
+  <script>
+    var API = 'https://gutenberg-api.logan676395.workers.dev';
+
+    function getParam(name) {
+      return new URLSearchParams(window.location.search).get(name);
+    }
+
+    function formatNumber(n) {
+      if (n >= 1000000) return (n / 1000000).toFixed(1) + 'M';
+      if (n >= 1000) return (n / 1000).toFixed(1) + 'K';
+      return n.toString();
+    }
+
+    function showError(container, message) {
+      container.textContent = '';
+      var div = document.createElement('div');
+      div.className = 'error-msg';
+      div.textContent = message + ' ';
+      var link = document.createElement('a');
+      link.href = 'index.html';
+      link.textContent = 'Go back';
+      div.appendChild(link);
+      container.appendChild(div);
+    }
+
+    function createNavBtn(href, text, disabled) {
+      var a = document.createElement('a');
+      a.className = 'nav-btn' + (disabled ? ' disabled' : '');
+      a.href = disabled ? '#' : href;
+      a.textContent = text;
+      return a;
+    }
+
+    // Render trusted HTML content from our own content server into a container.
+    // The contentUrl points to our Worker at gutenberg-api.logan676395.workers.dev/content/*
+    // which serves pre-processed Project Gutenberg book HTML. This is first-party content,
+    // not user-generated input, so rendering it as HTML is safe and necessary to preserve
+    // book formatting (paragraphs, headings, italics, etc.).
+    function renderChapterHtml(container, htmlText) {
+      var doc = new DOMParser().parseFromString(htmlText, 'text/html');
+      // Strip any script tags as an extra safety measure
+      doc.querySelectorAll('script').forEach(function(s) { s.remove(); });
+      while (doc.body.firstChild) {
+        container.appendChild(doc.body.firstChild);
+      }
+    }
+
+    async function loadChapter() {
+      var bookId = getParam('bookId');
+      var chapterId = getParam('chapterId');
+      var content = document.getElementById('content');
+      var bookLink = document.getElementById('bookLink');
+
+      if (!bookId || !chapterId) {
+        showError(content, 'Missing parameters.');
+        return;
+      }
+
+      bookLink.href = 'book.html?id=' + encodeURIComponent(bookId);
+
+      try {
+        // Fetch chapter detail and all chapters list in parallel
+        var responses = await Promise.all([
+          fetch(API + '/books/' + encodeURIComponent(bookId) + '/chapters/' + encodeURIComponent(chapterId)),
+          fetch(API + '/books/' + encodeURIComponent(bookId) + '/chapters')
+        ]);
+
+        if (!responses[0].ok) throw new Error('Chapter not found');
+
+        var chapter = await responses[0].json();
+        var chaptersData = await responses[1].json();
+        var allChapters = chaptersData.data || chaptersData;
+
+        // Sort by orderNum
+        allChapters.sort(function(a, b) { return a.orderNum - b.orderNum; });
+
+        // Find current index for prev/next
+        var currentIdx = -1;
+        for (var i = 0; i < allChapters.length; i++) {
+          if (allChapters[i].id === chapterId) { currentIdx = i; break; }
+        }
+
+        document.title = chapter.title + ' - Gutenberg Library';
+        document.getElementById('navTitle').textContent = chapter.title;
+
+        content.textContent = '';
+
+        var heading = document.createElement('h1');
+        heading.className = 'chapter-heading';
+        heading.textContent = chapter.title;
+        content.appendChild(heading);
+
+        var meta = document.createElement('div');
+        meta.className = 'chapter-meta';
+        meta.textContent = formatNumber(chapter.wordCount) + ' words';
+        content.appendChild(meta);
+
+        // Fetch and display chapter content from contentUrl
+        var contentDiv = document.createElement('div');
+        contentDiv.className = 'chapter-content';
+
+        if (chapter.contentUrl) {
+          try {
+            var contentRes = await fetch(chapter.contentUrl);
+            if (contentRes.ok) {
+              var htmlText = await contentRes.text();
+              renderChapterHtml(contentDiv, htmlText);
+            } else {
+              contentDiv.textContent = 'Content unavailable.';
+            }
+          } catch (e) {
+            contentDiv.textContent = 'Failed to load content.';
+          }
+        }
+
+        content.appendChild(contentDiv);
+
+        // Bottom navigation
+        var bottomNav = document.getElementById('bottomNav');
+        bottomNav.textContent = '';
+
+        var hasPrev = currentIdx > 0;
+        var prevHref = hasPrev
+          ? 'chapter.html?bookId=' + encodeURIComponent(bookId) + '&chapterId=' + encodeURIComponent(allChapters[currentIdx - 1].id)
+          : '#';
+        bottomNav.appendChild(createNavBtn(prevHref, 'Previous', !hasPrev));
+
+        var hasNext = currentIdx >= 0 && currentIdx < allChapters.length - 1;
+        var nextHref = hasNext
+          ? 'chapter.html?bookId=' + encodeURIComponent(bookId) + '&chapterId=' + encodeURIComponent(allChapters[currentIdx + 1].id)
+          : '#';
+        bottomNav.appendChild(createNavBtn(nextHref, 'Next', !hasNext));
+      } catch (e) {
+        showError(content, 'Failed to load chapter.');
+        console.error(e);
+      }
+    }
+
+    loadChapter();
+  </script>
+</body>
+</html>

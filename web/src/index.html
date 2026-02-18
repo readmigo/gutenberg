@@ -3,27 +3,457 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Gutenberg Platform</title>
+  <title>Gutenberg Library</title>
   <style>
+    :root {
+      --bg: #faf8f5;
+      --card-bg: #fff;
+      --text: #2c2c2c;
+      --text-muted: #777;
+      --accent: #8b5e3c;
+      --accent-hover: #6d4a2e;
+      --border: #e8e2da;
+      --shadow: 0 1px 3px rgba(0,0,0,0.06);
+      --radius: 6px;
+      --max-w: 1100px;
+    }
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-family: 'Georgia', 'Times New Roman', serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    /* Header */
+    header {
+      border-bottom: 1px solid var(--border);
+      background: var(--card-bg);
+    }
+    .header-inner {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 1.25rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--accent);
+      text-decoration: none;
+      letter-spacing: -0.02em;
+    }
+    .search-box {
+      display: flex;
+      gap: 0.5rem;
+      flex: 1;
+      max-width: 400px;
+    }
+    .search-box input {
+      flex: 1;
+      padding: 0.5rem 0.75rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      font-family: inherit;
+      font-size: 0.9rem;
+      outline: none;
+      background: var(--bg);
+      color: var(--text);
+    }
+    .search-box input:focus { border-color: var(--accent); }
+    .search-box button {
+      padding: 0.5rem 1rem;
+      border: none;
+      background: var(--accent);
+      color: #fff;
+      border-radius: var(--radius);
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 0.9rem;
+    }
+    .search-box button:hover { background: var(--accent-hover); }
+
+    /* Stats */
+    .stats-bar {
+      max-width: var(--max-w);
+      margin: 1.5rem auto 0;
+      padding: 0 1.5rem;
+      display: flex;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+    }
+    .stat {
+      display: flex;
+      align-items: baseline;
+      gap: 0.35rem;
+    }
+    .stat-num {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+    .stat-label {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    /* Book Grid */
+    main {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 1.5rem;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 1.5rem;
+      margin-top: 1rem;
+    }
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      cursor: pointer;
+      transition: box-shadow 0.2s, transform 0.15s;
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      flex-direction: column;
+    }
+    .card:hover {
+      box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+      transform: translateY(-2px);
+    }
+    .card-cover {
+      width: 100%;
+      aspect-ratio: 2/3;
+      object-fit: cover;
+      background: #ede8e1;
+      display: block;
+    }
+    .card-cover-placeholder {
+      width: 100%;
+      aspect-ratio: 2/3;
+      background: linear-gradient(135deg, #ede8e1 0%, #d9d0c5 100%);
       display: flex;
       align-items: center;
       justify-content: center;
-      min-height: 100vh;
-      background: #f8f9fa;
-      color: #333;
+      font-size: 2.5rem;
+      color: var(--accent);
+      opacity: 0.5;
     }
-    .container { text-align: center; }
-    h1 { font-size: 2rem; margin-bottom: 0.5rem; }
-    p { color: #666; font-size: 1.1rem; }
+    .card-body {
+      padding: 0.75rem;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    .card-title {
+      font-size: 0.95rem;
+      font-weight: 600;
+      line-height: 1.3;
+      margin-bottom: 0.25rem;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .card-author {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .card-meta {
+      margin-top: auto;
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    /* Pagination */
+    .pagination {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0.75rem;
+      margin-top: 2rem;
+      padding: 1rem 0;
+    }
+    .pagination button {
+      padding: 0.4rem 1rem;
+      border: 1px solid var(--border);
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 0.85rem;
+      color: var(--text);
+    }
+    .pagination button:hover:not(:disabled) {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+    .pagination button:disabled {
+      opacity: 0.4;
+      cursor: default;
+    }
+    .pagination .page-info {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    /* Loading & Empty */
+    .loading, .empty {
+      text-align: center;
+      padding: 3rem 1rem;
+      color: var(--text-muted);
+      font-size: 1rem;
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 2rem 1rem;
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      border-top: 1px solid var(--border);
+      margin-top: 2rem;
+    }
+
+    @media (max-width: 600px) {
+      .header-inner { padding: 1rem; }
+      .search-box { max-width: 100%; order: 3; flex-basis: 100%; }
+      .grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 1rem; }
+      .stats-bar { padding: 0 1rem; gap: 1rem; }
+      main { padding: 1rem; }
+    }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Gutenberg Platform</h1>
-    <p>Admin Dashboard &amp; Public Catalog &mdash; Coming Soon</p>
-  </div>
+  <header>
+    <div class="header-inner">
+      <a href="index.html" class="logo">Gutenberg Library</a>
+      <div class="search-box">
+        <input type="text" id="searchInput" placeholder="Search books..." aria-label="Search books">
+        <button onclick="doSearch()" aria-label="Search">Search</button>
+      </div>
+      <a href="admin.html" style="font-size:0.85rem;color:var(--text-muted);text-decoration:none;">Admin</a>
+    </div>
+  </header>
+
+  <div class="stats-bar" id="statsBar"></div>
+
+  <main>
+    <div class="grid" id="bookGrid"></div>
+    <div class="pagination" id="pagination"></div>
+  </main>
+
+  <footer>
+    Public domain books from Project Gutenberg
+  </footer>
+
+  <script>
+    var API = 'https://gutenberg-api.logan676395.workers.dev';
+    var LIMIT = 20;
+    var currentPage = 1;
+    var currentSearch = '';
+
+    function formatNumber(n) {
+      if (n >= 1000000) return (n / 1000000).toFixed(1) + 'M';
+      if (n >= 1000) return (n / 1000).toFixed(1) + 'K';
+      return n.toString();
+    }
+
+    // Safe text escaping - creates a text node and reads escaped HTML
+    function escapeHtml(str) {
+      if (!str) return '';
+      var div = document.createElement('div');
+      div.textContent = str;
+      return div.innerHTML;
+    }
+
+    async function loadStats() {
+      try {
+        var res = await fetch(API + '/stats');
+        var stats = await res.json();
+        var bar = document.getElementById('statsBar');
+        // Stats data is from our own trusted API, values are numbers/strings
+        var s1 = document.createElement('div');
+        s1.className = 'stat';
+        var n1 = document.createElement('span');
+        n1.className = 'stat-num';
+        n1.textContent = stats.totalBooks;
+        var l1 = document.createElement('span');
+        l1.className = 'stat-label';
+        l1.textContent = 'books';
+        s1.appendChild(n1);
+        s1.appendChild(l1);
+
+        var s2 = document.createElement('div');
+        s2.className = 'stat';
+        var n2 = document.createElement('span');
+        n2.className = 'stat-num';
+        n2.textContent = stats.byStatus.ready || 0;
+        var l2 = document.createElement('span');
+        l2.className = 'stat-label';
+        l2.textContent = 'ready';
+        s2.appendChild(n2);
+        s2.appendChild(l2);
+
+        bar.appendChild(s1);
+        bar.appendChild(s2);
+      } catch (e) {
+        console.error('Failed to load stats:', e);
+      }
+    }
+
+    function createCard(book) {
+      var a = document.createElement('a');
+      a.className = 'card';
+      a.href = 'book.html?id=' + encodeURIComponent(book.id);
+
+      if (book.coverUrl) {
+        var img = document.createElement('img');
+        img.className = 'card-cover';
+        img.src = book.coverUrl;
+        img.alt = book.title;
+        img.loading = 'lazy';
+        img.onerror = function() {
+          var ph = document.createElement('div');
+          ph.className = 'card-cover-placeholder';
+          ph.textContent = '\u2667';
+          img.replaceWith(ph);
+        };
+        a.appendChild(img);
+      } else {
+        var ph = document.createElement('div');
+        ph.className = 'card-cover-placeholder';
+        ph.textContent = '\u2667';
+        a.appendChild(ph);
+      }
+
+      var body = document.createElement('div');
+      body.className = 'card-body';
+
+      var title = document.createElement('div');
+      title.className = 'card-title';
+      title.textContent = book.title;
+      body.appendChild(title);
+
+      var author = document.createElement('div');
+      author.className = 'card-author';
+      author.textContent = book.author || 'Unknown';
+      body.appendChild(author);
+
+      var meta = document.createElement('div');
+      meta.className = 'card-meta';
+      var chSpan = document.createElement('span');
+      chSpan.textContent = book.chapterCount + ' ch';
+      var wSpan = document.createElement('span');
+      wSpan.textContent = formatNumber(book.wordCount) + ' words';
+      meta.appendChild(chSpan);
+      meta.appendChild(wSpan);
+      body.appendChild(meta);
+
+      a.appendChild(body);
+      return a;
+    }
+
+    async function loadBooks(page, search) {
+      var grid = document.getElementById('bookGrid');
+      grid.textContent = '';
+      var loadingDiv = document.createElement('div');
+      loadingDiv.className = 'loading';
+      loadingDiv.textContent = 'Loading books...';
+      grid.appendChild(loadingDiv);
+
+      try {
+        var url = API + '/books?page=' + page + '&limit=' + LIMIT;
+        if (search) url += '&search=' + encodeURIComponent(search);
+
+        var res = await fetch(url);
+        var data = await res.json();
+
+        grid.textContent = '';
+
+        if (!data.data || data.data.length === 0) {
+          var emptyDiv = document.createElement('div');
+          emptyDiv.className = 'empty';
+          emptyDiv.textContent = 'No books found.';
+          grid.appendChild(emptyDiv);
+          document.getElementById('pagination').textContent = '';
+          return;
+        }
+
+        data.data.forEach(function(book) {
+          grid.appendChild(createCard(book));
+        });
+
+        renderPagination(data.total, page);
+      } catch (e) {
+        grid.textContent = '';
+        var errDiv = document.createElement('div');
+        errDiv.className = 'empty';
+        errDiv.textContent = 'Failed to load books. Please try again.';
+        grid.appendChild(errDiv);
+        console.error('Failed to load books:', e);
+      }
+    }
+
+    function renderPagination(total, page) {
+      var totalPages = Math.ceil(total / LIMIT);
+      var pag = document.getElementById('pagination');
+      pag.textContent = '';
+      if (totalPages <= 1) return;
+
+      var prevBtn = document.createElement('button');
+      prevBtn.textContent = 'Prev';
+      prevBtn.disabled = page <= 1;
+      prevBtn.onclick = function() { goPage(page - 1); };
+
+      var info = document.createElement('span');
+      info.className = 'page-info';
+      info.textContent = 'Page ' + page + ' of ' + totalPages;
+
+      var nextBtn = document.createElement('button');
+      nextBtn.textContent = 'Next';
+      nextBtn.disabled = page >= totalPages;
+      nextBtn.onclick = function() { goPage(page + 1); };
+
+      pag.appendChild(prevBtn);
+      pag.appendChild(info);
+      pag.appendChild(nextBtn);
+    }
+
+    function goPage(page) {
+      currentPage = page;
+      loadBooks(currentPage, currentSearch);
+      window.scrollTo(0, 0);
+    }
+
+    function doSearch() {
+      var input = document.getElementById('searchInput');
+      currentSearch = input.value.trim();
+      currentPage = 1;
+      loadBooks(currentPage, currentSearch);
+    }
+
+    document.getElementById('searchInput').addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') doSearch();
+    });
+
+    loadStats();
+    loadBooks(1, '');
+  </script>
 </body>
 </html>

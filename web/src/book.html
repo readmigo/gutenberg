@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Book Detail - Gutenberg Library</title>
+  <style>
+    :root {
+      --bg: #faf8f5;
+      --card-bg: #fff;
+      --text: #2c2c2c;
+      --text-muted: #777;
+      --accent: #8b5e3c;
+      --accent-hover: #6d4a2e;
+      --border: #e8e2da;
+      --radius: 6px;
+      --max-w: 900px;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Georgia', 'Times New Roman', serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    header {
+      border-bottom: 1px solid var(--border);
+      background: var(--card-bg);
+    }
+    .header-inner {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 1.25rem 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--accent);
+      text-decoration: none;
+      letter-spacing: -0.02em;
+    }
+    .back-link {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      text-decoration: none;
+      margin-left: auto;
+    }
+    .back-link:hover { color: var(--accent); }
+
+    main {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 2rem 1.5rem;
+    }
+
+    /* Book Hero */
+    .book-hero {
+      display: flex;
+      gap: 2rem;
+      margin-bottom: 2.5rem;
+    }
+    .book-cover {
+      width: 200px;
+      flex-shrink: 0;
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.12);
+    }
+    .book-cover img {
+      width: 100%;
+      display: block;
+    }
+    .book-cover-placeholder {
+      width: 100%;
+      aspect-ratio: 2/3;
+      background: linear-gradient(135deg, #ede8e1 0%, #d9d0c5 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 4rem;
+      color: var(--accent);
+      opacity: 0.5;
+    }
+    .book-info { flex: 1; }
+    .book-title {
+      font-size: 1.75rem;
+      font-weight: 700;
+      line-height: 1.3;
+      margin-bottom: 0.35rem;
+    }
+    .book-author {
+      font-size: 1.1rem;
+      color: var(--text-muted);
+      margin-bottom: 1rem;
+    }
+    .book-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+    .meta-tag {
+      font-size: 0.8rem;
+      padding: 0.25rem 0.6rem;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      color: var(--text-muted);
+    }
+    .book-subjects {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+    .book-links {
+      margin-top: 1rem;
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+    .book-links a {
+      font-size: 0.85rem;
+      color: var(--accent);
+      text-decoration: none;
+    }
+    .book-links a:hover { text-decoration: underline; }
+
+    /* Chapter List */
+    .section-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .chapter-list {
+      list-style: none;
+    }
+    .chapter-item {
+      display: flex;
+      align-items: baseline;
+      gap: 0.75rem;
+      padding: 0.6rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .chapter-item:last-child { border-bottom: none; }
+    .chapter-num {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      min-width: 2rem;
+      text-align: right;
+      flex-shrink: 0;
+    }
+    .chapter-link {
+      text-decoration: none;
+      color: var(--text);
+      font-size: 0.95rem;
+      flex: 1;
+    }
+    .chapter-link:hover { color: var(--accent); }
+    .chapter-words {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      flex-shrink: 0;
+    }
+
+    .loading, .error-msg {
+      text-align: center;
+      padding: 3rem 1rem;
+      color: var(--text-muted);
+    }
+    .error-msg a { color: var(--accent); }
+
+    footer {
+      text-align: center;
+      padding: 2rem 1rem;
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      border-top: 1px solid var(--border);
+      margin-top: 2rem;
+      max-width: var(--max-w);
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    @media (max-width: 600px) {
+      .book-hero { flex-direction: column; gap: 1.25rem; }
+      .book-cover { width: 140px; }
+      .book-title { font-size: 1.35rem; }
+      main { padding: 1.25rem 1rem; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-inner">
+      <a href="index.html" class="logo">Gutenberg Library</a>
+      <a href="index.html" class="back-link">Back to catalog</a>
+    </div>
+  </header>
+
+  <main id="content">
+    <div class="loading">Loading book details...</div>
+  </main>
+
+  <footer>
+    Public domain books from Project Gutenberg
+  </footer>
+
+  <script>
+    var API = 'https://gutenberg-api.logan676395.workers.dev';
+
+    function getParam(name) {
+      return new URLSearchParams(window.location.search).get(name);
+    }
+
+    function formatNumber(n) {
+      if (n >= 1000000) return (n / 1000000).toFixed(1) + 'M';
+      if (n >= 1000) return (n / 1000).toFixed(1) + 'K';
+      return n.toString();
+    }
+
+    function parseSubjects(raw) {
+      if (!raw) return [];
+      try { return JSON.parse(raw); } catch (e) { return []; }
+    }
+
+    function showError(container, message) {
+      container.textContent = '';
+      var div = document.createElement('div');
+      div.className = 'error-msg';
+      div.textContent = message + ' ';
+      var link = document.createElement('a');
+      link.href = 'index.html';
+      link.textContent = 'Go back';
+      div.appendChild(link);
+      container.appendChild(div);
+    }
+
+    function createMetaTag(text) {
+      var span = document.createElement('span');
+      span.className = 'meta-tag';
+      span.textContent = text;
+      return span;
+    }
+
+    async function loadBook() {
+      var bookId = getParam('id');
+      var content = document.getElementById('content');
+
+      if (!bookId) {
+        showError(content, 'No book ID provided.');
+        return;
+      }
+
+      try {
+        var bookRes = await fetch(API + '/books/' + encodeURIComponent(bookId));
+        if (!bookRes.ok) throw new Error('Book not found');
+        var book = await bookRes.json();
+
+        document.title = book.title + ' - Gutenberg Library';
+        content.textContent = '';
+
+        // Hero section
+        var hero = document.createElement('div');
+        hero.className = 'book-hero';
+
+        // Cover
+        var coverDiv = document.createElement('div');
+        coverDiv.className = 'book-cover';
+        if (book.coverUrl) {
+          var img = document.createElement('img');
+          img.src = book.coverUrl;
+          img.alt = book.title;
+          img.onerror = function() {
+            var ph = document.createElement('div');
+            ph.className = 'book-cover-placeholder';
+            ph.textContent = '\u2667';
+            img.replaceWith(ph);
+          };
+          coverDiv.appendChild(img);
+        } else {
+          var ph = document.createElement('div');
+          ph.className = 'book-cover-placeholder';
+          ph.textContent = '\u2667';
+          coverDiv.appendChild(ph);
+        }
+        hero.appendChild(coverDiv);
+
+        // Info
+        var info = document.createElement('div');
+        info.className = 'book-info';
+
+        var h1 = document.createElement('h1');
+        h1.className = 'book-title';
+        h1.textContent = book.title;
+        info.appendChild(h1);
+
+        var authorDiv = document.createElement('div');
+        authorDiv.className = 'book-author';
+        authorDiv.textContent = book.author || 'Unknown Author';
+        info.appendChild(authorDiv);
+
+        var metaDiv = document.createElement('div');
+        metaDiv.className = 'book-meta';
+        metaDiv.appendChild(createMetaTag(book.chapterCount + ' chapters'));
+        metaDiv.appendChild(createMetaTag(formatNumber(book.wordCount) + ' words'));
+        metaDiv.appendChild(createMetaTag('Quality: ' + book.qualityScore + '%'));
+        metaDiv.appendChild(createMetaTag((book.language || 'en').toUpperCase()));
+        info.appendChild(metaDiv);
+
+        var subjects = parseSubjects(book.subjects);
+        if (subjects.length > 0) {
+          var subDiv = document.createElement('div');
+          subDiv.className = 'book-subjects';
+          subDiv.textContent = subjects.join(' \u00B7 ');
+          info.appendChild(subDiv);
+        }
+
+        if (book.sourceUrl || book.epubUrl) {
+          var linksDiv = document.createElement('div');
+          linksDiv.className = 'book-links';
+          if (book.sourceUrl) {
+            var srcLink = document.createElement('a');
+            srcLink.href = book.sourceUrl;
+            srcLink.target = '_blank';
+            srcLink.rel = 'noopener';
+            srcLink.textContent = 'View on Gutenberg';
+            linksDiv.appendChild(srcLink);
+          }
+          if (book.epubUrl) {
+            var epubLink = document.createElement('a');
+            epubLink.href = book.epubUrl;
+            epubLink.target = '_blank';
+            epubLink.rel = 'noopener';
+            epubLink.textContent = 'Download EPUB';
+            linksDiv.appendChild(epubLink);
+          }
+          info.appendChild(linksDiv);
+        }
+
+        hero.appendChild(info);
+        content.appendChild(hero);
+
+        // Load chapters
+        var chapRes = await fetch(API + '/books/' + encodeURIComponent(bookId) + '/chapters');
+        var chapData = await chapRes.json();
+        var chapters = chapData.data || chapData;
+
+        if (chapters.length > 0) {
+          var heading = document.createElement('h2');
+          heading.className = 'section-title';
+          heading.textContent = 'Chapters';
+          content.appendChild(heading);
+
+          var list = document.createElement('ol');
+          list.className = 'chapter-list';
+
+          chapters.forEach(function(ch) {
+            var li = document.createElement('li');
+            li.className = 'chapter-item';
+
+            var num = document.createElement('span');
+            num.className = 'chapter-num';
+            num.textContent = ch.orderNum;
+            li.appendChild(num);
+
+            var link = document.createElement('a');
+            link.className = 'chapter-link';
+            link.href = 'chapter.html?bookId=' + encodeURIComponent(bookId) + '&chapterId=' + encodeURIComponent(ch.id);
+            link.textContent = ch.title;
+            li.appendChild(link);
+
+            var words = document.createElement('span');
+            words.className = 'chapter-words';
+            words.textContent = formatNumber(ch.wordCount) + ' words';
+            li.appendChild(words);
+
+            list.appendChild(li);
+          });
+
+          content.appendChild(list);
+        }
+      } catch (e) {
+        showError(content, 'Failed to load book.');
+        console.error(e);
+      }
+    }
+
+    loadBook();
+  </script>
+</body>
+</html>
