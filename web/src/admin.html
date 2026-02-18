@@ -87,7 +87,7 @@
       font-size: 0.9rem;
       font-weight: 500;
       padding: 6px 12px;
-      border-radius: 6px;
+      border-radius: var(--radius);
       transition: color 0.2s, background 0.2s;
     }
     .nav a:hover { color: var(--brand-primary); background: var(--bg-subtle); }
@@ -755,7 +755,7 @@
 
       if (total > 20) {
         body.appendChild(el('div', {
-          style: { padding: '12px 16px', textAlign: 'center', color: '#718096', fontSize: '0.8rem' }
+          style: { padding: '12px 16px', textAlign: 'center', color: 'var(--text-hint)', fontSize: '0.8rem' }
         }, 'Showing 20 of ' + total + ' jobs'));
       }
     }
@@ -818,7 +818,7 @@
         titleTd.appendChild(el('strong', null, book.title));
         titleTd.appendChild(document.createElement('br'));
         titleTd.appendChild(el('span', {
-          style: { color: '#a0aec0', fontSize: '0.75rem' }
+          style: { color: 'var(--text-hint)', fontSize: '0.75rem' }
         }, 'ID: ' + book.gutenbergId));
         row.appendChild(titleTd);
 
@@ -855,7 +855,7 @@
 
       if (total > 50) {
         body.appendChild(el('div', {
-          style: { padding: '12px 16px', textAlign: 'center', color: '#718096', fontSize: '0.8rem' }
+          style: { padding: '12px 16px', textAlign: 'center', color: 'var(--text-hint)', fontSize: '0.8rem' }
         }, 'Showing 50 of ' + total + ' books'));
       }
     }
@@ -865,12 +865,12 @@
       var token = getToken();
 
       if (!token) {
-        td.appendChild(el('span', { style: { color: '#a0aec0', fontSize: '0.8rem' } }, 'Login required'));
+        td.appendChild(el('span', { style: { color: 'var(--text-hint)', fontSize: '0.8rem' } }, 'Login required'));
         return td;
       }
 
       if (book.status === 'approved') {
-        td.appendChild(el('span', { style: { color: '#a0aec0', fontSize: '0.8rem' } }, 'Approved'));
+        td.appendChild(el('span', { style: { color: 'var(--text-hint)', fontSize: '0.8rem' } }, 'Approved'));
         return td;
       }
 
