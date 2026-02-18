@@ -8,7 +8,23 @@ import { uploadEpub, uploadCover, uploadChapter } from './r2-client';
 import { fetchBookById, getEpubUrl, GutendexBook } from './gutendex-client';
 import { parseEpub, extractMetadata, extractChapters, extractCover, ParsedChapter } from './epub-parser';
 import { cleanChapterHtml } from './content-cleaner';
+import { typographize } from './typographer';
+import { modernizeSpelling } from './spelling-modernizer';
 import { checkBookQuality } from './quality-checker';
+
+// Strip HTML for word count (after cleaning)
+function stripHtml(html: string): string {
+  return html
+    .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '')
+    .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '')
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function countWords(text: string): number {
+  return text.split(/\s+/).filter((w) => w.length > 0).length;
+}
 
 export interface JobData {
   id: string;
@@ -62,7 +78,7 @@ export async function processBook(gutenbergId: number, jobId?: string, jobAttemp
 
     // Step 2: Download EPUB (with retry)
     console.log(`  [2/8] Downloading EPUB...`);
-    let epubBuffer: Buffer;
+    let epubBuffer: Buffer = undefined!;
     for (let attempt = 1; attempt <= 3; attempt++) {
       try {
         const resp = await axios.get<Buffer>(epubUrl, {
@@ -100,15 +116,18 @@ export async function processBook(gutenbergId: number, jobId?: string, jobAttemp
     console.log(`  [4/8] Cleaning chapter content...`);
     await updateJobSafe(jobId, { status: 'cleaning' });
 
-    const cleanedChapters: Array<ParsedChapter & { cleanedHtml: string }> = [];
+    const cleanedChapters: Array<ParsedChapter & { cleanedHtml: string; cleanedWordCount: number }> = [];
     for (const ch of rawChapters) {
-      const cleanedHtml = cleanChapterHtml(ch.htmlContent);
-      cleanedChapters.push({ ...ch, cleanedHtml });
+      const cleaned = cleanChapterHtml(ch.htmlContent);
+      const typographized = typographize(cleaned);
+      const cleanedHtml = modernizeSpelling(typographized);
+      const cleanedWordCount = countWords(stripHtml(cleanedHtml));
+      cleanedChapters.push({ ...ch, cleanedHtml, cleanedWordCount });
     }
 
     // Step 5: Calculate totals and quality check
     console.log(`  [5/8] Running quality check...`);
-    const totalWordCount = cleanedChapters.reduce((sum, ch) => sum + ch.wordCount, 0);
+    const totalWordCount = cleanedChapters.reduce((sum, ch) => sum + ch.cleanedWordCount, 0);
 
     const quality = checkBookQuality(
       {
@@ -119,7 +138,7 @@ export async function processBook(gutenbergId: number, jobId?: string, jobAttemp
       },
       cleanedChapters.map(ch => ({
         title: ch.title,
-        wordCount: ch.wordCount,
+        wordCount: ch.cleanedWordCount,
         htmlContent: ch.cleanedHtml,
       })),
     );
@@ -143,7 +162,7 @@ export async function processBook(gutenbergId: number, jobId?: string, jobAttemp
     }
 
     // Upload chapters with generated UUIDs
-    const chapterEntries: Array<{ id: string; orderNum: number; title: string; contentUrl: string; wordCount: number }> = [];
+    const chapterEntries: Array<{ id: string; orderNum: number; title: string; contentUrl: string; wordCount: number; qualityOk: number }> = [];
     for (const ch of cleanedChapters) {
       const chapterId = uuid();
       const contentUrl = await uploadChapter(gutenbergId, chapterId, ch.cleanedHtml);
@@ -152,7 +171,8 @@ export async function processBook(gutenbergId: number, jobId?: string, jobAttemp
         orderNum: ch.order,
         title: ch.title,
         contentUrl,
-        wordCount: ch.wordCount,
+        wordCount: ch.cleanedWordCount,
+        qualityOk: ch.cleanedWordCount >= 50 ? 1 : 0,
       });
     }
     console.log(`  Uploaded ${chapterEntries.length} chapters`);
@@ -189,7 +209,7 @@ export async function processBook(gutenbergId: number, jobId?: string, jobAttemp
         title: ch.title,
         contentUrl: ch.contentUrl,
         wordCount: ch.wordCount,
-        qualityOk: 1,
+        qualityOk: ch.qualityOk,
       })),
     );
 

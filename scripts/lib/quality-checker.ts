@@ -19,7 +19,15 @@ interface ChapterData {
 
 // Detect mojibake / encoding issues
 function hasMojibake(text: string): boolean {
-  const mojibakePatterns = [/Ã¤|Ã¶|Ã¼|Ã©|Ã¨|Ã /g, /â€"|â€™|â€œ|â€/g, /Â /g];
+  const mojibakePatterns = [
+    /Ã¤|Ã¶|Ã¼|Ã©|Ã¨|Ã /g,
+    /â€"|â€™|â€œ|â€/g,
+    /Â /g,
+    /\uFFFD/,                // Unicode replacement character
+    /[\x80-\x9F]/,           // Windows-1252 control characters in Unicode
+    /Ã[\u0080-\u00BF]/,      // UTF-8 decoded as Latin-1
+    /Â[^\s]/,               // Non-breaking space mojibake variants
+  ];
   return mojibakePatterns.some((p) => p.test(text));
 }
 
@@ -58,9 +66,8 @@ export function checkBookQuality(book: BookData, chapters: ChapterData[]): Quali
     score -= 10;
   }
 
-  // Encoding check (sample first 3 chapters)
-  const sampleChapters = chapters.slice(0, 3);
-  for (const ch of sampleChapters) {
+  // Encoding check (all chapters)
+  for (const ch of chapters) {
     if (hasMojibake(ch.htmlContent)) {
       issues.push(`Encoding issues detected in chapter: ${ch.title}`);
       score -= 15;

@@ -8,6 +8,7 @@ const GUTENBERG_PATTERNS: RegExp[] = [
   /SMALL PRINT!/i,
   /START OF (THIS |THE )?PROJECT GUTENBERG/i,
   /END OF (THIS |THE )?PROJECT GUTENBERG/i,
+  /End of Project Gutenberg's/i,
   /\*\*\* START OF/i,
   /\*\*\* END OF/i,
   /Most people start at our Web site/i,
@@ -22,7 +23,17 @@ const GUTENBERG_PATTERNS: RegExp[] = [
   /This etext was prepared by/i,
   /Produced by/i,
   /by David Widger/i,
+  /Release Date:/i,
+  /Character set encoding:/i,
+  /A free ebook from Project Gutenberg/i,
+  /This file should be named/i,
+  /If you received this eBook on a physical medium/i,
+  /Transcribed from the/i,
+  /Section \d+\.\s+General Information About Project Gutenberg/i,
 ];
+
+// Block-level elements that may contain PG boilerplate
+const BLOCK_TAGS = 'p|div|span|pre|h[1-6]|li|blockquote';
 
 // Remove paragraphs matching PG patterns
 export function cleanGutenbergContent(html: string): string {
@@ -33,9 +44,12 @@ export function cleanGutenbergContent(html: string): string {
   cleaned = cleaned.replace(/\*\*\*\s*START OF (THIS |THE )?PROJECT GUTENBERG[\s\S]*?\*\*\*/gi, '');
   cleaned = cleaned.replace(/\*\*\*\s*END OF (THIS |THE )?PROJECT GUTENBERG[\s\S]*$/gi, '');
 
-  // Remove paragraphs containing PG patterns
+  // Remove block-level elements containing PG patterns
   for (const pattern of GUTENBERG_PATTERNS) {
-    cleaned = cleaned.replace(new RegExp(`<p[^>]*>[^<]*?${pattern.source}[\\s\\S]*?<\\/p>`, 'gi'), '');
+    cleaned = cleaned.replace(
+      new RegExp(`<(${BLOCK_TAGS})\\b[^>]*>[\\s\\S]*?${pattern.source}[\\s\\S]*?<\\/\\1>`, 'gi'),
+      '',
+    );
   }
 
   // Remove links to gutenberg.org
@@ -44,6 +58,24 @@ export function cleanGutenbergContent(html: string): string {
   // Normalize whitespace
   cleaned = cleaned.replace(/\n\s*\n\s*\n/g, '\n\n');
   return cleaned.trim();
+}
+
+// Remove PG inline markers like [Illustration], [Footnote], page numbers
+export function removePgInlineMarkers(html: string): string {
+  if (!html) return html;
+  let cleaned = html;
+
+  // [Illustration] and [Illustration: ...]
+  cleaned = cleaned.replace(/\[Illustration(?::\s*[^\]]*?)?\]/gi, '');
+
+  // [Footnote: ...]
+  cleaned = cleaned.replace(/\[Footnote:\s*[^\]]*?\]/gi, '');
+
+  // Page number markers: [pg 42], [p. 42], {42}
+  cleaned = cleaned.replace(/\[pg?\.\s*\d+\]/gi, '');
+  cleaned = cleaned.replace(/\{\d+\}/g, '');
+
+  return cleaned;
 }
 
 // General HTML cleanup
@@ -57,6 +89,9 @@ export function cleanChapterHtml(html: string): string {
 
   // Clean PG content
   cleaned = cleanGutenbergContent(cleaned);
+
+  // Remove PG inline markers
+  cleaned = removePgInlineMarkers(cleaned);
 
   return cleaned.trim();
 }
