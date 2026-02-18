@@ -60,12 +60,25 @@ export async function processBook(gutenbergId: number, jobId?: string, jobAttemp
     console.log(`  Author: ${gutBook.authors.map(a => a.name).join(', ') || 'Unknown'}`);
     console.log(`  EPUB: ${epubUrl}`);
 
-    // Step 2: Download EPUB
+    // Step 2: Download EPUB (with retry)
     console.log(`  [2/8] Downloading EPUB...`);
-    const { data: epubBuffer } = await axios.get<Buffer>(epubUrl, {
-      responseType: 'arraybuffer',
-      timeout: 60000,
-    });
+    let epubBuffer: Buffer;
+    for (let attempt = 1; attempt <= 3; attempt++) {
+      try {
+        const resp = await axios.get<Buffer>(epubUrl, {
+          responseType: 'arraybuffer',
+          timeout: 120000,
+          maxRedirects: 5,
+        });
+        epubBuffer = resp.data;
+        break;
+      } catch (dlErr: any) {
+        const msg = dlErr?.message || dlErr?.code || JSON.stringify(dlErr);
+        console.error(`  Download attempt ${attempt}/3 failed: ${msg}`);
+        if (attempt === 3) throw new Error(`EPUB download failed after 3 attempts: ${msg}`);
+        await new Promise(r => setTimeout(r, 3000 * attempt));
+      }
+    }
 
     tempFile = path.join(os.tmpdir(), `pg-${gutenbergId}-${Date.now()}.epub`);
     fs.writeFileSync(tempFile, epubBuffer);
