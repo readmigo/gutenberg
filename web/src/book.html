@@ -83,11 +83,15 @@
       text-decoration: none;
       letter-spacing: -0.02em;
     }
+    .breadcrumb {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 0.75rem 1.5rem;
+    }
     .back-link {
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       color: var(--text-secondary);
       text-decoration: none;
-      margin-left: auto;
       transition: color 0.2s;
     }
     .back-link:hover { color: var(--brand-primary); }
@@ -242,9 +246,12 @@
   <header>
     <div class="header-inner">
       <a href="index.html" class="logo">Readmigo Classics</a>
-      <a href="index.html" class="back-link">Back to catalog</a>
     </div>
   </header>
+
+  <div class="breadcrumb">
+    <a href="index.html" class="back-link">&larr; Back to catalog</a>
+  </div>
 
   <main id="content">
     <div class="loading">Loading book details...</div>

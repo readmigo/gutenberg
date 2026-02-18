@@ -87,6 +87,19 @@
       transition: color 0.2s;
     }
     .nav-link:hover { color: var(--brand-primary); }
+    .breadcrumb {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 0.75rem 1.5rem;
+      font-family: var(--font);
+    }
+    .back-link {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .back-link:hover { color: var(--brand-primary); }
     .nav-title {
       font-size: 0.85rem;
       font-family: var(--font);
@@ -186,9 +199,12 @@
     <div class="top-nav-inner">
       <a href="index.html" class="nav-link">Library</a>
       <span class="nav-title" id="navTitle">Loading...</span>
-      <a href="#" class="nav-link" id="bookLink">Book</a>
     </div>
   </nav>
+
+  <div class="breadcrumb">
+    <a href="#" class="back-link" id="bookLink">&larr; Back to book</a>
+  </div>
 
   <main id="content">
     <div class="loading">Loading chapter...</div>
