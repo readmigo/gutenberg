@@ -1,29 +1,23 @@
-import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
+import axios from 'axios';
 import 'dotenv/config';
 
-const R2_ACCOUNT_ID = process.env.R2_ACCOUNT_ID || '';
-const R2_ACCESS_KEY_ID = process.env.R2_ACCESS_KEY_ID || '';
-const R2_SECRET_ACCESS_KEY = process.env.R2_SECRET_ACCESS_KEY || '';
-const BUCKET = process.env.R2_BUCKET_NAME || 'gutenberg-production';
+const BASE_URL = process.env.WORKER_BASE_URL || 'http://localhost:8787';
+const INTERNAL_KEY = process.env.WORKER_INTERNAL_KEY || '';
 const PUBLIC_URL = process.env.R2_PUBLIC_URL || '';
 
-const s3 = new S3Client({
-  region: 'auto',
-  endpoint: `https://${R2_ACCOUNT_ID}.r2.cloudflarestorage.com`,
-  credentials: { accessKeyId: R2_ACCESS_KEY_ID, secretAccessKey: R2_SECRET_ACCESS_KEY },
-});
+async function uploadToR2(key: string, body: Buffer | string, contentType: string): Promise<string> {
+  const data = typeof body === 'string' ? Buffer.from(body, 'utf-8') : body;
 
-export async function uploadToR2(key: string, body: Buffer | string, contentType: string): Promise<string> {
-  await s3.send(
-    new PutObjectCommand({
-      Bucket: BUCKET,
-      Key: key,
-      Body: typeof body === 'string' ? Buffer.from(body, 'utf-8') : body,
-      ContentType: contentType,
-      CacheControl: 'public, max-age=31536000',
-    }),
-  );
-  return `${PUBLIC_URL}/${key}`;
+  await axios.put(`${BASE_URL}/internal/r2/${key}`, data, {
+    headers: {
+      'X-Internal-Key': INTERNAL_KEY,
+      'Content-Type': contentType,
+    },
+    timeout: 120000,
+    maxBodyLength: 100 * 1024 * 1024,
+  });
+
+  return PUBLIC_URL ? `${PUBLIC_URL}/${key}` : key;
 }
 
 export async function uploadEpub(gutenbergId: number, buffer: Buffer): Promise<string> {

@@ -125,6 +125,23 @@ internalRoutes.get('/jobs', async (c) => {
   return c.json(data);
 });
 
+// PUT /r2/* - Upload file to R2 via Worker binding
+internalRoutes.put('/r2/*', async (c) => {
+  const key = c.req.path.replace('/internal/r2/', '');
+  if (!key) {
+    return c.json({ error: 'Key is required' }, 400);
+  }
+
+  const contentType = c.req.header('Content-Type') || 'application/octet-stream';
+  const body = await c.req.arrayBuffer();
+
+  await c.env.R2.put(key, body, {
+    httpMetadata: { contentType, cacheControl: 'public, max-age=31536000' },
+  });
+
+  return c.json({ key, size: body.byteLength }, 201);
+});
+
 // POST /jobs - Create a processing job directly (no Queue dependency)
 internalRoutes.post('/jobs', async (c) => {
   const db = drizzle(c.env.DB);

@@ -155,6 +155,26 @@ publicRoutes.get('/authors/:id', async (c) => {
   return c.json({ ...author, books: authorBookRows });
 });
 
+// GET /content/* - Serve R2 content publicly
+publicRoutes.get('/content/*', async (c) => {
+  const key = c.req.path.replace('/content/', '');
+  if (!key) {
+    return c.json({ error: 'Key is required' }, 400);
+  }
+
+  const object = await c.env.R2.get(key);
+  if (!object) {
+    return c.json({ error: 'Not found' }, 404);
+  }
+
+  const headers = new Headers();
+  headers.set('Content-Type', object.httpMetadata?.contentType || 'application/octet-stream');
+  headers.set('Cache-Control', object.httpMetadata?.cacheControl || 'public, max-age=31536000');
+  headers.set('ETag', object.etag);
+
+  return new Response(object.body, { headers });
+});
+
 // GET /stats - Aggregate counts
 publicRoutes.get('/stats', async (c) => {
   const db = drizzle(c.env.DB);
