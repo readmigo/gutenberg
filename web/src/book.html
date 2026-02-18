@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Book Detail - Gutenberg Library</title>
+  <title>Book Detail - Readmigo Classics</title>
   <style>
     :root {
       --bg: #faf8f5;
@@ -199,7 +199,7 @@
 <body>
   <header>
     <div class="header-inner">
-      <a href="index.html" class="logo">Gutenberg Library</a>
+      <a href="index.html" class="logo">Readmigo Classics</a>
       <a href="index.html" class="back-link">Back to catalog</a>
     </div>
   </header>
@@ -263,7 +263,7 @@
         if (!bookRes.ok) throw new Error('Book not found');
         var book = await bookRes.json();
 
-        document.title = book.title + ' - Gutenberg Library';
+        document.title = book.title + ' - Readmigo Classics';
         content.textContent = '';
 
         // Hero section
