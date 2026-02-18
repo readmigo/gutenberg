@@ -152,32 +152,31 @@ export async function processBook(gutenbergId: number, jobId?: string, jobAttemp
 
     await workerClient.createBook({
       id: bookId,
-      gutenberg_id: gutenbergId,
+      gutenbergId: gutenbergId,
       title: metadata.title,
       author,
       language: metadata.language,
-      subjects: gutBook.subjects,
+      subjects: JSON.stringify(gutBook.subjects),
       description: metadata.description || null,
-      cover_url: coverUrl,
-      epub_url: epubUrl2,
-      source_url: sourceUrl,
+      coverUrl: coverUrl,
+      epubUrl: epubUrl2,
+      sourceUrl: sourceUrl,
       status: quality.pass ? 'ready' : 'pending',
-      quality_score: quality.score,
-      quality_issues: quality.issues,
-      chapter_count: chapterEntries.length,
-      word_count: totalWordCount,
-      download_count: gutBook.download_count,
+      qualityScore: quality.score,
+      qualityIssues: JSON.stringify(quality.issues),
+      chapterCount: chapterEntries.length,
+      wordCount: totalWordCount,
     });
 
     await workerClient.createChapters(
       bookId,
       chapterEntries.map(ch => ({
         id: ch.id,
-        order_num: ch.orderNum,
+        orderNum: ch.orderNum,
         title: ch.title,
-        content_url: ch.contentUrl,
-        word_count: ch.wordCount,
-        quality_ok: 1,
+        contentUrl: ch.contentUrl,
+        wordCount: ch.wordCount,
+        qualityOk: 1,
       })),
     );
 
