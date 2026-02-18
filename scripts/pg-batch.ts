@@ -50,9 +50,9 @@ async function main() {
       }
 
       const job: JobData = Array.isArray(jobs) ? jobs[0] : jobs;
-      console.log(`Job ${job.id}: Gutenberg ID ${job.gutenberg_id} (priority: ${job.priority})`);
+      console.log(`Job ${job.id}: Gutenberg ID ${job.gutenbergId} (priority: ${job.priority})`);
 
-      const result = await processBook(job.gutenberg_id, job.id, job.attempts || 0);
+      const result = await processBook(job.gutenbergId, job.id, job.attempts || 0);
       processed++;
 
       console.log(`  -> OK: "${result.title}" (${result.chapterCount} chapters, quality: ${result.qualityScore})`);

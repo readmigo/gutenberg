@@ -49,7 +49,7 @@ async function main() {
 
     const job: JobData = Array.isArray(jobs) ? jobs[0] : jobs;
     jobId = job.id;
-    jobGutenbergId = job.gutenberg_id;
+    jobGutenbergId = job.gutenbergId;
     jobAttempts = job.attempts || 0;
 
     console.log(`Job ${jobId}: Gutenberg ID ${jobGutenbergId} (priority: ${job.priority}, attempts: ${jobAttempts})`);

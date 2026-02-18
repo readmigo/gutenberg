@@ -12,11 +12,11 @@ import { checkBookQuality } from './quality-checker';
 
 export interface JobData {
   id: string;
-  gutenberg_id: number;
+  gutenbergId: number;
   status: string;
   priority: number;
   attempts: number;
-  error_message?: string;
+  errorMessage?: string;
 }
 
 export interface ProcessResult {
