@@ -10,6 +10,12 @@ export const internalRoutes = new Hono<Env>();
 // Apply internalAuth to all routes in this group
 internalRoutes.use('*', internalAuth);
 
+// Global error handler for internal routes
+internalRoutes.onError((err, c) => {
+  console.error('Internal route error:', err.message, err.stack);
+  return c.json({ error: err.message }, 500);
+});
+
 // POST /books - Create a book record
 internalRoutes.post('/books', async (c) => {
   const db = drizzle(c.env.DB);
