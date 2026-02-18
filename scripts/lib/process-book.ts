@@ -206,12 +206,15 @@ export async function processBook(gutenbergId: number, jobId?: string, jobAttemp
       qualityScore: quality.score,
       qualityPass: quality.pass,
     };
-  } catch (err) {
+  } catch (err: any) {
     // Update job to failed
-    const errorMessage = err instanceof Error ? err.message : String(err);
+    const errorMessage = err?.response?.data
+      ? `${err.message}: ${JSON.stringify(err.response.data)}`
+      : err instanceof Error ? err.message : String(err);
+    console.error(`  Error detail: ${errorMessage}`);
     await updateJobSafe(jobId, {
       status: 'failed',
-      error_message: errorMessage,
+      errorMessage,
       attempts: (jobAttempts ?? 0) + 1,
     });
     throw err;
