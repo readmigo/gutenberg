@@ -88,7 +88,11 @@ internalRoutes.post('/books/:id/chapters', async (c) => {
     qualityOk: ch.qualityOk ?? 1,
   }));
 
-  await db.insert(chapters).values(values);
+  // D1 has a 100 SQL variable limit; batch inserts (7 fields per row -> max 14 per batch)
+  const BATCH_SIZE = 10;
+  for (let i = 0; i < values.length; i += BATCH_SIZE) {
+    await db.insert(chapters).values(values.slice(i, i + BATCH_SIZE));
+  }
 
   return c.json({ created: values.length }, 201);
 });
