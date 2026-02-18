@@ -6,28 +6,64 @@
   <title>Book Detail - Readmigo Classics</title>
   <style>
     :root {
-      --bg: #faf8f5;
-      --card-bg: #fff;
-      --text: #2c2c2c;
-      --text-muted: #777;
-      --accent: #8b5e3c;
-      --accent-hover: #6d4a2e;
-      --border: #e8e2da;
-      --radius: 6px;
+      /* Background */
+      --bg: #F7F8FD;
+      --bg-card: #FFFFFF;
+      --bg-subtle: #EEF0FA;
+
+      /* Brand */
+      --brand-primary: #7C8DF5;
+      --brand-primary-hover: #6B7CE4;
+      --brand-gradient: linear-gradient(135deg, #8BB9FF 0%, #B9B3F5 50%, #F6B6E8 100%);
+      --brand-blue: #8BB9FF;
+      --brand-purple: #B9B3F5;
+      --brand-pink: #F6B6E8;
+
+      /* Text */
+      --text-primary: #2D2E4A;
+      --text-secondary: #6B6F9C;
+      --text-hint: #A3A6C8;
+
+      /* Semantic */
+      --success: #6ED6A8;
+      --warning: #FFC26A;
+      --error: #FF6B6B;
+      --info: #7BAAFF;
+
+      /* Gray Scale */
+      --gray-50: #FAFAFA;
+      --gray-100: #F4F4F5;
+      --gray-200: #E4E4E7;
+      --gray-300: #D4D4D8;
+      --gray-400: #A1A1AA;
+      --gray-500: #71717A;
+
+      /* Structure */
+      --border: #E4E4E7;
+      --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+      --shadow: 0 1px 3px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.06);
+      --shadow-md: 0 4px 6px rgba(0,0,0,0.1), 0 2px 4px rgba(0,0,0,0.06);
+      --radius-sm: 4px;
+      --radius: 8px;
+      --radius-lg: 12px;
+      --radius-xl: 16px;
       --max-w: 900px;
+
+      /* Typography */
+      --font: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     }
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
-      font-family: 'Georgia', 'Times New Roman', serif;
+      font-family: var(--font);
       background: var(--bg);
-      color: var(--text);
+      color: var(--text-primary);
       line-height: 1.6;
       min-height: 100vh;
     }
 
     header {
       border-bottom: 1px solid var(--border);
-      background: var(--card-bg);
+      background: var(--bg-card);
     }
     .header-inner {
       max-width: var(--max-w);
@@ -38,19 +74,23 @@
       gap: 1rem;
     }
     .logo {
-      font-size: 1.5rem;
+      font-size: 1.25rem;
       font-weight: 700;
-      color: var(--accent);
+      background: var(--brand-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
       text-decoration: none;
       letter-spacing: -0.02em;
     }
     .back-link {
       font-size: 0.9rem;
-      color: var(--text-muted);
+      color: var(--text-secondary);
       text-decoration: none;
       margin-left: auto;
+      transition: color 0.2s;
     }
-    .back-link:hover { color: var(--accent); }
+    .back-link:hover { color: var(--brand-primary); }
 
     main {
       max-width: var(--max-w);
@@ -67,9 +107,9 @@
     .book-cover {
       width: 200px;
       flex-shrink: 0;
-      border-radius: var(--radius);
+      border-radius: var(--radius-lg);
       overflow: hidden;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.12);
+      box-shadow: var(--shadow-md);
     }
     .book-cover img {
       width: 100%;
@@ -78,13 +118,13 @@
     .book-cover-placeholder {
       width: 100%;
       aspect-ratio: 2/3;
-      background: linear-gradient(135deg, #ede8e1 0%, #d9d0c5 100%);
+      background: var(--brand-gradient);
       display: flex;
       align-items: center;
       justify-content: center;
       font-size: 4rem;
-      color: var(--accent);
-      opacity: 0.5;
+      color: #fff;
+      opacity: 0.7;
     }
     .book-info { flex: 1; }
     .book-title {
@@ -95,7 +135,7 @@
     }
     .book-author {
       font-size: 1.1rem;
-      color: var(--text-muted);
+      color: var(--text-secondary);
       margin-bottom: 1rem;
     }
     .book-meta {
@@ -107,14 +147,14 @@
     .meta-tag {
       font-size: 0.8rem;
       padding: 0.25rem 0.6rem;
-      background: var(--bg);
+      background: var(--bg-subtle);
       border: 1px solid var(--border);
       border-radius: 999px;
-      color: var(--text-muted);
+      color: var(--text-secondary);
     }
     .book-subjects {
       font-size: 0.85rem;
-      color: var(--text-muted);
+      color: var(--text-secondary);
       line-height: 1.5;
     }
     .book-links {
@@ -125,10 +165,11 @@
     }
     .book-links a {
       font-size: 0.85rem;
-      color: var(--accent);
+      color: var(--brand-primary);
       text-decoration: none;
+      transition: color 0.2s;
     }
-    .book-links a:hover { text-decoration: underline; }
+    .book-links a:hover { text-decoration: underline; color: var(--brand-primary-hover); }
 
     /* Chapter List */
     .section-title {
@@ -151,35 +192,36 @@
     .chapter-item:last-child { border-bottom: none; }
     .chapter-num {
       font-size: 0.8rem;
-      color: var(--text-muted);
+      color: var(--text-hint);
       min-width: 2rem;
       text-align: right;
       flex-shrink: 0;
     }
     .chapter-link {
       text-decoration: none;
-      color: var(--text);
+      color: var(--text-primary);
       font-size: 0.95rem;
       flex: 1;
+      transition: color 0.2s;
     }
-    .chapter-link:hover { color: var(--accent); }
+    .chapter-link:hover { color: var(--brand-primary); }
     .chapter-words {
       font-size: 0.75rem;
-      color: var(--text-muted);
+      color: var(--text-hint);
       flex-shrink: 0;
     }
 
     .loading, .error-msg {
       text-align: center;
       padding: 3rem 1rem;
-      color: var(--text-muted);
+      color: var(--text-secondary);
     }
-    .error-msg a { color: var(--accent); }
+    .error-msg a { color: var(--brand-primary); }
 
     footer {
       text-align: center;
       padding: 2rem 1rem;
-      color: var(--text-muted);
+      color: var(--text-hint);
       font-size: 0.8rem;
       border-top: 1px solid var(--border);
       margin-top: 2rem;
