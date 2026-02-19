@@ -74,6 +74,63 @@ const punctuationFixes: [RegExp, string][] = [
   [/\bby-the-bye\b/gi, 'by the by'],
 ];
 
+// Dictionary 6: Geographic and cultural name modernization
+// Sourced from SE spelling.py + SE git diff analysis. ~93% automatable via static dict.
+// Deliberately excludes "Lewis→Louis" (ambiguous with English name Lewis).
+const geographicNames: [RegExp, string][] = [
+  // Plural forms before singular to avoid partial match issues
+  [/\bFeegeeans\b/gi, 'Fijians'],
+  [/\bFeegees\b/gi, 'Fijis'],
+  [/\bMoslems\b/gi, 'Muslims'],
+  [/\bRoumanians\b/gi, 'Romanians'],
+  [/\bRomanoffs\b/g, 'Romanovs'],
+  [/\bHimmalehs\b/gi, 'Himalayas'],
+  // Geographic names (from SE spelling.py)
+  [/\bBarbadoes\b/gi, 'Barbados'],
+  [/\bBehring\b/gi, 'Bering'],
+  [/\bBuda-Pest\b/gi, 'Budapest'],
+  [/\bBuenos Ayres\b/gi, 'Buenos Aires'],
+  [/\bCracow\b/gi, 'Krakow'],
+  [/\bEsthonian\b/gi, 'Estonian'],
+  [/\bEsthonia\b/gi, 'Estonia'],
+  [/\bGizeh\b/gi, 'Giza'],
+  [/\bHamburgh\b/gi, 'Hamburg'],
+  [/\bHaytian\b/gi, 'Haitian'],
+  [/\bHayti\b/gi, 'Haiti'],
+  [/\bKieff\b/gi, 'Kiev'],
+  [/\bKief\b/gi, 'Kiev'],
+  [/\bKeltic\b/gi, 'Celtic'],
+  [/\bKelt\b/g, 'Celt'],
+  [/\bLeipsic\b/gi, 'Leipzig'],
+  [/\bMahommed\b/gi, 'Muhammad'],
+  [/\bMahomet\b/gi, 'Muhammad'],
+  [/\bMoslem\b/gi, 'Muslim'],
+  [/\bPorto Rico\b/gi, 'Puerto Rico'],
+  [/\bRoumanian\b/gi, 'Romanian'],
+  [/\bRoumania\b/gi, 'Romania'],
+  [/\bRomanoff\b/g, 'Romanov'],
+  [/\bSoudan\b/gi, 'Sudan'],
+  [/\bStrasburgh\b/gi, 'Strasbourg'],
+  [/\bThibet\b/gi, 'Tibet'],
+  [/\bTimbuctoo\b/gi, 'Timbuktu'],
+  [/\bTokio\b/gi, 'Tokyo'],
+  [/\bYeddo\b/gi, 'Edo'],
+  [/\bJeddo\b/gi, 'Edo'],
+  // From SE git diff of 10 books (Appendix B.3)
+  [/\bAshantee\b/gi, 'Ashanti'],
+  [/\bBelrive\b/g, 'Bellerive'],
+  [/\bErromanggoans\b/gi, 'Erromangoans'],
+  [/\bFeegee\b/gi, 'Fiji'],
+  [/\bFegee\b/gi, 'Fiji'],
+  [/\bFejee\b/gi, 'Fiji'],
+  [/\bGallipagos\b/gi, 'Galapagos'],
+  [/\bHimmalehan\b/gi, 'Himalayan'],
+  [/\bHindostanee\b/gi, 'Hindustani'],
+  [/\bServian\b/gi, 'Serbian'],
+  [/\bStrasburgh\b/gi, 'Strasbourg'],
+  [/\bsuttee\b/gi, 'sati'],
+];
+
 // Dictionary 4: Diacritical marks corrections (per B.4 in verification report)
 const diacriticalFixes: [RegExp, string][] = [
   [/\ba\u00EBrial\b/gi, 'aerial'],   // aërial → aerial (diaeresis on ë)
@@ -96,6 +153,7 @@ const allReplacements: [RegExp, string][] = [
   ...spellingCorrections,
   ...compoundWords,
   ...punctuationFixes,
+  ...geographicNames,
   ...diacriticalFixes,
   ...ligatureExpansions,
 ];
