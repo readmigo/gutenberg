@@ -21,6 +21,9 @@ const spellingCorrections: [RegExp, string][] = [
   [/\binclose\b/gi, 'enclose'],
   [/\binclosure\b/gi, 'enclosure'],
   [/\bVampyre\b/g, 'Vampire'],
+  [/\bblest\b/gi, 'blessed'],
+  [/\bPandaemonium\b/g, 'Pandemonium'],
+  [/\bWerter\b/g, 'Werther'],
 ];
 
 // Dictionary 2: Compound word modernization (close-ups)
@@ -51,6 +54,17 @@ const compoundWords: [RegExp, string][] = [
   [/\bre-entering\b/gi, 'reentering'],
   [/\bre-entered\b/gi, 'reentered'],
   [/\bre-enter\b/gi, 'reenter'],
+  // Two-word close-ups
+  [/\bhuman\s+kind\b/gi, 'humankind'],
+  [/\bunder\s+weigh\b/gi, 'underway'],
+  // Hyphenated -> two words
+  [/\bwedding-night\b/gi, 'wedding night'],
+  // Solid -> hyphenated (longer forms first to avoid partial replacement)
+  [/\bhardheartedness\b/gi, 'hard-heartedness'],
+  [/\bhardhearted\b/gi, 'hard-hearted'],
+  [/\bbarelegged\b/gi, 'bare-legged'],
+  [/\bparticolou?red\b/gi, 'parti-coloured'],
+  [/\bparticolor\b/gi, 'parti-color'],
 ];
 
 // Dictionary 3: Punctuation fixes (always apply)
