@@ -32,3 +32,7 @@ export async function uploadCover(gutenbergId: number, buffer: Buffer, mimeType:
 export async function uploadChapter(gutenbergId: number, chapterId: string, html: string): Promise<string> {
   return uploadToR2(`books/${gutenbergId}/chapters/${chapterId}.html`, html, 'text/html; charset=utf-8');
 }
+
+export async function uploadImage(gutenbergId: number, filename: string, buffer: Buffer, mimeType: string): Promise<string> {
+  return uploadToR2(`books/${gutenbergId}/images/${filename}`, buffer, mimeType);
+}

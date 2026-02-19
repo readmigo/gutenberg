@@ -22,6 +22,13 @@ export interface CoverData {
   mimeType: string;
 }
 
+export interface EpubImage {
+  id: string;
+  href: string;
+  mimeType: string;
+  data: Buffer;
+}
+
 // Parse EPUB file
 export function parseEpub(filePath: string): Promise<any> {
   return new Promise((resolve, reject) => {
@@ -70,6 +77,42 @@ export function extractCover(epub: any): Promise<CoverData | null> {
       else resolve({ data, mimeType });
     });
   });
+}
+
+// Extract all images from EPUB manifest
+export async function extractImages(epub: any): Promise<EpubImage[]> {
+  const manifest = epub.manifest || {};
+  const coverId = epub.metadata?.cover;
+  const images: EpubImage[] = [];
+
+  for (const id of Object.keys(manifest)) {
+    const item = manifest[id];
+    const mediaType = item['media-type'] || item.mediaType || '';
+    if (!mediaType.startsWith('image/')) continue;
+    // Skip cover image (handled separately)
+    if (id === coverId) continue;
+
+    try {
+      const imageData = await new Promise<{ data: Buffer; mimeType: string } | null>((resolve) => {
+        epub.getImage(id, (err: Error | null, data: Buffer, mime: string) => {
+          if (err || !data) resolve(null);
+          else resolve({ data, mimeType: mime });
+        });
+      });
+      if (imageData) {
+        images.push({
+          id,
+          href: item.href || '',
+          mimeType: imageData.mimeType,
+          data: imageData.data,
+        });
+      }
+    } catch {
+      // Skip images that can't be extracted
+    }
+  }
+
+  return images;
 }
 
 // Detect license/colophon chapters to skip

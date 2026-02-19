@@ -4,15 +4,23 @@ import * as path from 'path';
 import axios from 'axios';
 import { v4 as uuid } from 'uuid';
 import { workerClient } from './worker-client';
-import { uploadEpub, uploadCover, uploadChapter } from './r2-client';
+import { uploadEpub, uploadCover, uploadChapter, uploadImage } from './r2-client';
 import { fetchBookById, getEpubUrl, GutendexBook } from './gutendex-client';
-import { parseEpub, extractMetadata, extractChapters, extractCover, ParsedChapter } from './epub-parser';
+import { parseEpub, extractMetadata, extractChapters, extractCover, extractImages, ParsedChapter } from './epub-parser';
 import { cleanChapterHtml } from './content-cleaner';
 import { typographize } from './typographer';
 import { modernizeSpelling } from './spelling-modernizer';
 import { semanticize } from './semanticizer';
 import { tagForeignPhrases } from './foreign-tagger';
 import { checkBookQuality } from './quality-checker';
+import {
+  extractIllustrationCaptions,
+  buildImageMap,
+  rewriteImagePaths,
+  extractBase64Images,
+  replaceBase64Placeholders,
+  getImageFilename,
+} from './image-processor';
 
 // Strip HTML for word count (after cleaning)
 function stripHtml(html: string): string {
@@ -114,19 +122,34 @@ export async function processBook(gutenbergId: number, jobId?: string, jobAttemp
     console.log(`  Metadata: ${metadata.title} by ${metadata.author}`);
     console.log(`  Raw chapters: ${rawChapters.length}, Cover: ${coverData ? 'yes' : 'no'}`);
 
+    // Step 3b: Extract inline images from EPUB
+    const epubImages = await extractImages(epub);
+    console.log(`  Inline images: ${epubImages.length}`);
+
     // Step 4: Clean chapters
     console.log(`  [4/8] Cleaning chapter content...`);
     await updateJobSafe(jobId, { status: 'cleaning' });
 
     const cleanedChapters: Array<ParsedChapter & { cleanedHtml: string; cleanedWordCount: number }> = [];
     for (const ch of rawChapters) {
-      const cleaned = cleanChapterHtml(ch.htmlContent);
+      // Extract illustration captions BEFORE cleaning removes [Illustration:] markers
+      const captions = extractIllustrationCaptions(ch.htmlContent);
+
+      // Extract base64 images before cleaning
+      const { cleanedHtml: noBase64Html, images: base64Images } = extractBase64Images(ch.htmlContent);
+
+      const cleaned = cleanChapterHtml(noBase64Html);
       const typographized = typographize(cleaned);
       const spellingFixed = modernizeSpelling(typographized);
       const semanticized = semanticize(spellingFixed);
-      const cleanedHtml = tagForeignPhrases(semanticized);
-      const cleanedWordCount = countWords(stripHtml(cleanedHtml));
-      cleanedChapters.push({ ...ch, cleanedHtml, cleanedWordCount });
+      let finalHtml = tagForeignPhrases(semanticized);
+
+      // Store base64 images and captions for later processing (after R2 upload)
+      (ch as any)._captions = captions;
+      (ch as any)._base64Images = base64Images;
+
+      const cleanedWordCount = countWords(stripHtml(finalHtml));
+      cleanedChapters.push({ ...ch, cleanedHtml: finalHtml, cleanedWordCount });
     }
 
     // Step 5: Calculate totals and quality check
@@ -163,6 +186,41 @@ export async function processBook(gutenbergId: number, jobId?: string, jobAttemp
     if (coverData) {
       coverUrl = await uploadCover(gutenbergId, coverData.data, coverData.mimeType);
       console.log(`  Uploaded cover: ${coverUrl}`);
+    }
+
+    // Upload inline images and build path mapping
+    const imageMapEntries: Array<{ href: string; r2Url: string }> = [];
+    for (const img of epubImages) {
+      const filename = getImageFilename(img.href);
+      const r2Url = await uploadImage(gutenbergId, filename, img.data, img.mimeType);
+      imageMapEntries.push({ href: img.href, r2Url });
+    }
+    const imageMap = buildImageMap(imageMapEntries);
+    if (epubImages.length > 0) {
+      console.log(`  Uploaded ${epubImages.length} inline images`);
+    }
+
+    // Rewrite image paths in chapter HTML and handle base64 images
+    for (const ch of cleanedChapters) {
+      const captions: string[] = (ch as any)._captions || [];
+      const base64Images: Array<{ index: number; data: Buffer; mimeType: string; filename: string }> = (ch as any)._base64Images || [];
+
+      // Upload base64 images and build placeholder→URL map
+      const base64UrlMap = new Map<number, string>();
+      for (const b64 of base64Images) {
+        const r2Url = await uploadImage(gutenbergId, b64.filename, b64.data, b64.mimeType);
+        base64UrlMap.set(b64.index, r2Url);
+      }
+
+      // Replace base64 placeholders
+      if (base64UrlMap.size > 0) {
+        ch.cleanedHtml = replaceBase64Placeholders(ch.cleanedHtml, base64UrlMap);
+      }
+
+      // Rewrite epub2-style image paths to R2 URLs and apply captions
+      if (imageMap.size > 0 || captions.length > 0) {
+        ch.cleanedHtml = rewriteImagePaths(ch.cleanedHtml, imageMap, captions);
+      }
     }
 
     // Upload chapters with generated UUIDs
