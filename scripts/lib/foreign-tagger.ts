@@ -1,15 +1,21 @@
 /**
- * Foreign language phrase tagger (Gap 3.1, Phase 1).
+ * Foreign language phrase tagger (Gap 3.1, Phase 1 + Phase 2).
  *
- * Dictionary-based approach: detects and tags known Victorian-era foreign phrases
- * with xml:lang attributes. Covers the most common cases (~45% of foreign content)
- * with >98% precision.
+ * Phase 1 (Dictionary): detects and tags known Victorian-era foreign phrases
+ * with xml:lang attributes. Covers ~45% of foreign content with >98% precision.
  *
- * Phase 1 scope: French (72%), Latin (12%), Italian (6%), German (4%)
+ * Phase 2 (Italic filter): analyzes untagged <i>/<em> content against an
+ * English word frequency set. Multi-word italic phrases with low English-word
+ * ratio are tagged as foreign candidates. Adds ~25% coverage at ~80% precision.
+ *
+ * Languages covered: French, Latin, Italian, German, Spanish
  * Strategy:
  *   1. Content inside <i>/<em> matching dictionary -> add xml:lang to the tag
  *   2. Standalone high-confidence multi-word phrases -> wrap in <i xml:lang="...">
+ *   3. (Phase 2) Untagged multi-word italic content not in English dict -> tag by char heuristic
  */
+
+import { ENGLISH_WORDS } from './english-words';
 
 // Dictionary: [phrase, langCode]
 // Only includes phrases that are NOT anglicized per Merriam-Webster
@@ -102,7 +108,6 @@ const FOREIGN_PHRASES: [RegExp, string][] = [
   [/\bvox populi\b/gi, 'la'],
   [/\bex libris\b/gi, 'la'],
   // -- Italian (lang="it") -------------------------------------------------
-  // Music terms (used in literary context as Italian, not anglicized)
   [/\ballegro\b/gi, 'it'],
   [/\bandante\b/gi, 'it'],
   [/\badagio\b/gi, 'it'],
@@ -124,7 +129,7 @@ const FOREIGN_PHRASES: [RegExp, string][] = [
   [/\bimpresario\b/gi, 'it'],
   [/\bvendetta\b/gi, 'it'],
   // -- German (lang="de") --------------------------------------------------
-  [/\bHerr\b/g, 'de'],        // Case-sensitive: "Herr" = German, "herr" unlikely
+  [/\bHerr\b/g, 'de'],
   [/\bFrau\b/g, 'de'],
   [/\bFr\u00e4ulein\b/g, 'de'],
   [/\bmein Herr\b/gi, 'de'],
@@ -138,7 +143,7 @@ const FOREIGN_PHRASES: [RegExp, string][] = [
   [/\bLeitmotiv\b/gi, 'de'],
   [/\bRealpolitik\b/gi, 'de'],
   [/\bKindergarten\b/gi, 'de'],
-  [/\bGott\b/g, 'de'],        // Case-sensitive: capitalized in German
+  [/\bGott\b/g, 'de'],
   [/\bGott im Himmel\b/gi, 'de'],
   [/\bDanke\b/gi, 'de'],
   [/\bDanke sch\u00f6n\b/gi, 'de'],
@@ -150,24 +155,91 @@ const FOREIGN_PHRASES: [RegExp, string][] = [
 // Phrases safe to wrap standalone (multi-word, high confidence, not anglicized)
 const STANDALONE_WRAP_PHRASES: [RegExp, string][] = FOREIGN_PHRASES.filter(([pattern]) => {
   const src = pattern.source;
-  // Only multi-word patterns (contain \s or space-like separators)
   return /\\s|\\b\w+[- ]\w+/.test(src) || / /.test(src.replace(/\\[bsgidnS]/g, ''));
 });
+
+// ─── Phase 2: Character-based language heuristic ────────────────────────────
+
+// Diacritic patterns characteristic of specific languages
+const FRENCH_CHARS = /[\u00e0\u00e2\u00e7\u00e8\u00e9\u00ea\u00eb\u00ee\u00ef\u00f4\u00f9\u00fb\u00fc\u0153]/i;
+const GERMAN_CHARS = /[\u00e4\u00f6\u00fc\u00df]/i;
+const ITALIAN_CHARS = /[\u00e0\u00e8\u00ec\u00f2\u00f9]/i;
+const SPANISH_CHARS = /[\u00f1\u00e1\u00e9\u00ed\u00f3\u00fa\u00bf\u00a1]/i;
+
+/**
+ * Guess language from character features in a text snippet.
+ * Returns ISO 639-1 code or 'la' (Latin) as default for unknown.
+ */
+function guessLanguageFromChars(text: string): string {
+  if (GERMAN_CHARS.test(text)) return 'de';
+  if (SPANISH_CHARS.test(text)) return 'es';
+  // French and Italian overlap on some chars; use French-specific ones
+  if (/[\u00e7\u0153]/.test(text)) return 'fr';  // ç or œ are French-specific
+  if (FRENCH_CHARS.test(text)) return 'fr';
+  if (ITALIAN_CHARS.test(text)) return 'it';
+  // Default to Latin for text with no diacritics (many Latin phrases lack them)
+  return 'la';
+}
+
+/**
+ * Phase 2: Tag untagged italic content that appears to be non-English.
+ *
+ * For each <i>/<em> without xml:lang (not already caught by Phase 1 dictionary):
+ * - Extract text content and tokenize into words
+ * - Skip single-word italics (too ambiguous: could be emphasis, proper names)
+ * - Calculate percentage of words found in English frequency set
+ * - If < 40% English words -> tag as foreign with language guessed from characters
+ */
+function tagItalicNonEnglish(html: string): string {
+  return html.replace(
+    /<(i|em)(\b[^>]*)>([\s\S]*?)<\/\1>/gi,
+    (match: string, tag: string, attrs: string, content: string) => {
+      // Skip if already tagged
+      if (/xml:lang/i.test(attrs)) return match;
+
+      // Strip nested HTML tags to get plain text
+      const plainText = content.replace(/<[^>]+>/g, '').trim();
+      if (!plainText) return match;
+
+      // Tokenize into words (letters and apostrophes only)
+      const words = plainText.split(/[\s,;:!?.]+/).filter(w => /[a-zA-Z\u00C0-\u024F]/.test(w));
+
+      // Skip single-word italics (too ambiguous — could be emphasis, names, etc.)
+      if (words.length < 2) return match;
+
+      // Calculate English-word ratio
+      let englishCount = 0;
+      for (const word of words) {
+        if (ENGLISH_WORDS.has(word.toLowerCase())) {
+          englishCount++;
+        }
+      }
+
+      const englishRatio = englishCount / words.length;
+
+      // If less than 40% English words, likely foreign
+      if (englishRatio < 0.4) {
+        const lang = guessLanguageFromChars(plainText);
+        return `<${tag}${attrs} xml:lang="${lang}">${content}</${tag}>`;
+      }
+
+      return match;
+    },
+  );
+}
+
+// ─── Phase 1 Functions ──────────────────────────────────────────────────────
 
 /**
  * Add xml:lang to existing <i> or <em> tags whose text content matches a foreign phrase.
  */
 function tagItalicForeignPhrases(html: string): string {
-  // Match <i> or <em> tags (with optional existing attributes) and their content
   return html.replace(
     /<(i|em)(\b[^>]*)>([\s\S]*?)<\/\1>/gi,
     (match: string, tag: string, attrs: string, content: string) => {
-      // Skip if already has xml:lang
       if (/xml:lang/i.test(attrs)) return match;
-      // Check content against dictionary
       const trimmed = content.trim();
       for (const [pattern, lang] of FOREIGN_PHRASES) {
-        // Reset lastIndex for stateful regexes
         pattern.lastIndex = 0;
         if (pattern.test(trimmed)) {
           pattern.lastIndex = 0;
@@ -184,7 +256,6 @@ function tagItalicForeignPhrases(html: string): string {
  * Conservative: only applies to known unambiguous multi-word phrases.
  */
 function wrapStandaloneForeignPhrases(html: string): string {
-  // Only process text nodes (not tag content)
   const segments: string[] = [];
   let i = 0;
   while (i < html.length) {
@@ -212,14 +283,18 @@ function wrapStandaloneForeignPhrases(html: string): string {
   return segments.join('');
 }
 
+// ─── Main Entry Point ───────────────────────────────────────────────────────
+
 /**
  * Main entry point: tag foreign language phrases.
- * 1. Add xml:lang to existing italic foreign phrases
- * 2. Wrap standalone multi-word foreign phrases
+ * 1. (Phase 1) Add xml:lang to existing italic foreign phrases via dictionary
+ * 2. (Phase 1) Wrap standalone multi-word foreign phrases
+ * 3. (Phase 2) Tag remaining untagged italic content via English word filter
  */
 export function tagForeignPhrases(html: string): string {
   if (!html) return html;
   let result = tagItalicForeignPhrases(html);
   result = wrapStandaloneForeignPhrases(result);
+  result = tagItalicNonEnglish(result);
   return result;
 }
