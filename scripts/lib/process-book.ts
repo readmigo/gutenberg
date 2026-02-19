@@ -10,6 +10,7 @@ import { parseEpub, extractMetadata, extractChapters, extractCover, ParsedChapte
 import { cleanChapterHtml } from './content-cleaner';
 import { typographize } from './typographer';
 import { modernizeSpelling } from './spelling-modernizer';
+import { semanticize } from './semanticizer';
 import { checkBookQuality } from './quality-checker';
 
 // Strip HTML for word count (after cleaning)
@@ -120,7 +121,8 @@ export async function processBook(gutenbergId: number, jobId?: string, jobAttemp
     for (const ch of rawChapters) {
       const cleaned = cleanChapterHtml(ch.htmlContent);
       const typographized = typographize(cleaned);
-      const cleanedHtml = modernizeSpelling(typographized);
+      const spellingFixed = modernizeSpelling(typographized);
+      const cleanedHtml = semanticize(spellingFixed);
       const cleanedWordCount = countWords(stripHtml(cleanedHtml));
       cleanedChapters.push({ ...ch, cleanedHtml, cleanedWordCount });
     }
