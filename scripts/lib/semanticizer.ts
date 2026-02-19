@@ -4,6 +4,7 @@
  * Adds semantic markup to improve accessibility and reading app rendering:
  * - <abbr data-epub-type="z3998:name-title"> for honorifics and title abbreviations
  * - <span data-epub-type="z3998:roman"> for Roman numerals in chapter/section contexts
+ * - <section data-epub-type="chapter"> wrapping for chapter structure
  *
  * Operates on HTML strings, transforming only text nodes (not tag attributes).
  * All transforms are additive (wrapping), zero risk of content loss.
@@ -14,6 +15,7 @@ const NAME_TITLE_ABBRS = [
   'Mr', 'Mrs', 'Ms', 'Miss', 'Dr', 'Prof', 'Rev', 'St', 'Jr', 'Sr',
   'Capt', 'Col', 'Gen', 'Sgt', 'Cpl', 'Lt', 'Maj', 'Adm', 'Cmdr',
   'Supt', 'Insp', 'Gov', 'Pres', 'Sen', 'Rep',
+  'Esq', 'Messrs', 'Mme', 'Mlle',
 ];
 
 // Regex: match abbreviation followed by a period (word boundary ensures no partial match)
@@ -83,15 +85,27 @@ function wrapContextualRomanNumerals(html: string): string {
 }
 
 /**
+ * Wrap chapter HTML in a <section> element with chapter semantic type.
+ * Only wraps if the content is not already inside a <section> tag.
+ */
+function wrapChapterSection(html: string): string {
+  const trimmed = html.trim();
+  if (trimmed.startsWith('<section')) return html;
+  return `<section data-epub-type="chapter">\n${html}\n</section>`;
+}
+
+/**
  * Main entry point: apply semantic HTML enhancements.
  *
  * Order of operations:
- * 1. Contextual Roman numeral wrapping (text nodes only, context-aware)
- * 2. Abbreviation <abbr> wrapping (text nodes only)
+ * 1. Chapter <section> wrapping (full HTML)
+ * 2. Contextual Roman numeral wrapping (text nodes only, context-aware)
+ * 3. Abbreviation <abbr> wrapping (text nodes only)
  */
 export function semanticize(html: string): string {
   if (!html) return html;
-  let result = wrapContextualRomanNumerals(html);
+  let result = wrapChapterSection(html);
+  result = wrapContextualRomanNumerals(result);
   result = wrapAbbreviations(result);
   return result;
 }

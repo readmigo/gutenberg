@@ -127,8 +127,10 @@ const geographicNames: [RegExp, string][] = [
   [/\bHimmalehan\b/gi, 'Himalayan'],
   [/\bHindostanee\b/gi, 'Hindustani'],
   [/\bServian\b/gi, 'Serbian'],
-  [/\bStrasburgh\b/gi, 'Strasbourg'],
   [/\bsuttee\b/gi, 'sati'],
+  // Additional entries from SE spelling.py
+  [/\bChili\b/g, 'Chile'],
+  [/\bThibet\b/gi, 'Tibet'],
 ];
 
 // Dictionary 4: Diacritical marks corrections (per B.4 in verification report)
