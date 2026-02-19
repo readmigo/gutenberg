@@ -78,6 +78,16 @@ export function removePgInlineMarkers(html: string): string {
   return cleaned;
 }
 
+// Remove dead links to endnote/footnote chapters (which are skipped by epub-parser)
+export function removeEndnoteLinks(html: string): string {
+  if (!html) return html;
+  // Keep link text, remove the <a> wrapper for endnote/footnote hrefs
+  return html.replace(
+    /<a\b[^>]*href=["'][^"']*(?:endnote|footnote|#fn|#note|#ref)[^"']*["'][^>]*>([\s\S]*?)<\/a>/gi,
+    '$1',
+  );
+}
+
 // General HTML cleanup
 export function cleanChapterHtml(html: string): string {
   if (!html) return html;
@@ -92,6 +102,9 @@ export function cleanChapterHtml(html: string): string {
 
   // Remove PG inline markers
   cleaned = removePgInlineMarkers(cleaned);
+
+  // Remove dead endnote/footnote links
+  cleaned = removeEndnoteLinks(cleaned);
 
   return cleaned.trim();
 }
