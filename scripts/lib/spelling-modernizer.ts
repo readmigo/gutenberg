@@ -74,10 +74,30 @@ const punctuationFixes: [RegExp, string][] = [
   [/\bby-the-bye\b/gi, 'by the by'],
 ];
 
+// Dictionary 4: Diacritical marks corrections (per B.4 in verification report)
+const diacriticalFixes: [RegExp, string][] = [
+  [/\ba\u00EBrial\b/gi, 'aerial'],   // aërial → aerial (diaeresis on ë)
+  [/\bd\u00F4me\b/gi, 'dome'],        // dôme → dome (circumflex on ô)
+  [/\bc\u00E6lestis\b/gi, 'caelestis'], // cælestis → caelestis (ae ligature)
+  [/\bt\u00E6dium\b/gi, 'taedium'],   // tædium → taedium
+  [/\bRom\u00E6\b/g, 'Romae'],        // Romæ → Romae
+];
+
+// Dictionary 5: Latin ligature expansion (Gap 3.5)
+// Expands æ/œ ligatures to ae/oe in English-context words
+const ligatureExpansions: [RegExp, string][] = [
+  [/\u00C6(?=[a-z])/g, 'Ae'],  // Æ at word start followed by lowercase
+  [/\u0152(?=[a-z])/g, 'Oe'],  // Œ at word start followed by lowercase
+  [/\u00E6/g, 'ae'],             // æ → ae
+  [/\u0153/g, 'oe'],             // œ → oe
+];
+
 const allReplacements: [RegExp, string][] = [
   ...spellingCorrections,
   ...compoundWords,
   ...punctuationFixes,
+  ...diacriticalFixes,
+  ...ligatureExpansions,
 ];
 
 /**
