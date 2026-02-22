@@ -1,6 +1,6 @@
 import { Hono } from 'hono';
 import { drizzle } from 'drizzle-orm/d1';
-import { eq, desc, inArray } from 'drizzle-orm';
+import { eq, desc, inArray, sql } from 'drizzle-orm';
 import { books, chapters, processJobs } from '../db/schema';
 import { internalAuth } from '../middleware/auth';
 import type { Env } from '../index';
@@ -16,11 +16,12 @@ internalRoutes.onError((err, c) => {
   return c.json({ error: err.message }, 500);
 });
 
-// POST /books - Create a book record
+// POST /books - Create or update a book record (upsert on gutenberg_id)
 internalRoutes.post('/books', async (c) => {
   const db = drizzle(c.env.DB);
   const body = await c.req.json();
 
+  const now = new Date().toISOString();
   await db.insert(books).values({
     id: body.id,
     gutenbergId: body.gutenbergId,
@@ -38,10 +39,29 @@ internalRoutes.post('/books', async (c) => {
     status: body.status ?? 'pending',
     qualityScore: body.qualityScore,
     qualityIssues: body.qualityIssues,
+  }).onConflictDoUpdate({
+    target: books.gutenbergId,
+    set: {
+      title: body.title,
+      author: body.author,
+      language: body.language,
+      subjects: body.subjects,
+      bookshelves: body.bookshelves,
+      description: body.description,
+      wordCount: body.wordCount,
+      chapterCount: body.chapterCount,
+      coverUrl: body.coverUrl,
+      epubUrl: body.epubUrl,
+      sourceUrl: body.sourceUrl,
+      status: body.status ?? 'pending',
+      qualityScore: body.qualityScore,
+      qualityIssues: body.qualityIssues,
+      updatedAt: now,
+    },
   });
 
-  const created = await db.select().from(books).where(eq(books.id, body.id)).get();
-  return c.json(created, 201);
+  const result = await db.select().from(books).where(eq(books.gutenbergId, body.gutenbergId)).get();
+  return c.json(result, 201);
 });
 
 // PUT /books/:id - Update book fields
@@ -89,9 +109,19 @@ internalRoutes.post('/books/:id/chapters', async (c) => {
   }));
 
   // D1 has a 100 SQL variable limit; batch inserts (7 fields per row -> max 14 per batch)
+  // Use onConflictDoUpdate to handle re-processing of existing books
   const BATCH_SIZE = 10;
   for (let i = 0; i < values.length; i += BATCH_SIZE) {
-    await db.insert(chapters).values(values.slice(i, i + BATCH_SIZE));
+    const batch = values.slice(i, i + BATCH_SIZE);
+    await db.insert(chapters).values(batch).onConflictDoUpdate({
+      target: [chapters.bookId, chapters.orderNum],
+      set: {
+        title: sql`excluded.title`,
+        contentUrl: sql`excluded.content_url`,
+        wordCount: sql`excluded.word_count`,
+        qualityOk: sql`excluded.quality_ok`,
+      },
+    });
   }
 
   return c.json({ created: values.length }, 201);
