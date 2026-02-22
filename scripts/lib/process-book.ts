@@ -241,12 +241,11 @@ export async function processBook(gutenbergId: number, jobId?: string, jobAttemp
 
     // Step 7: Write to D1 via Worker API
     console.log(`  [7/8] Creating book record...`);
-    const bookId = uuid();
     const author = gutBook.authors.map(a => a.name).join(', ') || metadata.author;
     const sourceUrl = `https://www.gutenberg.org/ebooks/${gutenbergId}`;
 
-    await workerClient.createBook({
-      id: bookId,
+    const bookRecord = await workerClient.createBook({
+      id: uuid(),
       gutenbergId: gutenbergId,
       title: metadata.title,
       author,
@@ -262,6 +261,9 @@ export async function processBook(gutenbergId: number, jobId?: string, jobAttemp
       chapterCount: chapterEntries.length,
       wordCount: totalWordCount,
     });
+
+    // Use the actual DB id (may differ from uuid() if book already existed)
+    const bookId = bookRecord.id;
 
     await workerClient.createChapters(
       bookId,
