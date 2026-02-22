@@ -24,6 +24,6 @@ jobs:
           key: ${{ secrets.DROPLET_SSH_KEY }}
           command_timeout: 90m
           script: |
-            cd /home/readmigo/projects/gutenberg && git pull --ff-only
-            cd scripts && pnpm install --frozen-lockfile 2>/dev/null || true
+            cd /home/readmigo/projects/gutenberg && git checkout -- . && git pull --ff-only
+            cd scripts && pnpm install --no-frozen-lockfile 2>/dev/null || true
             npx ts-node pg-batch.ts --max-books=${{ github.event.inputs.max_books || '10' }} 2>&1 | tee -a /tmp/pg-batch-$(date +%Y%m%d).log
