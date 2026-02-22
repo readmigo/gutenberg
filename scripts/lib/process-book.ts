@@ -264,6 +264,7 @@ export async function processBook(gutenbergId: number, jobId?: string, jobAttemp
 
     // Use the actual DB id (may differ from uuid() if book already existed)
     const bookId = bookRecord.id;
+    console.log(`  Book record saved: id=${bookId}, inserting ${chapterEntries.length} chapters...`);
 
     await workerClient.createChapters(
       bookId,
