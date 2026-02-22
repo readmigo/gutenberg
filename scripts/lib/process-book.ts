@@ -88,7 +88,7 @@ export async function processBook(gutenbergId: number, jobId?: string, jobAttemp
 
     // Step 2: Download EPUB (with retry)
     console.log(`  [2/8] Downloading EPUB...`);
-    let epubBuffer: Buffer = undefined!;
+    let epubBuffer!: Buffer;
     for (let attempt = 1; attempt <= 3; attempt++) {
       try {
         const resp = await axios.get<Buffer>(epubUrl, {
