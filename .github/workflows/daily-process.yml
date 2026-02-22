@@ -14,7 +14,7 @@ jobs:
   process:
     name: Process Books
     runs-on: ubuntu-latest
-    timeout-minutes: 120
+    timeout-minutes: 350
     steps:
       - name: Trigger batch processing on Droplet
         uses: appleboy/ssh-action@v1
@@ -22,7 +22,7 @@ jobs:
           host: ${{ secrets.DROPLET_HOST }}
           username: readmigo
           key: ${{ secrets.DROPLET_SSH_KEY }}
-          command_timeout: 90m
+          command_timeout: 330m
           script: |
             cd /home/readmigo/projects/gutenberg && git checkout -- . && git pull --ff-only
             cd scripts && pnpm install --no-frozen-lockfile 2>/dev/null || true
