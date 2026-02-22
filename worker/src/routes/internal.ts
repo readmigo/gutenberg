@@ -16,12 +16,40 @@ internalRoutes.onError((err, c) => {
   return c.json({ error: err.message }, 500);
 });
 
-// POST /books - Create or update a book record (upsert on gutenberg_id)
+// POST /books - Create or update a book record
 internalRoutes.post('/books', async (c) => {
   const db = drizzle(c.env.DB);
   const body = await c.req.json();
-
   const now = new Date().toISOString();
+
+  // Check if book already exists by gutenberg_id
+  const existing = await db.select().from(books).where(eq(books.gutenbergId, body.gutenbergId)).get();
+
+  if (existing) {
+    // Update existing book
+    await db.update(books).set({
+      title: body.title,
+      author: body.author,
+      language: body.language,
+      subjects: body.subjects,
+      bookshelves: body.bookshelves,
+      description: body.description,
+      wordCount: body.wordCount,
+      chapterCount: body.chapterCount,
+      coverUrl: body.coverUrl,
+      epubUrl: body.epubUrl,
+      sourceUrl: body.sourceUrl,
+      status: body.status ?? existing.status,
+      qualityScore: body.qualityScore,
+      qualityIssues: body.qualityIssues,
+      updatedAt: now,
+    }).where(eq(books.id, existing.id));
+
+    const updated = await db.select().from(books).where(eq(books.id, existing.id)).get();
+    return c.json(updated, 200);
+  }
+
+  // Insert new book
   await db.insert(books).values({
     id: body.id,
     gutenbergId: body.gutenbergId,
@@ -39,29 +67,10 @@ internalRoutes.post('/books', async (c) => {
     status: body.status ?? 'pending',
     qualityScore: body.qualityScore,
     qualityIssues: body.qualityIssues,
-  }).onConflictDoUpdate({
-    target: books.gutenbergId,
-    set: {
-      title: body.title,
-      author: body.author,
-      language: body.language,
-      subjects: body.subjects,
-      bookshelves: body.bookshelves,
-      description: body.description,
-      wordCount: body.wordCount,
-      chapterCount: body.chapterCount,
-      coverUrl: body.coverUrl,
-      epubUrl: body.epubUrl,
-      sourceUrl: body.sourceUrl,
-      status: body.status ?? 'pending',
-      qualityScore: body.qualityScore,
-      qualityIssues: body.qualityIssues,
-      updatedAt: now,
-    },
   });
 
-  const result = await db.select().from(books).where(eq(books.gutenbergId, body.gutenbergId)).get();
-  return c.json(result, 201);
+  const created = await db.select().from(books).where(eq(books.id, body.id)).get();
+  return c.json(created, 201);
 });
 
 // PUT /books/:id - Update book fields
@@ -108,20 +117,13 @@ internalRoutes.post('/books/:id/chapters', async (c) => {
     qualityOk: ch.qualityOk ?? 1,
   }));
 
+  // Delete existing chapters for this book (handles re-processing)
+  await db.delete(chapters).where(eq(chapters.bookId, bookId));
+
   // D1 has a 100 SQL variable limit; batch inserts (7 fields per row -> max 14 per batch)
-  // Use onConflictDoUpdate to handle re-processing of existing books
   const BATCH_SIZE = 10;
   for (let i = 0; i < values.length; i += BATCH_SIZE) {
-    const batch = values.slice(i, i + BATCH_SIZE);
-    await db.insert(chapters).values(batch).onConflictDoUpdate({
-      target: [chapters.bookId, chapters.orderNum],
-      set: {
-        title: sql`excluded.title`,
-        contentUrl: sql`excluded.content_url`,
-        wordCount: sql`excluded.word_count`,
-        qualityOk: sql`excluded.quality_ok`,
-      },
-    });
+    await db.insert(chapters).values(values.slice(i, i + BATCH_SIZE));
   }
 
   return c.json({ created: values.length }, 201);
