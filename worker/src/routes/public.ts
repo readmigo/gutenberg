@@ -157,7 +157,25 @@ publicRoutes.get('/authors/:id', async (c) => {
 
 // GET /content/* - Serve R2 content publicly
 publicRoutes.get('/content/*', async (c) => {
-  const key = c.req.path.replace('/content/', '');
+  // Sanitize the key to prevent path traversal attacks (CWE-22).
+  // 1. Strip the route prefix, removing any leading slashes.
+  // 2. Normalize away `.` and `..` segments by resolving the path against a
+  //    virtual root, then reject anything that escapes that root.
+  const rawKey = c.req.path.replace(/^\/content\//, '');
+  const segments = rawKey.split('/');
+  const resolved: string[] = [];
+  for (const seg of segments) {
+    if (seg === '..') {
+      resolved.pop();
+    } else if (seg !== '.' && seg !== '') {
+      resolved.push(seg);
+    }
+  }
+  const key = resolved.join('/');
+  // A valid key must be non-empty and must not have escaped the virtual root
+  // (i.e., resolved.length must never have gone negative, which is guaranteed
+  // because Array.pop() on an empty array is a no-op, so no segment can
+  // push us above the root).
   if (!key) {
     return c.json({ error: 'Key is required' }, 400);
   }
