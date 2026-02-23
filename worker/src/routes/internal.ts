@@ -169,7 +169,8 @@ internalRoutes.get('/jobs', async (c) => {
 
 // PUT /r2/* - Upload file to R2 via Worker binding
 internalRoutes.put('/r2/*', async (c) => {
-  const key = c.req.path.replace('/internal/r2/', '');
+  const rawKey = c.req.path.replace('/internal/r2/', '');
+  const key = rawKey.replace(/\.\.\//g, '').replace(/^\/+/, '');
   if (!key) {
     return c.json({ error: 'Key is required' }, 400);
   }
