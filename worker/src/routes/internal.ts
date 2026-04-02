@@ -245,3 +245,80 @@ internalRoutes.get('/books/exists', async (c) => {
 
   return c.json({ existingIds });
 });
+
+// GET /stats/subjects - Get subject distribution of processed books
+internalRoutes.get('/stats/subjects', async (c) => {
+  const db = drizzle(c.env.DB);
+
+  // Fetch all books with subjects (ready or approved status)
+  const rows = await db
+    .select({ subjects: books.subjects })
+    .from(books)
+    .where(sql`${books.status} IN ('ready', 'pending', 'approved')`);
+
+  // Count subject occurrences
+  const subjectCounts: Record<string, number> = {};
+  for (const row of rows) {
+    if (!row.subjects) continue;
+    try {
+      const subjects: string[] = JSON.parse(row.subjects);
+      for (const s of subjects) {
+        const normalized = normalizeSubject(s);
+        if (normalized) {
+          subjectCounts[normalized] = (subjectCounts[normalized] || 0) + 1;
+        }
+      }
+    } catch {
+      // skip invalid JSON
+    }
+  }
+
+  return c.json({ totalBooks: rows.length, subjects: subjectCounts });
+});
+
+// GET /stats/cefr - Get CEFR level distribution
+internalRoutes.get('/stats/cefr', async (c) => {
+  const db = drizzle(c.env.DB);
+
+  const rows = await db
+    .select({ cefrLevel: books.cefrLevel, count: sql<number>`count(*)` })
+    .from(books)
+    .where(sql`${books.cefrLevel} IS NOT NULL`)
+    .groupBy(books.cefrLevel);
+
+  const distribution: Record<string, number> = {};
+  for (const row of rows) {
+    if (row.cefrLevel) distribution[row.cefrLevel] = row.count;
+  }
+
+  return c.json({ distribution });
+});
+
+// Normalize Gutenberg subject strings to broad categories
+function normalizeSubject(subject: string): string | null {
+  const s = subject.toLowerCase();
+
+  // Map to broad categories
+  if (s.includes('fiction') && !s.includes('non-fiction') && !s.includes('science fiction')) return 'Fiction';
+  if (s.includes('science fiction') || s.includes('dystopi')) return 'Science Fiction';
+  if (s.includes('fantasy') || s.includes('fairy tale')) return 'Fantasy';
+  if (s.includes('mystery') || s.includes('detective')) return 'Mystery & Detective';
+  if (s.includes('horror') || s.includes('ghost') || s.includes('gothic')) return 'Horror & Gothic';
+  if (s.includes('romance') || s.includes('love stor')) return 'Romance';
+  if (s.includes('adventure')) return 'Adventure';
+  if (s.includes('histor')) return 'History';
+  if (s.includes('philosophy') || s.includes('ethics')) return 'Philosophy';
+  if (s.includes('science') || s.includes('natural history') || s.includes('biology') || s.includes('physics')) return 'Science';
+  if (s.includes('poetry') || s.includes('poems')) return 'Poetry';
+  if (s.includes('drama') || s.includes('plays') || s.includes('comedy') || s.includes('tragedy')) return 'Drama';
+  if (s.includes('religion') || s.includes('bible') || s.includes('christian') || s.includes('theolog')) return 'Religion';
+  if (s.includes('political') || s.includes('politics') || s.includes('government')) return 'Politics';
+  if (s.includes('economics') || s.includes('commerce') || s.includes('trade')) return 'Economics';
+  if (s.includes('education') || s.includes('children')) return 'Children & Education';
+  if (s.includes('biography') || s.includes('autobiograph') || s.includes('memoir')) return 'Biography';
+  if (s.includes('travel') || s.includes('voyage')) return 'Travel';
+  if (s.includes('war') || s.includes('military')) return 'War & Military';
+  if (s.includes('humor') || s.includes('satir')) return 'Humor & Satire';
+
+  return null; // uncategorizable
+}

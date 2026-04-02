@@ -41,6 +41,15 @@ class WorkerClient {
     return (await this.http.post('/internal/jobs', { gutenbergId, priority })).data;
   }
 
+  // Stats
+  async getSubjectStats(): Promise<{ totalBooks: number; subjects: Record<string, number> }> {
+    return (await this.http.get('/internal/stats/subjects')).data;
+  }
+
+  async getCefrStats(): Promise<{ distribution: Record<string, number> }> {
+    return (await this.http.get('/internal/stats/cefr')).data;
+  }
+
   // Check existing
   async checkExistingBooks(gutenbergIds: number[]): Promise<number[]> {
     const { data } = await this.http.get('/internal/books/exists', {

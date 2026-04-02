@@ -1,6 +1,8 @@
 import 'dotenv/config';
-import { fetchPage, getEpubUrl } from './lib/gutendex-client';
+import { fetchPage, fetchBookById, getEpubUrl, GutendexBook } from './lib/gutendex-client';
 import { workerClient } from './lib/worker-client';
+import { buildCuratedPriorityMap, getCuratedIds } from './lib/curated-lists';
+import { fetchCategoryBonuses, getBookCategoryBonus } from './lib/category-balancer';
 
 // Parse CLI args
 const args = process.argv.slice(2);
@@ -9,23 +11,83 @@ const getArg = (name: string, def: string) => {
   return arg ? arg.split('=')[1] : def;
 };
 
-const DISCOVER_LIMIT = parseInt(getArg('discover-limit', '50'));
-const MIN_DOWNLOADS = parseInt(getArg('min-downloads', '100'));
+const DISCOVER_LIMIT = parseInt(getArg('discover-limit', '200'));
+const MIN_DOWNLOADS = parseInt(getArg('min-downloads', '10'));
 const DRY_RUN = args.includes('--dry-run');
+const CURATED_ONLY = args.includes('--curated-only');
 
 async function main() {
   console.log('='.repeat(60));
-  console.log('PG Discover - Hot-First Strategy');
+  console.log('PG Discover - Smart Priority Strategy');
   console.log(`  Limit: ${DISCOVER_LIMIT} | Min downloads: ${MIN_DOWNLOADS} | Dry run: ${DRY_RUN}`);
+  console.log(`  Curated only: ${CURATED_ONLY}`);
   console.log('='.repeat(60));
+
+  // Phase 1: Discover curated books first (highest priority)
+  const curatedMap = buildCuratedPriorityMap();
+  const curatedIds = getCuratedIds();
+
+  console.log(`\n[Phase 1] Checking ${curatedIds.length} curated books...`);
+
+  let existingCurated: number[] = [];
+  try {
+    existingCurated = await workerClient.checkExistingBooks(curatedIds);
+  } catch (err) {
+    console.error('  Failed to check existing curated books:', err instanceof Error ? err.message : err);
+  }
+
+  const existingCuratedSet = new Set(existingCurated);
+  const newCuratedIds = curatedIds.filter(id => !existingCuratedSet.has(id));
+  console.log(`  ${newCuratedIds.length} curated books not yet in DB (${existingCurated.length} already exist)`);
 
   let discovered = 0;
   let skipped = 0;
+
+  // Create jobs for new curated books
+  for (const gutenbergId of newCuratedIds) {
+    if (discovered >= DISCOVER_LIMIT) break;
+
+    const priority = (curatedMap.get(gutenbergId) || 0) + 1000; // curated books always high priority
+
+    if (DRY_RUN) {
+      console.log(`  [DRY RUN] Curated job: PG#${gutenbergId} (priority: ${priority})`);
+    } else {
+      try {
+        await workerClient.createJob(gutenbergId, priority);
+        console.log(`  Created curated job: PG#${gutenbergId} (priority: ${priority})`);
+      } catch (err) {
+        console.error(`  Failed to create job for PG#${gutenbergId}:`, err instanceof Error ? err.message : err);
+        continue;
+      }
+    }
+    discovered++;
+  }
+
+  console.log(`  Phase 1 done: ${discovered} curated books queued`);
+
+  if (CURATED_ONLY) {
+    printSummary(discovered, skipped);
+    return;
+  }
+
+  // Phase 2: Discover from Gutendex with category balancing
+  console.log(`\n[Phase 2] Fetching category bonuses for balancing...`);
+  const categoryBonuses = await fetchCategoryBonuses();
+
+  if (categoryBonuses.size > 0) {
+    console.log('  Category bonuses:');
+    for (const [cat, bonus] of [...categoryBonuses.entries()].sort((a, b) => b[1] - a[1]).slice(0, 10)) {
+      console.log(`    ${cat}: +${bonus}`);
+    }
+  }
+
+  console.log(`\n[Phase 2] Browsing Gutendex (min downloads: ${MIN_DOWNLOADS})...`);
+
   let consecutiveAllExist = 0;
   let page = 1;
 
   while (discovered < DISCOVER_LIMIT) {
-    console.log(`\nPage ${page}...`);
+    console.log(`\n  Page ${page}...`);
 
     let response;
     try {
@@ -45,7 +107,7 @@ async function main() {
 
     if (candidates.length === 0) {
       console.log('  No candidates on this page (below min downloads threshold).');
-      break; // Gutendex sorts by download_count DESC, later pages will be even lower
+      break;
     }
 
     // Check which already exist
@@ -65,24 +127,33 @@ async function main() {
 
     if (newBooks.length === 0) {
       consecutiveAllExist++;
-      if (consecutiveAllExist >= 3) {
-        console.log('\n  3 consecutive pages with no new books. Stopping.');
+      if (consecutiveAllExist >= 5) {
+        console.log('\n  5 consecutive pages with no new books. Stopping.');
         break;
       }
     } else {
       consecutiveAllExist = 0;
     }
 
-    // Create jobs for new books
+    // Calculate composite priority and create jobs
     for (const book of newBooks) {
       if (discovered >= DISCOVER_LIMIT) break;
 
+      // Composite priority = download_count + curated bonus + category bonus
+      const curatedBonus = curatedMap.get(book.id) || 0;
+      const categoryBonus = getBookCategoryBonus(book, categoryBonuses);
+      const priority = book.download_count + curatedBonus + categoryBonus;
+
       if (DRY_RUN) {
-        console.log(`  [DRY RUN] Would create job: ${book.title} (DL: ${book.download_count})`);
+        const bonusInfo = curatedBonus ? ` +curated:${curatedBonus}` : '';
+        const catInfo = categoryBonus ? ` +cat:${categoryBonus}` : '';
+        console.log(`  [DRY RUN] ${book.title} (DL: ${book.download_count}${bonusInfo}${catInfo} = ${priority})`);
       } else {
         try {
-          await workerClient.createJob(book.id, book.download_count);
-          console.log(`  Created job: ${book.title} (DL: ${book.download_count})`);
+          await workerClient.createJob(book.id, priority);
+          const bonusInfo = curatedBonus ? ` +curated:${curatedBonus}` : '';
+          const catInfo = categoryBonus ? ` +cat:${categoryBonus}` : '';
+          console.log(`  Created job: ${book.title} (DL: ${book.download_count}${bonusInfo}${catInfo} = ${priority})`);
         } catch (err) {
           console.error(`  Failed to create job for ${book.title}:`, err instanceof Error ? err.message : err);
           continue;
@@ -98,8 +169,12 @@ async function main() {
     await new Promise((r) => setTimeout(r, 1000));
   }
 
+  printSummary(discovered, skipped);
+}
+
+function printSummary(discovered: number, skipped: number) {
   console.log('\n' + '='.repeat(60));
-  console.log(`Summary: ${discovered} discovered, ${skipped} skipped, ${page - 1} pages scanned`);
+  console.log(`Summary: ${discovered} discovered, ${skipped} skipped`);
   console.log('='.repeat(60));
 }
 
