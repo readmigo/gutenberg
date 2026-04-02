@@ -197,9 +197,33 @@ export async function processBook(gutenbergId: number, jobId?: string, jobAttemp
     console.log(`  Uploaded EPUB: ${epubUrl2}`);
 
     let coverUrl: string | null = null;
+    let coverSource: string | null = null;
     if (coverData) {
       coverUrl = await uploadCover(gutenbergId, coverData.data, coverData.mimeType);
-      console.log(`  Uploaded cover: ${coverUrl}`);
+      coverSource = 'epub';
+      console.log(`  Uploaded cover (epub): ${coverUrl}`);
+    } else {
+      // Fallback: try Open Library Covers API
+      console.log(`  No EPUB cover, trying Open Library...`);
+      try {
+        const olCoverUrl = `https://covers.openlibrary.org/b/olid/OL${gutenbergId}M-L.jpg`;
+        const olResp = await axios.get(olCoverUrl, {
+          responseType: 'arraybuffer',
+          timeout: 10000,
+          maxRedirects: 3,
+          validateStatus: (s) => s === 200,
+        });
+        // Only use if response is actually an image (>1KB, not the 1-pixel placeholder)
+        if (olResp.data.byteLength > 1000) {
+          coverUrl = await uploadCover(gutenbergId, Buffer.from(olResp.data), 'image/jpeg');
+          coverSource = 'openlibrary';
+          console.log(`  Uploaded cover (openlibrary): ${coverUrl}`);
+        } else {
+          console.log(`  Open Library returned placeholder, skipping`);
+        }
+      } catch {
+        console.log(`  Open Library cover not available`);
+      }
     }
 
     // Upload inline images and build path mapping
@@ -288,7 +312,7 @@ export async function processBook(gutenbergId: number, jobId?: string, jobAttemp
       cefrLevel: difficulty.cefrLevel,
       difficultyScore: difficulty.difficultyScore,
       estimatedReadingMinutes: difficulty.estimatedReadingMinutes,
-      coverSource: coverData ? 'epub' : null,
+      coverSource: coverSource,
     });
 
     // Use the actual DB id (may differ from uuid() if book already existed)

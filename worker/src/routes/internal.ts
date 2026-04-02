@@ -87,6 +87,43 @@ internalRoutes.post('/books', async (c) => {
   return c.json(created, 201);
 });
 
+// GET /books - List books with filtering
+internalRoutes.get('/books', async (c) => {
+  const db = drizzle(c.env.DB);
+  const status = c.req.query('status');
+  const unsynced = c.req.query('unsynced') === 'true';
+  const needsEnrichment = c.req.query('needs_enrichment') === 'true';
+  const limit = Math.min(200, Math.max(1, Number(c.req.query('limit')) || 20));
+
+  let query = db.select().from(books).$dynamic();
+
+  const conditions = [];
+  if (status) conditions.push(eq(books.status, status));
+  if (unsynced) conditions.push(sql`${books.syncedAt} IS NULL`);
+  if (needsEnrichment) conditions.push(sql`${books.aiDescription} IS NULL`);
+
+  if (conditions.length > 0) {
+    query = query.where(sql`${sql.join(conditions, sql` AND `)}`);
+  }
+
+  const data = await query.orderBy(desc(books.qualityScore)).limit(limit);
+  return c.json(data);
+});
+
+// GET /books/:id/chapters - Get chapters for a book
+internalRoutes.get('/books/:id/chapters', async (c) => {
+  const db = drizzle(c.env.DB);
+  const bookId = c.req.param('id');
+
+  const data = await db
+    .select()
+    .from(chapters)
+    .where(eq(chapters.bookId, bookId))
+    .orderBy(chapters.orderNum);
+
+  return c.json(data);
+});
+
 // PUT /books/:id - Update book fields
 internalRoutes.put('/books/:id', async (c) => {
   const db = drizzle(c.env.DB);

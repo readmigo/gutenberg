@@ -6,7 +6,8 @@
     "process": "npx ts-node pg-process.ts",
     "batch": "npx ts-node pg-batch.ts",
     "sync": "npx ts-node pg-sync-readmigo.ts",
-    "report": "npx ts-node pg-quality-report.ts"
+    "report": "npx ts-node pg-quality-report.ts",
+    "enrich": "npx ts-node pg-enrich.ts"
   },
   "dependencies": {
     "axios": "^1",
