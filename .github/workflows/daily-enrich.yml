@@ -1,29 +1,29 @@
-name: Daily Process
+name: Daily Enrich
 
 on:
   schedule:
-    - cron: '0 3 * * *'
+    - cron: '0 6 * * *'
   workflow_dispatch:
     inputs:
-      max_books:
-        description: 'Maximum books to process'
+      limit:
+        description: 'Maximum books to enrich'
         required: false
         default: '50'
 
 jobs:
-  process:
-    name: Process Books
+  enrich:
+    name: AI Enrich Books
     runs-on: ubuntu-latest
-    timeout-minutes: 350
+    timeout-minutes: 60
     steps:
-      - name: Trigger batch processing on Droplet
+      - name: Trigger AI enrichment on Droplet
         uses: appleboy/ssh-action@v1
         with:
           host: ${{ secrets.DROPLET_HOST }}
           username: readmigo
           key: ${{ secrets.DROPLET_SSH_KEY }}
-          command_timeout: 330m
+          command_timeout: 55m
           script: |
             cd /home/readmigo/projects/gutenberg && git checkout -- . && git pull --ff-only
             cd scripts && pnpm install --no-frozen-lockfile 2>/dev/null || true
-            npx ts-node pg-batch.ts --max-books=${{ github.event.inputs.max_books || '50' }} --delay=2000 2>&1 | tee -a /tmp/pg-batch-$(date +%Y%m%d).log
+            npx ts-node pg-enrich.ts --limit=${{ github.event.inputs.limit || '50' }} 2>&1 | tee -a /tmp/pg-enrich-$(date +%Y%m%d).log
