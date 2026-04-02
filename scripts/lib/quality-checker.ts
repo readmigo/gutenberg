@@ -2,6 +2,7 @@ export interface QualityResult {
   score: number; // 0-100
   issues: string[];
   pass: boolean; // score >= 60
+  tier: 'auto_approved' | 'needs_review' | 'rejected'; // ≥80 / 60-79 / <60
 }
 
 interface BookData {
@@ -31,9 +32,61 @@ function hasMojibake(text: string): boolean {
   return mojibakePatterns.some((p) => p.test(text));
 }
 
+// Detect residual Gutenberg boilerplate that wasn't cleaned
+function hasResidualBoilerplate(html: string): boolean {
+  const patterns = [
+    /Project Gutenberg/i,
+    /gutenberg\.org/i,
+    /\*\*\* START OF/i,
+    /\*\*\* END OF/i,
+    /This eBook is for the use of anyone/i,
+    /SMALL PRINT!/i,
+  ];
+  return patterns.some((p) => p.test(html));
+}
+
+// Detect repeated paragraphs (content duplication)
+function countRepeatedParagraphs(html: string): number {
+  const paragraphs = html
+    .match(/<p[^>]*>([\s\S]*?)<\/p>/gi)
+    ?.map(p => p.replace(/<[^>]+>/g, '').trim().toLowerCase())
+    .filter(p => p.length > 50) || [];
+
+  const seen = new Map<string, number>();
+  let duplicates = 0;
+  for (const p of paragraphs) {
+    const count = (seen.get(p) || 0) + 1;
+    seen.set(p, count);
+    if (count === 2) duplicates++; // count each duplicate once
+  }
+  return duplicates;
+}
+
+// Estimate non-English content ratio
+function nonEnglishRatio(text: string): number {
+  const words = text.split(/\s+/).filter(w => w.length > 2);
+  if (words.length === 0) return 0;
+
+  // Simple heuristic: count words with non-ASCII-letter characters
+  const nonEnglish = words.filter(w => /[^\x00-\x7F]/.test(w.replace(/[\u2018\u2019\u201C\u201D\u2014\u2013\u2026\u00A0\u200A\u2060]/g, '')));
+  return nonEnglish.length / words.length;
+}
+
+// Strip HTML for text analysis
+function stripHtml(html: string): string {
+  return html
+    .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '')
+    .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '')
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
 export function checkBookQuality(book: BookData, chapters: ChapterData[]): QualityResult {
   const issues: string[] = [];
   let score = 100;
+
+  // === Original checks ===
 
   // Chapter count check
   if (chapters.length === 0) {
@@ -102,10 +155,8 @@ export function checkBookQuality(book: BookData, chapters: ChapterData[]): Quali
 
   // 3. Numbered chapter sequence check
   function extractChapterNumber(title: string): number | null {
-    // Arabic: "Chapter 3", "Ch. 5"
     const arabic = title.match(/\bchapter\s+(\d+)\b/i) || title.match(/\bch\.?\s+(\d+)\b/i);
     if (arabic) return parseInt(arabic[1], 10);
-    // Roman numerals up to XX
     const romanMap: Record<string, number> = {
       I: 1, II: 2, III: 3, IV: 4, V: 5, VI: 6, VII: 7, VIII: 8,
       IX: 9, X: 10, XI: 11, XII: 12, XIII: 13, XIV: 14, XV: 15,
@@ -130,7 +181,69 @@ export function checkBookQuality(book: BookData, chapters: ChapterData[]): Quali
     }
   }
 
+  // === New enhanced checks ===
+
+  // 4. Residual Gutenberg boilerplate in chapters
+  let boilerplateChapters = 0;
+  for (const ch of chapters) {
+    if (hasResidualBoilerplate(ch.htmlContent)) {
+      boilerplateChapters++;
+    }
+  }
+  if (boilerplateChapters > 0) {
+    issues.push(`Gutenberg boilerplate residue in ${boilerplateChapters} chapter(s)`);
+    score -= Math.min(15, boilerplateChapters * 5);
+  }
+
+  // 5. Repeated paragraphs (content duplication)
+  const allHtml = chapters.map(c => c.htmlContent).join('\n');
+  const duplicateParagraphs = countRepeatedParagraphs(allHtml);
+  if (duplicateParagraphs > 3) {
+    issues.push(`${duplicateParagraphs} duplicated paragraphs detected`);
+    score -= Math.min(15, duplicateParagraphs * 3);
+  }
+
+  // 6. Non-English content ratio (for English books)
+  const sampleText = stripHtml(
+    chapters.slice(0, Math.min(3, chapters.length)).map(c => c.htmlContent).join(' '),
+  );
+  const nonEngRatio = nonEnglishRatio(sampleText);
+  if (nonEngRatio > 0.3) {
+    issues.push(`High non-English content ratio: ${Math.round(nonEngRatio * 100)}%`);
+    score -= 20;
+  } else if (nonEngRatio > 0.15) {
+    issues.push(`Moderate non-English content: ${Math.round(nonEngRatio * 100)}%`);
+    score -= 10;
+  }
+
+  // 7. Chapter length variance (detect merging errors)
+  if (chapters.length >= 4) {
+    const wordCounts = chapters.map(c => c.wordCount).filter(w => w > 0);
+    if (wordCounts.length >= 4) {
+      const mean = wordCounts.reduce((s, w) => s + w, 0) / wordCounts.length;
+      const variance = wordCounts.reduce((s, w) => s + (w - mean) ** 2, 0) / wordCounts.length;
+      const cv = Math.sqrt(variance) / mean; // coefficient of variation
+      if (cv > 2.0) {
+        issues.push(`Extreme chapter length variation (CV: ${cv.toFixed(1)}) - possible merge error`);
+        score -= 10;
+      } else if (cv > 1.5) {
+        issues.push(`High chapter length variation (CV: ${cv.toFixed(1)})`);
+        score -= 5;
+      }
+    }
+  }
+
   score = Math.max(0, Math.min(100, score));
 
-  return { score, issues, pass: score >= 60 };
+  // Determine tier based on score
+  let tier: QualityResult['tier'];
+  if (score >= 80) {
+    tier = 'auto_approved';
+  } else if (score >= 60) {
+    tier = 'needs_review';
+  } else {
+    tier = 'rejected';
+  }
+
+  return { score, issues, pass: score >= 60, tier };
 }

@@ -13,6 +13,7 @@ import { modernizeSpelling } from './spelling-modernizer';
 import { semanticize } from './semanticizer';
 import { tagForeignPhrases } from './foreign-tagger';
 import { checkBookQuality } from './quality-checker';
+import { analyzeDifficulty } from './difficulty-analyzer';
 import {
   extractIllustrationCaptions,
   buildImageMap,
@@ -53,6 +54,11 @@ export interface ProcessResult {
   wordCount: number;
   qualityScore: number;
   qualityPass: boolean;
+  qualityTier: string;
+  fleschScore: number;
+  cefrLevel: string;
+  difficultyScore: number;
+  estimatedReadingMinutes: number;
 }
 
 async function updateJobSafe(jobId: string | undefined, data: Record<string, unknown>) {
@@ -69,7 +75,7 @@ export async function processBook(gutenbergId: number, jobId?: string, jobAttemp
 
   try {
     // Step 1: Fetch book info from Gutendex
-    console.log(`  [1/8] Fetching Gutendex metadata for ID ${gutenbergId}...`);
+    console.log(`  [1/9] Fetching Gutendex metadata for ID ${gutenbergId}...`);
     await updateJobSafe(jobId, { status: 'downloading' });
 
     const gutBook: GutendexBook | null = await fetchBookById(gutenbergId);
@@ -87,7 +93,7 @@ export async function processBook(gutenbergId: number, jobId?: string, jobAttemp
     console.log(`  EPUB: ${epubUrl}`);
 
     // Step 2: Download EPUB (with retry)
-    console.log(`  [2/8] Downloading EPUB...`);
+    console.log(`  [2/9] Downloading EPUB...`);
     let epubBuffer!: Buffer;
     for (let attempt = 1; attempt <= 3; attempt++) {
       try {
@@ -111,7 +117,7 @@ export async function processBook(gutenbergId: number, jobId?: string, jobAttemp
     console.log(`  Downloaded ${(epubBuffer.length / 1024).toFixed(1)} KB -> ${tempFile}`);
 
     // Step 3: Parse EPUB
-    console.log(`  [3/8] Parsing EPUB...`);
+    console.log(`  [3/9] Parsing EPUB...`);
     await updateJobSafe(jobId, { status: 'parsing' });
 
     const epub = await parseEpub(tempFile);
@@ -127,7 +133,7 @@ export async function processBook(gutenbergId: number, jobId?: string, jobAttemp
     console.log(`  Inline images: ${epubImages.length}`);
 
     // Step 4: Clean chapters
-    console.log(`  [4/8] Cleaning chapter content...`);
+    console.log(`  [4/9] Cleaning chapter content...`);
     await updateJobSafe(jobId, { status: 'cleaning' });
 
     const cleanedChapters: Array<ParsedChapter & { cleanedHtml: string; cleanedWordCount: number }> = [];
@@ -153,7 +159,7 @@ export async function processBook(gutenbergId: number, jobId?: string, jobAttemp
     }
 
     // Step 5: Calculate totals and quality check
-    console.log(`  [5/8] Running quality check...`);
+    console.log(`  [5/9] Running quality check...`);
     const totalWordCount = cleanedChapters.reduce((sum, ch) => sum + ch.cleanedWordCount, 0);
 
     const quality = checkBookQuality(
@@ -170,13 +176,21 @@ export async function processBook(gutenbergId: number, jobId?: string, jobAttemp
       })),
     );
 
-    console.log(`  Quality: score=${quality.score}, pass=${quality.pass}`);
+    console.log(`  Quality: score=${quality.score}, pass=${quality.pass}, tier=${quality.tier}`);
     if (quality.issues.length > 0) {
       console.log(`  Issues: ${quality.issues.join('; ')}`);
     }
 
-    // Step 6: Upload to R2
-    console.log(`  [6/8] Uploading to R2...`);
+    // Step 6: Difficulty analysis
+    console.log(`  [6/9] Analyzing difficulty...`);
+    const difficulty = analyzeDifficulty(
+      cleanedChapters.map(ch => ch.cleanedHtml),
+      totalWordCount,
+    );
+    console.log(`  Flesch: ${difficulty.fleschScore}, CEFR: ${difficulty.cefrLevel}, Difficulty: ${difficulty.difficultyScore}, Reading: ${difficulty.estimatedReadingMinutes}min`);
+
+    // Step 7: Upload to R2
+    console.log(`  [7/9] Uploading to R2...`);
     await updateJobSafe(jobId, { status: 'uploading' });
 
     const epubUrl2 = await uploadEpub(gutenbergId, Buffer.from(epubBuffer));
@@ -239,10 +253,20 @@ export async function processBook(gutenbergId: number, jobId?: string, jobAttemp
     }
     console.log(`  Uploaded ${chapterEntries.length} chapters`);
 
-    // Step 7: Write to D1 via Worker API
-    console.log(`  [7/8] Creating book record...`);
+    // Step 8: Write to D1 via Worker API
+    console.log(`  [8/9] Creating book record...`);
     const author = gutBook.authors.map(a => a.name).join(', ') || metadata.author;
     const sourceUrl = `https://www.gutenberg.org/ebooks/${gutenbergId}`;
+
+    // Determine status based on quality tier
+    let bookStatus: string;
+    if (quality.tier === 'auto_approved') {
+      bookStatus = 'ready'; // ≥80: auto approved, ready for sync
+    } else if (quality.tier === 'needs_review') {
+      bookStatus = 'pending'; // 60-79: needs AI/manual review
+    } else {
+      bookStatus = 'rejected'; // <60: rejected
+    }
 
     const bookRecord = await workerClient.createBook({
       id: uuid(),
@@ -255,11 +279,16 @@ export async function processBook(gutenbergId: number, jobId?: string, jobAttemp
       coverUrl: coverUrl,
       epubUrl: epubUrl2,
       sourceUrl: sourceUrl,
-      status: quality.pass ? 'ready' : 'pending',
+      status: bookStatus,
       qualityScore: quality.score,
       qualityIssues: JSON.stringify(quality.issues),
       chapterCount: chapterEntries.length,
       wordCount: totalWordCount,
+      fleschScore: difficulty.fleschScore,
+      cefrLevel: difficulty.cefrLevel,
+      difficultyScore: difficulty.difficultyScore,
+      estimatedReadingMinutes: difficulty.estimatedReadingMinutes,
+      coverSource: coverData ? 'epub' : null,
     });
 
     // Use the actual DB id (may differ from uuid() if book already existed)
@@ -278,8 +307,8 @@ export async function processBook(gutenbergId: number, jobId?: string, jobAttemp
       })),
     );
 
-    // Step 8: Mark job done
-    console.log(`  [8/8] Done!`);
+    // Step 9: Mark job done
+    console.log(`  [9/9] Done!`);
     await updateJobSafe(jobId, { status: 'done' });
 
     return {
@@ -290,6 +319,11 @@ export async function processBook(gutenbergId: number, jobId?: string, jobAttemp
       wordCount: totalWordCount,
       qualityScore: quality.score,
       qualityPass: quality.pass,
+      qualityTier: quality.tier,
+      fleschScore: difficulty.fleschScore,
+      cefrLevel: difficulty.cefrLevel,
+      difficultyScore: difficulty.difficultyScore,
+      estimatedReadingMinutes: difficulty.estimatedReadingMinutes,
     };
   } catch (err: any) {
     // Update job to failed

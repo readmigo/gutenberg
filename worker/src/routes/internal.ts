@@ -42,6 +42,13 @@ internalRoutes.post('/books', async (c) => {
       status: body.status ?? existing.status,
       qualityScore: body.qualityScore,
       qualityIssues: body.qualityIssues,
+      fleschScore: body.fleschScore,
+      cefrLevel: body.cefrLevel,
+      difficultyScore: body.difficultyScore,
+      estimatedReadingMinutes: body.estimatedReadingMinutes,
+      aiDescription: body.aiDescription,
+      aiTags: body.aiTags,
+      coverSource: body.coverSource,
       updatedAt: now,
     }).where(eq(books.id, existing.id));
 
@@ -67,6 +74,13 @@ internalRoutes.post('/books', async (c) => {
     status: body.status ?? 'pending',
     qualityScore: body.qualityScore,
     qualityIssues: body.qualityIssues,
+    fleschScore: body.fleschScore,
+    cefrLevel: body.cefrLevel,
+    difficultyScore: body.difficultyScore,
+    estimatedReadingMinutes: body.estimatedReadingMinutes,
+    aiDescription: body.aiDescription,
+    aiTags: body.aiTags,
+    coverSource: body.coverSource,
   });
 
   const created = await db.select().from(books).where(eq(books.id, body.id)).get();

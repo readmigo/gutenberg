@@ -37,6 +37,12 @@ interface SyncableBook {
   source_url: string;
   chapter_count: number;
   word_count: number;
+  flesch_score: number | null;
+  cefr_level: string | null;
+  difficulty_score: number | null;
+  estimated_reading_minutes: number | null;
+  ai_description: string | null;
+  ai_tags: string | null;
 }
 
 async function main() {
@@ -103,6 +109,12 @@ async function main() {
         chapterCount: book.chapter_count,
         coverUrl: book.cover_url,
         epubUrl: book.epub_url,
+        fleschScore: book.flesch_score,
+        cefrLevel: book.cefr_level,
+        difficultyScore: book.difficulty_score,
+        estimatedReadingMinutes: book.estimated_reading_minutes,
+        aiDescription: book.ai_description,
+        aiTags: book.ai_tags ? JSON.parse(book.ai_tags) : [],
         chapters: chapters.map((ch: any) => ({
           order: ch.order_num,
           title: ch.title,

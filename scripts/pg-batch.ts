@@ -55,7 +55,7 @@ async function main() {
       const result = await processBook(job.gutenbergId, job.id, job.attempts || 0);
       processed++;
 
-      console.log(`  -> OK: "${result.title}" (${result.chapterCount} chapters, quality: ${result.qualityScore})`);
+      console.log(`  -> OK: "${result.title}" (${result.chapterCount} ch, quality: ${result.qualityScore} [${result.qualityTier}], CEFR: ${result.cefrLevel}, ${result.estimatedReadingMinutes}min)`);
     } catch (err) {
       failed++;
       console.error(`  -> FAILED: ${err instanceof Error ? err.message : err}`);

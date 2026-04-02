@@ -19,6 +19,13 @@ export const books = sqliteTable('books', {
   status: text('status').default('pending'),  // pending/processing/ready/approved/rejected/error
   qualityScore: real('quality_score'),
   qualityIssues: text('quality_issues'),      // JSON array
+  fleschScore: real('flesch_score'),
+  cefrLevel: text('cefr_level'),             // A1-C2
+  difficultyScore: real('difficulty_score'),  // 0-100
+  estimatedReadingMinutes: integer('estimated_reading_minutes'),
+  aiDescription: text('ai_description'),
+  aiTags: text('ai_tags'),                   // JSON array
+  coverSource: text('cover_source').default('epub'), // epub/openlibrary/generated
   approvedAt: text('approved_at'),
   syncedAt: text('synced_at'),
   readmigoBookId: text('readmigo_book_id'),
