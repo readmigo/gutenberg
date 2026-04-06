@@ -277,9 +277,12 @@ async function parseSeGroundTruth(epubPath: string): Promise<{ chapterCount: num
 }
 
 function pgEpubUrl(pgId: number): string {
-  // Standard PG EPUB3 URL with images. PG redirects this to the actual file
-  // host; axios will follow.
-  return `https://www.gutenberg.org/ebooks/${pgId}.epub3.images`;
+  // Prefer a PG mirror host. www.gutenberg.org aggressively rate-limits
+  // automated downloads (HTTP 429 after only a handful of rapid requests)
+  // and a calibration sweep needs to fetch hundreds of EPUBs. The pglaf
+  // mirror at aleph.pglaf.org serves the same cached files without the
+  // rate-limit burden.
+  return `https://aleph.pglaf.org/cache/epub/${pgId}/pg${pgId}-images.epub`;
 }
 
 function seEpubUrl(repo: string, seSlug: string): string {
