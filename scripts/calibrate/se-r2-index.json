@@ -1,0 +1,2394 @@
+{
+  "generatedAt": "2026-04-06T14:12:20.952Z",
+  "total": 398,
+  "entries": [
+    {
+      "seSlug": "a-a-milne/the-house-at-pooh-corner",
+      "readmigoId": "aba04763-f5bb-478f-b63e-ca31a4672b81",
+      "epubUrl": "https://cdn.readmigo.app/books/aba04763-f5bb-478f-b63e-ca31a4672b81/book.epub",
+      "title": "The House at Pooh Corner"
+    },
+    {
+      "seSlug": "a-n-afanasyev_russian-folktales_leonard-a-magnus",
+      "readmigoId": "9b13787c-8908-430c-a2a0-82f7ce6a4dde",
+      "epubUrl": "https://cdn.readmigo.app/books/9b13787c-8908-430c-a2a0-82f7ce6a4dde/book.epub",
+      "title": "Russian Folktales"
+    },
+    {
+      "seSlug": "a-p-herbert/the-house-by-the-river",
+      "readmigoId": "83d221b8-e032-422d-91b3-dd95353abba9",
+      "epubUrl": "https://cdn.readmigo.app/books/83d221b8-e032-422d-91b3-dd95353abba9/book.epub",
+      "title": "The House by the River"
+    },
+    {
+      "seSlug": "adam-mickiewicz_pan-tadeusz_maude-ashurst-biggs",
+      "readmigoId": "92045020-6c38-42ab-abb2-eb6afe4d2fd2",
+      "epubUrl": "https://cdn.readmigo.app/books/92045020-6c38-42ab-abb2-eb6afe4d2fd2/book.epub",
+      "title": "Pan Tadeusz"
+    },
+    {
+      "seSlug": "adam-smith_the-theory-of-moral-sentiments",
+      "readmigoId": "8268a92e-da35-475e-95a2-4771d011e8da",
+      "epubUrl": "https://cdn.readmigo.app/books/8268a92e-da35-475e-95a2-4771d011e8da/book.epub",
+      "title": "The Theory of Moral Sentiments"
+    },
+    {
+      "seSlug": "aeschylus_agamemnon_gilbert-murray",
+      "readmigoId": "e0ed2176-db73-4ef6-bae7-148cdf8d5b8e",
+      "epubUrl": "https://cdn.readmigo.app/books/e0ed2176-db73-4ef6-bae7-148cdf8d5b8e/book.epub",
+      "title": "Agamemnon"
+    },
+    {
+      "seSlug": "aeschylus_the-eumenides_gilbert-murray",
+      "readmigoId": "bf2c6716-d069-4e3d-820c-d80be8f2ee91",
+      "epubUrl": "https://cdn.readmigo.app/books/bf2c6716-d069-4e3d-820c-d80be8f2ee91/book.epub",
+      "title": "The Eumenides"
+    },
+    {
+      "seSlug": "aeschylus_the-libation-bearers_gilbert-murray",
+      "readmigoId": "e399ba2e-1647-4159-9e27-e0b721e9bf2f",
+      "epubUrl": "https://cdn.readmigo.app/books/e399ba2e-1647-4159-9e27-e0b721e9bf2f/book.epub",
+      "title": "The Libation Bearers"
+    },
+    {
+      "seSlug": "agatha-christie_the-mystery-of-the-blue-train",
+      "readmigoId": "a00703e5-b82d-46c7-b74d-05eb9a423265",
+      "epubUrl": "https://cdn.readmigo.app/books/a00703e5-b82d-46c7-b74d-05eb9a423265/book.epub",
+      "title": "The Mystery of the Blue Train"
+    },
+    {
+      "seSlug": "agatha-christie_the-secret-of-chimneys",
+      "readmigoId": "398b1be4-0d2e-4577-b98e-2a226a77cd97",
+      "epubUrl": "https://cdn.readmigo.app/books/398b1be4-0d2e-4577-b98e-2a226a77cd97/book.epub",
+      "title": "The Secret of Chimneys"
+    },
+    {
+      "seSlug": "agatha-christie/the-seven-dials-mystery",
+      "readmigoId": "cf5b15de-4010-4a36-8dc4-4c93ed864049",
+      "epubUrl": "https://cdn.readmigo.app/books/cf5b15de-4010-4a36-8dc4-4c93ed864049/book.epub",
+      "title": "The Seven Dials Mystery"
+    },
+    {
+      "seSlug": "alexandre-dumas_the-count-of-monte-cristo_chapman-and-hall",
+      "readmigoId": "999cbaa8-a3ae-4d3d-8582-4c7b076003de",
+      "epubUrl": "https://cdn.readmigo.app/books/999cbaa8-a3ae-4d3d-8582-4c7b076003de/book.epub",
+      "title": "The Count of Monte Cristo"
+    },
+    {
+      "seSlug": "algernon-blackwood_john-silence-stories",
+      "readmigoId": "7a31a1e4-76bc-4c66-b26e-3020e5a72b97",
+      "epubUrl": "https://cdn.readmigo.app/books/7a31a1e4-76bc-4c66-b26e-3020e5a72b97/book.epub",
+      "title": "John Silence Stories"
+    },
+    {
+      "seSlug": "ambrose-bierce_the-devils-dictionary",
+      "readmigoId": "0ab2d78d-1399-45f7-9c2d-c437a55168ae",
+      "epubUrl": "https://cdn.readmigo.app/books/0ab2d78d-1399-45f7-9c2d-c437a55168ae/book.epub",
+      "title": "The Devil’s Dictionary"
+    },
+    {
+      "seSlug": "andre-norton_star-hunter",
+      "readmigoId": "32120332-58d5-458c-a806-2a9ebf7eb95a",
+      "epubUrl": "https://cdn.readmigo.app/books/32120332-58d5-458c-a806-2a9ebf7eb95a/book.epub",
+      "title": "Star Hunter"
+    },
+    {
+      "seSlug": "andre-norton/voodoo-planet",
+      "readmigoId": "6f22fba7-1fb0-46fa-89fc-451df5cb16b3",
+      "epubUrl": "https://cdn.readmigo.app/books/6f22fba7-1fb0-46fa-89fc-451df5cb16b3/book.epub",
+      "title": "Voodoo Planet"
+    },
+    {
+      "seSlug": "ann-radcliffe_a-sicilian-romance",
+      "readmigoId": "b4d58b3f-bbf3-4e2d-886e-41017e3b1cca",
+      "epubUrl": "https://cdn.readmigo.app/books/b4d58b3f-bbf3-4e2d-886e-41017e3b1cca/book.epub",
+      "title": "A Sicilian Romance"
+    },
+    {
+      "seSlug": "anna-katharine-green_lost-mans-lane",
+      "readmigoId": "56e14f86-13dd-4719-a6fc-fb2e162d5476",
+      "epubUrl": "https://cdn.readmigo.app/books/56e14f86-13dd-4719-a6fc-fb2e162d5476/book.epub",
+      "title": "Lost Man’s Lane"
+    },
+    {
+      "seSlug": "anna-katharine-green/that-affair-next-door",
+      "readmigoId": "582bccaa-44c2-4093-8430-1bd2876e7447",
+      "epubUrl": "https://cdn.readmigo.app/books/582bccaa-44c2-4093-8430-1bd2876e7447/book.epub",
+      "title": "That Affair Next Door"
+    },
+    {
+      "seSlug": "anonymous_the-nibelungenlied_alice-horton",
+      "readmigoId": "01bc831e-8a26-42c0-82a2-aaab1bb79664",
+      "epubUrl": "https://cdn.readmigo.app/books/01bc831e-8a26-42c0-82a2-aaab1bb79664/book.epub",
+      "title": "The Nibelungenlied"
+    },
+    {
+      "seSlug": "anthony-trollope_rachel-ray",
+      "readmigoId": "44b8f245-f4da-4365-b424-4517c58c8668",
+      "epubUrl": "https://cdn.readmigo.app/books/44b8f245-f4da-4365-b424-4517c58c8668/book.epub",
+      "title": "Rachel Ray"
+    },
+    {
+      "seSlug": "anthony-trollope_the-vicar-of-bullhampton",
+      "readmigoId": "9bf038de-1acd-4c5a-909c-1a5b2f7e6472",
+      "epubUrl": "https://cdn.readmigo.app/books/9bf038de-1acd-4c5a-909c-1a5b2f7e6472/book.epub",
+      "title": "The Vicar of Bullhampton"
+    },
+    {
+      "seSlug": "anthony-trollope/barchester-towers",
+      "readmigoId": "0f1b584e-7d6b-4d2c-9e2f-c68dff56a381",
+      "epubUrl": "https://cdn.readmigo.app/books/0f1b584e-7d6b-4d2c-9e2f-c68dff56a381/book.epub",
+      "title": "Barchester Towers"
+    },
+    {
+      "seSlug": "anton-chekhov_the-cherry-orchard_constance-garnett",
+      "readmigoId": "400bee36-55d8-44e1-aef1-1da9b79b8a10",
+      "epubUrl": "https://cdn.readmigo.app/books/400bee36-55d8-44e1-aef1-1da9b79b8a10/book.epub",
+      "title": "The Cherry Orchard"
+    },
+    {
+      "seSlug": "anton-chekhov_the-seagull_constance-garnett",
+      "readmigoId": "c716d5ab-401f-4952-8e75-39234611b65c",
+      "epubUrl": "https://cdn.readmigo.app/books/c716d5ab-401f-4952-8e75-39234611b65c/book.epub",
+      "title": "The Seagull"
+    },
+    {
+      "seSlug": "anton-chekhov_three-sisters_julius-west",
+      "readmigoId": "f67615ce-5857-4df3-a995-66f72c956d92",
+      "epubUrl": "https://cdn.readmigo.app/books/f67615ce-5857-4df3-a995-66f72c956d92/book.epub",
+      "title": "Three Sisters"
+    },
+    {
+      "seSlug": "anton-chekhov_uncle-vanya_constance-garnett",
+      "readmigoId": "68f0c91a-0879-4862-91ac-5d25bff3b99d",
+      "epubUrl": "https://cdn.readmigo.app/books/68f0c91a-0879-4862-91ac-5d25bff3b99d/book.epub",
+      "title": "Uncle Vanya"
+    },
+    {
+      "seSlug": "aristotle_nicomachean-ethics_f-h-peters",
+      "readmigoId": "93c0aee3-4c28-49f0-a107-2bbc5c9fcce3",
+      "epubUrl": "https://cdn.readmigo.app/books/93c0aee3-4c28-49f0-a107-2bbc5c9fcce3/book.epub",
+      "title": "Nicomachean Ethics"
+    },
+    {
+      "seSlug": "arnold-bennett_riceyman-steps",
+      "readmigoId": "a2bd1ce7-acc7-4133-a20c-8dd5ba9d5bdb",
+      "epubUrl": "https://cdn.readmigo.app/books/a2bd1ce7-acc7-4133-a20c-8dd5ba9d5bdb/book.epub",
+      "title": "Riceyman Steps"
+    },
+    {
+      "seSlug": "arnold-bennett/the-grand-babylon-hotel",
+      "readmigoId": "65751c70-cb98-43d8-b680-21bc31eff5b1",
+      "epubUrl": "https://cdn.readmigo.app/books/65751c70-cb98-43d8-b680-21bc31eff5b1/book.epub",
+      "title": "The Grand Babylon Hotel"
+    },
+    {
+      "seSlug": "arthur-conan-doyle_his-last-bow",
+      "readmigoId": "bb5d1c05-f8c1-44ab-a564-1dc0816fbd13",
+      "epubUrl": "https://cdn.readmigo.app/books/bb5d1c05-f8c1-44ab-a564-1dc0816fbd13/book.epub",
+      "title": "His Last Bow"
+    },
+    {
+      "seSlug": "arthur-conan-doyle_the-white-company",
+      "readmigoId": "8f9190be-4ed1-4d61-939d-98125c9d83a5",
+      "epubUrl": "https://cdn.readmigo.app/books/8f9190be-4ed1-4d61-939d-98125c9d83a5/book.epub",
+      "title": "The White Company"
+    },
+    {
+      "seSlug": "arthur-conan-doyle/the-maracot-deep",
+      "readmigoId": "939b7fa2-c795-4312-9b7f-56e13078d292",
+      "epubUrl": "https://cdn.readmigo.app/books/939b7fa2-c795-4312-9b7f-56e13078d292/book.epub",
+      "title": "The Maracot Deep"
+    },
+    {
+      "seSlug": "arthur-machen_the-hill-of-dreams",
+      "readmigoId": "f35f6356-edc4-44a5-af34-ebad97b75be2",
+      "epubUrl": "https://cdn.readmigo.app/books/f35f6356-edc4-44a5-af34-ebad97b75be2/book.epub",
+      "title": "The Hill of Dreams"
+    },
+    {
+      "seSlug": "arthur-quiller-couch_the-splendid-spur",
+      "readmigoId": "994a4ea4-1542-49d4-87b1-28229ac6170d",
+      "epubUrl": "https://cdn.readmigo.app/books/994a4ea4-1542-49d4-87b1-28229ac6170d/book.epub",
+      "title": "The Splendid Spur"
+    },
+    {
+      "seSlug": "arthur-w-pinero_the-second-mrs-tanqueray",
+      "readmigoId": "b8c205d0-3090-43c1-b7e5-2aeb070db260",
+      "epubUrl": "https://cdn.readmigo.app/books/b8c205d0-3090-43c1-b7e5-2aeb070db260/book.epub",
+      "title": "The Second Mrs. Tanqueray"
+    },
+    {
+      "seSlug": "august-strindberg/the-inferno/claud-field",
+      "readmigoId": "f74dcc56-3569-411b-97cf-e6312138f6e4",
+      "epubUrl": "https://cdn.readmigo.app/books/f74dcc56-3569-411b-97cf-e6312138f6e4/book.epub",
+      "title": "The Inferno"
+    },
+    {
+      "seSlug": "auguste-comte/a-general-view-of-positivism/j-h-bridges",
+      "readmigoId": "7a5f5870-bace-4c0b-86e2-2f8f3275ea89",
+      "epubUrl": "https://cdn.readmigo.app/books/7a5f5870-bace-4c0b-86e2-2f8f3275ea89/book.epub",
+      "title": "A General View of Positivism"
+    },
+    {
+      "seSlug": "augustine-of-hippo_the-city-of-god_marcus-dods_george-wilson_j-j-smith",
+      "readmigoId": "01ab7e38-6768-411f-a029-a4db5b8ce431",
+      "epubUrl": "https://cdn.readmigo.app/books/01ab7e38-6768-411f-a029-a4db5b8ce431/book.epub",
+      "title": "The City of God"
+    },
+    {
+      "seSlug": "banjo-paterson_an-outback-marriage",
+      "readmigoId": "3f243362-7d93-42fa-ac79-174efc7fd4d3",
+      "epubUrl": "https://cdn.readmigo.app/books/3f243362-7d93-42fa-ac79-174efc7fd4d3/book.epub",
+      "title": "An Outback Marriage"
+    },
+    {
+      "seSlug": "baroness-orczy_i-will-repay",
+      "readmigoId": "a481ca49-98ae-4f8d-abd3-cb3cae590744",
+      "epubUrl": "https://cdn.readmigo.app/books/a481ca49-98ae-4f8d-abd3-cb3cae590744/book.epub",
+      "title": "I Will Repay"
+    },
+    {
+      "seSlug": "baroness-orczy_the-laughing-cavalier",
+      "readmigoId": "c8f46c1c-d391-45ab-893f-3f070276faa7",
+      "epubUrl": "https://cdn.readmigo.app/books/c8f46c1c-d391-45ab-893f-3f070276faa7/book.epub",
+      "title": "The Laughing Cavalier"
+    },
+    {
+      "seSlug": "baroness-orczy_the-league-of-the-scarlet-pimpernel",
+      "readmigoId": "901412b0-3da3-4cb3-aac8-73427de1b6e7",
+      "epubUrl": "https://cdn.readmigo.app/books/901412b0-3da3-4cb3-aac8-73427de1b6e7/book.epub",
+      "title": "The League of the Scarlet Pimpernel"
+    },
+    {
+      "seSlug": "baroness-orczy_the-triumph-of-the-scarlet-pimpernel",
+      "readmigoId": "78c33bcb-4157-4868-b091-ecd087c3ac8e",
+      "epubUrl": "https://cdn.readmigo.app/books/78c33bcb-4157-4868-b091-ecd087c3ac8e/book.epub",
+      "title": "The Triumph of the Scarlet Pimpernel"
+    },
+    {
+      "seSlug": "barry-goldwater/the-conscience-of-a-conservative",
+      "readmigoId": "c8942c95-1165-4463-b9ce-af653c7e3025",
+      "epubUrl": "https://cdn.readmigo.app/books/c8942c95-1165-4463-b9ce-af653c7e3025/book.epub",
+      "title": "The Conscience of a Conservative"
+    },
+    {
+      "seSlug": "ben-jonson_the-alchemist",
+      "readmigoId": "f2b8acfb-fd3a-4c43-ac23-5a5ccf363dd4",
+      "epubUrl": "https://cdn.readmigo.app/books/f2b8acfb-fd3a-4c43-ac23-5a5ccf363dd4/book.epub",
+      "title": "The Alchemist"
+    },
+    {
+      "seSlug": "benito-perez-galdos/trafalgar/clara-bell",
+      "readmigoId": "3a15c25a-5038-4908-b058-1fb5dc93c9ce",
+      "epubUrl": "https://cdn.readmigo.app/books/3a15c25a-5038-4908-b058-1fb5dc93c9ce/book.epub",
+      "title": "Trafalgar"
+    },
+    {
+      "seSlug": "bertrand-russell_the-practice-and-theory-of-bolshevism",
+      "readmigoId": "2249e75a-eca9-49c6-848c-02b730f82dc4",
+      "epubUrl": "https://cdn.readmigo.app/books/2249e75a-eca9-49c6-848c-02b730f82dc4/book.epub",
+      "title": "The Practice and Theory of Bolshevism"
+    },
+    {
+      "seSlug": "black-hawk_the-autobiography-of-ma-ka-tai-me-she-kia-kiak-or-black-hawk",
+      "readmigoId": "45ee41f9-adb2-4595-97f3-58d802af557c",
+      "epubUrl": "https://cdn.readmigo.app/books/45ee41f9-adb2-4595-97f3-58d802af557c/book.epub",
+      "title": "The Autobiography of Ma-Ka-Tai-Me-She-Kia-Kiak, or Black Hawk"
+    },
+    {
+      "seSlug": "booth-tarkington/alice-adams",
+      "readmigoId": "2b6f742d-1a07-4c32-8405-53ed9b6dfa05",
+      "epubUrl": "https://cdn.readmigo.app/books/2b6f742d-1a07-4c32-8405-53ed9b6dfa05/book.epub",
+      "title": "Alice Adams"
+    },
+    {
+      "seSlug": "c-kay-scott/blind-mice",
+      "readmigoId": "2759b988-9570-4b98-bfa2-721ac88d2cdd",
+      "epubUrl": "https://cdn.readmigo.app/books/2759b988-9570-4b98-bfa2-721ac88d2cdd/book.epub",
+      "title": "Blind Mice"
+    },
+    {
+      "seSlug": "c-s-forester_brown-on-resolution",
+      "readmigoId": "ab93b082-1f40-470d-a91a-e9afc64c841d",
+      "epubUrl": "https://cdn.readmigo.app/books/ab93b082-1f40-470d-a91a-e9afc64c841d/book.epub",
+      "title": "Brown on Resolution"
+    },
+    {
+      "seSlug": "c-s-forester_payment-deferred",
+      "readmigoId": "5153fca2-750e-429f-8658-087d02f04504",
+      "epubUrl": "https://cdn.readmigo.app/books/5153fca2-750e-429f-8658-087d02f04504/book.epub",
+      "title": "Payment Deferred"
+    },
+    {
+      "seSlug": "calvin-coolidge/the-autobiography-of-calvin-coolidge",
+      "readmigoId": "228e51c4-88de-4d75-acbd-957992f188ac",
+      "epubUrl": "https://cdn.readmigo.app/books/228e51c4-88de-4d75-acbd-957992f188ac/book.epub",
+      "title": "The Autobiography of Calvin Coolidge"
+    },
+    {
+      "seSlug": "camille-flammarion/omega/j-b-walker",
+      "readmigoId": "57261432-46ec-4302-bc2c-4e1360c12e44",
+      "epubUrl": "https://cdn.readmigo.app/books/57261432-46ec-4302-bc2c-4e1360c12e44/book.epub",
+      "title": "Omega"
+    },
+    {
+      "seSlug": "carey-rockwell_stand-by-for-mars",
+      "readmigoId": "cbd70229-462f-49df-b6d8-4f28f464913b",
+      "epubUrl": "https://cdn.readmigo.app/books/cbd70229-462f-49df-b6d8-4f28f464913b/book.epub",
+      "title": "Stand by for Mars!"
+    },
+    {
+      "seSlug": "carlo-collodi_the-adventures-of-pinocchio",
+      "readmigoId": "d107fe50-3333-4271-98d8-4ec94eb80c02",
+      "epubUrl": "https://cdn.readmigo.app/books/d107fe50-3333-4271-98d8-4ec94eb80c02/book.epub",
+      "title": "The Adventures of Pinocchio"
+    },
+    {
+      "seSlug": "carolyn-keene_the-bungalow-mystery",
+      "readmigoId": "a9658810-5fe5-47dd-bbad-cd7baee5c515",
+      "epubUrl": "https://cdn.readmigo.app/books/a9658810-5fe5-47dd-bbad-cd7baee5c515/book.epub",
+      "title": "The Bungalow Mystery"
+    },
+    {
+      "seSlug": "carolyn-keene_the-secret-of-the-old-clock",
+      "readmigoId": "95058c68-7c9c-4fff-8733-03280687b6a7",
+      "epubUrl": "https://cdn.readmigo.app/books/95058c68-7c9c-4fff-8733-03280687b6a7/book.epub",
+      "title": "The Secret of the Old Clock"
+    },
+    {
+      "seSlug": "carolyn-wells_the-clue",
+      "readmigoId": "eb804c67-1860-4a8d-83c5-0e3806c9f65c",
+      "epubUrl": "https://cdn.readmigo.app/books/eb804c67-1860-4a8d-83c5-0e3806c9f65c/book.epub",
+      "title": "The Clue"
+    },
+    {
+      "seSlug": "charles-a-lindbergh_we",
+      "readmigoId": "25bc5a91-7729-4931-9eed-a0472bca16ad",
+      "epubUrl": "https://cdn.readmigo.app/books/25bc5a91-7729-4931-9eed-a0472bca16ad/book.epub",
+      "title": "“We”"
+    },
+    {
+      "seSlug": "charles-beaumont_short-fiction",
+      "readmigoId": "ec190f83-82a3-4a91-a0c2-804df47759f1",
+      "epubUrl": "https://cdn.readmigo.app/books/ec190f83-82a3-4a91-a0c2-804df47759f1/book.epub",
+      "title": "Short Fiction"
+    },
+    {
+      "seSlug": "charles-dickens_nicholas-nickleby",
+      "readmigoId": "850c5027-4342-45b0-93ba-336c36f88924",
+      "epubUrl": "https://cdn.readmigo.app/books/850c5027-4342-45b0-93ba-336c36f88924/book.epub",
+      "title": "Nicholas Nickleby"
+    },
+    {
+      "seSlug": "charles-dickens_our-mutual-friend",
+      "readmigoId": "0fb9ff1e-3a93-40dd-a027-b0c3397fa06d",
+      "epubUrl": "https://cdn.readmigo.app/books/0fb9ff1e-3a93-40dd-a027-b0c3397fa06d/book.epub",
+      "title": "Our Mutual Friend"
+    },
+    {
+      "seSlug": "charles-w-chesnutt_the-conjure-woman",
+      "readmigoId": "55b99789-2733-4da5-9837-530ee524955b",
+      "epubUrl": "https://cdn.readmigo.app/books/55b99789-2733-4da5-9837-530ee524955b/book.epub",
+      "title": "The Conjure Woman"
+    },
+    {
+      "seSlug": "charlotte-perkins-gilman_women-and-economics",
+      "readmigoId": "d70f0c62-b010-4ff0-b739-07ad8812e481",
+      "epubUrl": "https://cdn.readmigo.app/books/d70f0c62-b010-4ff0-b739-07ad8812e481/book.epub",
+      "title": "Women and Economics"
+    },
+    {
+      "seSlug": "christopher-marlowe_edward-ii",
+      "readmigoId": "43f758fd-97db-4e05-8bbb-09d86128c379",
+      "epubUrl": "https://cdn.readmigo.app/books/43f758fd-97db-4e05-8bbb-09d86128c379/book.epub",
+      "title": "Edward II"
+    },
+    {
+      "seSlug": "christopher-marlowe_the-jew-of-malta",
+      "readmigoId": "494594b8-676e-4c6d-993b-80c277a0dd8d",
+      "epubUrl": "https://cdn.readmigo.app/books/494594b8-676e-4c6d-993b-80c277a0dd8d/book.epub",
+      "title": "The Jew of Malta"
+    },
+    {
+      "seSlug": "christopher-marlowe_the-tragical-history-of-doctor-faustus",
+      "readmigoId": "31ec3457-f3a2-47c5-b7f3-7e0a29b343e7",
+      "epubUrl": "https://cdn.readmigo.app/books/31ec3457-f3a2-47c5-b7f3-7e0a29b343e7/book.epub",
+      "title": "The Tragical History of Doctor Faustus"
+    },
+    {
+      "seSlug": "christopher-morley/parnassus-on-wheels",
+      "readmigoId": "f2105581-c4f7-4559-9c9d-e3ccb5964466",
+      "epubUrl": "https://cdn.readmigo.app/books/f2105581-c4f7-4559-9c9d-e3ccb5964466/book.epub",
+      "title": "Parnassus on Wheels"
+    },
+    {
+      "seSlug": "christopher-morley/the-haunted-bookshop",
+      "readmigoId": "0e84f2cf-9606-4547-a0b4-79f557c70454",
+      "epubUrl": "https://cdn.readmigo.app/books/0e84f2cf-9606-4547-a0b4-79f557c70454/book.epub",
+      "title": "The Haunted Bookshop"
+    },
+    {
+      "seSlug": "cicely-hamilton/william-an-englishman",
+      "readmigoId": "84a39110-1fe3-4f54-ad5a-467786d4a7f3",
+      "epubUrl": "https://cdn.readmigo.app/books/84a39110-1fe3-4f54-ad5a-467786d4a7f3/book.epub",
+      "title": "William—An Englishman"
+    },
+    {
+      "seSlug": "clara-reeve_the-old-english-baron",
+      "readmigoId": "13c9be7c-c19f-4885-91c4-2ffdd4310d02",
+      "epubUrl": "https://cdn.readmigo.app/books/13c9be7c-c19f-4885-91c4-2ffdd4310d02/book.epub",
+      "title": "The Old English Baron"
+    },
+    {
+      "seSlug": "clark-ashton-smith_short-fiction",
+      "readmigoId": "aab8d2be-de7f-4443-9265-13b49c279862",
+      "epubUrl": "https://cdn.readmigo.app/books/aab8d2be-de7f-4443-9265-13b49c279862/book.epub",
+      "title": "Short Fiction"
+    },
+    {
+      "seSlug": "clifford-d-simak_short-fiction",
+      "readmigoId": "0ed3f986-7d17-43a1-bd7a-73b354b943e2",
+      "epubUrl": "https://cdn.readmigo.app/books/0ed3f986-7d17-43a1-bd7a-73b354b943e2/book.epub",
+      "title": "Short Fiction"
+    },
+    {
+      "seSlug": "constance-holme/the-splendid-fairing",
+      "readmigoId": "cd66441a-34d2-4da0-b35c-052c576ced3b",
+      "epubUrl": "https://cdn.readmigo.app/books/cd66441a-34d2-4da0-b35c-052c576ced3b/book.epub",
+      "title": "The Splendid Fairing"
+    },
+    {
+      "seSlug": "d-h-lawrence/lady-chatterleys-lover",
+      "readmigoId": "97ef36b3-9262-4bd7-9d98-29f97897551c",
+      "epubUrl": "https://cdn.readmigo.app/books/97ef36b3-9262-4bd7-9d98-29f97897551c/book.epub",
+      "title": "Lady Chatterley’s Lover"
+    },
+    {
+      "seSlug": "d-h-lawrence/the-lost-girl",
+      "readmigoId": "33cc0844-e667-47b2-9653-f0a164cf6917",
+      "epubUrl": "https://cdn.readmigo.app/books/33cc0844-e667-47b2-9653-f0a164cf6917/book.epub",
+      "title": "The Lost Girl"
+    },
+    {
+      "seSlug": "daniel-defoe/the-life-and-adventures-of-robinson-crusoe",
+      "readmigoId": "3fd57036-e9a3-4002-9365-e8add981734d",
+      "epubUrl": "https://cdn.readmigo.app/books/3fd57036-e9a3-4002-9365-e8add981734d/book.epub",
+      "title": "The Life and Adventures of Robinson Crusoe"
+    },
+    {
+      "seSlug": "daphne-du-maurier_short-fiction",
+      "readmigoId": "e06b9509-97b9-4c1c-99f7-213992944302",
+      "epubUrl": "https://cdn.readmigo.app/books/e06b9509-97b9-4c1c-99f7-213992944302/book.epub",
+      "title": "Short Fiction"
+    },
+    {
+      "seSlug": "dashiell-hammett_the-dain-curse",
+      "readmigoId": "12b01192-b077-49f0-9c91-b4c4f97024e5",
+      "epubUrl": "https://cdn.readmigo.app/books/12b01192-b077-49f0-9c91-b4c4f97024e5/book.epub",
+      "title": "The Dain Curse"
+    },
+    {
+      "seSlug": "dashiell-hammett_the-maltese-falcon",
+      "readmigoId": "8c84979e-7c36-480e-b4b0-1357dbe8b73d",
+      "epubUrl": "https://cdn.readmigo.app/books/8c84979e-7c36-480e-b4b0-1357dbe8b73d/book.epub",
+      "title": "The Maltese Falcon"
+    },
+    {
+      "seSlug": "dashiell-hammett/red-harvest",
+      "readmigoId": "c21d5a5d-2da2-477b-8d72-6e1b3b5d0f1c",
+      "epubUrl": "https://cdn.readmigo.app/books/c21d5a5d-2da2-477b-8d72-6e1b3b5d0f1c/book.epub",
+      "title": "Red Harvest"
+    },
+    {
+      "seSlug": "david-hume_an-enquiry-concerning-human-understanding",
+      "readmigoId": "a0ac530c-3bb4-481d-9693-eba4d3adf1e3",
+      "epubUrl": "https://cdn.readmigo.app/books/a0ac530c-3bb4-481d-9693-eba4d3adf1e3/book.epub",
+      "title": "An Enquiry Concerning Human Understanding"
+    },
+    {
+      "seSlug": "denis-diderot/the-indiscreet-jewels/r-freeman",
+      "readmigoId": "2e091b68-8696-43db-a3d4-c9079183bd26",
+      "epubUrl": "https://cdn.readmigo.app/books/2e091b68-8696-43db-a3d4-c9079183bd26/book.epub",
+      "title": "The Indiscreet Jewels"
+    },
+    {
+      "seSlug": "dorothy-canfield-fisher/the-homemaker",
+      "readmigoId": "538d454b-2615-4fce-b087-4deaba3078cd",
+      "epubUrl": "https://cdn.readmigo.app/books/538d454b-2615-4fce-b087-4deaba3078cd/book.epub",
+      "title": "The Homemaker"
+    },
+    {
+      "seSlug": "dorothy-canfield-fisher/understood-betsy",
+      "readmigoId": "ea428fb3-1aaf-4851-89e0-34487c7029c5",
+      "epubUrl": "https://cdn.readmigo.app/books/ea428fb3-1aaf-4851-89e0-34487c7029c5/book.epub",
+      "title": "Understood Betsy"
+    },
+    {
+      "seSlug": "dorothy-l-sayers_lord-peter-views-the-body",
+      "readmigoId": "a44bd889-5c92-4078-bcbe-99705293c098",
+      "epubUrl": "https://cdn.readmigo.app/books/a44bd889-5c92-4078-bcbe-99705293c098/book.epub",
+      "title": "Lord Peter Views the Body"
+    },
+    {
+      "seSlug": "dorothy-l-sayers_the-unpleasantness-at-the-bellona-club",
+      "readmigoId": "8dfd32b8-4a23-40b4-8ef5-44bd7a751b72",
+      "epubUrl": "https://cdn.readmigo.app/books/8dfd32b8-4a23-40b4-8ef5-44bd7a751b72/book.epub",
+      "title": "The Unpleasantness at the Bellona Club"
+    },
+    {
+      "seSlug": "e-f-knight/the-cruise-of-the-alerte",
+      "readmigoId": "6213e2c4-ccb7-4b6c-ae63-d8b616b36128",
+      "epubUrl": "https://cdn.readmigo.app/books/6213e2c4-ccb7-4b6c-ae63-d8b616b36128/book.epub",
+      "title": "The Cruise of the Alerte"
+    },
+    {
+      "seSlug": "e-m-forster_aspects-of-the-novel",
+      "readmigoId": "650d5d7f-cd24-428a-b98f-c06c8bb7006d",
+      "epubUrl": "https://cdn.readmigo.app/books/650d5d7f-cd24-428a-b98f-c06c8bb7006d/book.epub",
+      "title": "Aspects of the Novel"
+    },
+    {
+      "seSlug": "e-nesbit_hardings-luck",
+      "readmigoId": "e5bff9bb-fca2-4f28-ab84-bbb076b85ab6",
+      "epubUrl": "https://cdn.readmigo.app/books/e5bff9bb-fca2-4f28-ab84-bbb076b85ab6/book.epub",
+      "title": "Harding’s Luck"
+    },
+    {
+      "seSlug": "e-nesbit_the-magic-city",
+      "readmigoId": "93a05551-d435-467c-a9d2-ce6d8e142970",
+      "epubUrl": "https://cdn.readmigo.app/books/93a05551-d435-467c-a9d2-ce6d8e142970/book.epub",
+      "title": "The Magic City"
+    },
+    {
+      "seSlug": "e-nesbit_the-story-of-the-amulet",
+      "readmigoId": "503da814-56ed-45bf-9895-b52ea130e311",
+      "epubUrl": "https://cdn.readmigo.app/books/503da814-56ed-45bf-9895-b52ea130e311/book.epub",
+      "title": "The Story of the Amulet"
+    },
+    {
+      "seSlug": "e-nesbit/the-enchanted-castle",
+      "readmigoId": "5f51b84d-5773-45ff-8cb4-d2e4ac19ad7a",
+      "epubUrl": "https://cdn.readmigo.app/books/5f51b84d-5773-45ff-8cb4-d2e4ac19ad7a/book.epub",
+      "title": "The Enchanted Castle"
+    },
+    {
+      "seSlug": "e-nesbit/the-railway-children",
+      "readmigoId": "b2d9312b-cb08-4ce3-a847-3af54385b600",
+      "epubUrl": "https://cdn.readmigo.app/books/b2d9312b-cb08-4ce3-a847-3af54385b600/book.epub",
+      "title": "The Railway Children"
+    },
+    {
+      "seSlug": "e-phillips-oppenheim/the-great-impersonation",
+      "readmigoId": "547f7db3-49d8-4eea-9c96-abb350ee97f4",
+      "epubUrl": "https://cdn.readmigo.app/books/547f7db3-49d8-4eea-9c96-abb350ee97f4/book.epub",
+      "title": "The Great Impersonation"
+    },
+    {
+      "seSlug": "edgar-allan-poe_short-fiction",
+      "readmigoId": "afb9e610-b060-4ecd-9e6a-bdac302e804a",
+      "epubUrl": "https://cdn.readmigo.app/books/afb9e610-b060-4ecd-9e6a-bdac302e804a/book.epub",
+      "title": "Short Fiction"
+    },
+    {
+      "seSlug": "edgar-rice-burroughs_tarzan-the-untamed",
+      "readmigoId": "7ab9886f-dec0-4894-a9d1-21d4e5a7f1b5",
+      "epubUrl": "https://cdn.readmigo.app/books/7ab9886f-dec0-4894-a9d1-21d4e5a7f1b5/book.epub",
+      "title": "Tarzan the Untamed"
+    },
+    {
+      "seSlug": "edgar-rice-burroughs_the-master-mind-of-mars",
+      "readmigoId": "6287d471-9ce0-4aee-b211-4f2c12f69526",
+      "epubUrl": "https://cdn.readmigo.app/books/6287d471-9ce0-4aee-b211-4f2c12f69526/book.epub",
+      "title": "The Master Mind of Mars"
+    },
+    {
+      "seSlug": "edgar-rice-burroughs/jungle-tales-of-tarzan",
+      "readmigoId": "db65c836-c822-4e36-a92e-84640944026c",
+      "epubUrl": "https://cdn.readmigo.app/books/db65c836-c822-4e36-a92e-84640944026c/book.epub",
+      "title": "Jungle Tales of Tarzan"
+    },
+    {
+      "seSlug": "edgar-rice-burroughs/tarzan-and-the-ant-men",
+      "readmigoId": "5f3529ee-0d82-42d9-bfa3-c8cc7c01f24d",
+      "epubUrl": "https://cdn.readmigo.app/books/5f3529ee-0d82-42d9-bfa3-c8cc7c01f24d/book.epub",
+      "title": "Tarzan and the Ant Men"
+    },
+    {
+      "seSlug": "edgar-saltus_the-monster",
+      "readmigoId": "c3520da0-79e3-4691-96c7-9d092b7b42e6",
+      "epubUrl": "https://cdn.readmigo.app/books/c3520da0-79e3-4691-96c7-9d092b7b42e6/book.epub",
+      "title": "The Monster"
+    },
+    {
+      "seSlug": "edgar-wallace_the-crimson-circle",
+      "readmigoId": "ee4b326b-7c58-4257-b9d6-4aea248e1e5c",
+      "epubUrl": "https://cdn.readmigo.app/books/ee4b326b-7c58-4257-b9d6-4aea248e1e5c/book.epub",
+      "title": "The Crimson Circle"
+    },
+    {
+      "seSlug": "edgar-wallace_the-mind-of-mr-j-g-reeder",
+      "readmigoId": "ba7c8a25-4aa7-48bc-9e2c-51911156e3db",
+      "epubUrl": "https://cdn.readmigo.app/books/ba7c8a25-4aa7-48bc-9e2c-51911156e3db/book.epub",
+      "title": "The Mind of Mr. J. G. Reeder"
+    },
+    {
+      "seSlug": "edgar-wallace/kate-plus-10",
+      "readmigoId": "a76315dc-eb7d-44b0-bf7b-09cbfc2b7646",
+      "epubUrl": "https://cdn.readmigo.app/books/a76315dc-eb7d-44b0-bf7b-09cbfc2b7646/book.epub",
+      "title": "Kate Plus 10"
+    },
+    {
+      "seSlug": "edith-wharton/hudson-river-bracketed",
+      "readmigoId": "e57d5143-41ac-4f87-be85-ddb581a75bab",
+      "epubUrl": "https://cdn.readmigo.app/books/e57d5143-41ac-4f87-be85-ddb581a75bab/book.epub",
+      "title": "Hudson River Bracketed"
+    },
+    {
+      "seSlug": "edmond-de-goncourt_jules-de-goncourt_germinie-lacerteux_john-chestershire",
+      "readmigoId": "f7b53ed3-873e-47d1-a65c-66b9f9319d02",
+      "epubUrl": "https://cdn.readmigo.app/books/f7b53ed3-873e-47d1-a65c-66b9f9319d02/book.epub",
+      "title": "Germinie Lacerteux"
+    },
+    {
+      "seSlug": "edward-bellamy/looking-backward",
+      "readmigoId": "baa93074-c1ad-47f0-80a6-7d540f3dfcc8",
+      "epubUrl": "https://cdn.readmigo.app/books/baa93074-c1ad-47f0-80a6-7d540f3dfcc8/book.epub",
+      "title": "Looking Backward"
+    },
+    {
+      "seSlug": "edward-payson-roe/driven-back-to-eden",
+      "readmigoId": "93586730-904b-40a5-991c-28ce342568ef",
+      "epubUrl": "https://cdn.readmigo.app/books/93586730-904b-40a5-991c-28ce342568ef/book.epub",
+      "title": "Driven Back to Eden"
+    },
+    {
+      "seSlug": "edwin-a-abbott/flatland",
+      "readmigoId": "33364c4e-2828-4f65-a06b-45dd239b97fb",
+      "epubUrl": "https://cdn.readmigo.app/books/33364c4e-2828-4f65-a06b-45dd239b97fb/book.epub",
+      "title": "Flatland"
+    },
+    {
+      "seSlug": "eleanor-h-porter_pollyanna-grows-up",
+      "readmigoId": "133dbc6f-8fc1-4d1d-8871-687fb876c199",
+      "epubUrl": "https://cdn.readmigo.app/books/133dbc6f-8fc1-4d1d-8871-687fb876c199/book.epub",
+      "title": "Pollyanna Grows Up"
+    },
+    {
+      "seSlug": "elizabeth-gaskell_north-and-south",
+      "readmigoId": "5dc6c698-ec30-48ec-8d11-bad212b08a14",
+      "epubUrl": "https://cdn.readmigo.app/books/5dc6c698-ec30-48ec-8d11-bad212b08a14/book.epub",
+      "title": "North and South"
+    },
+    {
+      "seSlug": "ellery-queen/the-roman-hat-mystery",
+      "readmigoId": "5ce57fed-90b3-4a32-8c33-c052c9123549",
+      "epubUrl": "https://cdn.readmigo.app/books/5ce57fed-90b3-4a32-8c33-c052c9123549/book.epub",
+      "title": "The Roman Hat Mystery"
+    },
+    {
+      "seSlug": "erich-maria-remarque/all-quiet-on-the-western-front/a-w-wheen",
+      "readmigoId": "6ac0748b-9163-47e1-b71e-0892f0fd126e",
+      "epubUrl": "https://cdn.readmigo.app/books/6ac0748b-9163-47e1-b71e-0892f0fd126e/book.epub",
+      "title": "All Quiet on the Western Front"
+    },
+    {
+      "seSlug": "ernest-hemingway_a-farewell-to-arms",
+      "readmigoId": "8e2a2863-bd1d-4d02-bb62-ef156a4cf942",
+      "epubUrl": "https://cdn.readmigo.app/books/8e2a2863-bd1d-4d02-bb62-ef156a4cf942/book.epub",
+      "title": "A Farewell to Arms"
+    },
+    {
+      "seSlug": "ernest-shackleton_south",
+      "readmigoId": "d6350354-e46f-4c43-9021-5dbba3be0e9f",
+      "epubUrl": "https://cdn.readmigo.app/books/d6350354-e46f-4c43-9021-5dbba3be0e9f/book.epub",
+      "title": "South!"
+    },
+    {
+      "seSlug": "ernest-thompson-seton_wild-animals-i-have-known",
+      "readmigoId": "d2893e1e-3cb4-4461-b993-ee4dee2d173d",
+      "epubUrl": "https://cdn.readmigo.app/books/d2893e1e-3cb4-4461-b993-ee4dee2d173d/book.epub",
+      "title": "Wild Animals I Have Known"
+    },
+    {
+      "seSlug": "evelyn-underhill_practical-mysticism",
+      "readmigoId": "1d4f0fcd-0cf1-4803-83e1-fbf94a7883a9",
+      "epubUrl": "https://cdn.readmigo.app/books/1d4f0fcd-0cf1-4803-83e1-fbf94a7883a9/book.epub",
+      "title": "Practical Mysticism"
+    },
+    {
+      "seSlug": "f-scott-fitzgerald_short-fiction",
+      "readmigoId": "d14198d5-eba4-410e-a1e8-cf44a11e6a19",
+      "epubUrl": "https://cdn.readmigo.app/books/d14198d5-eba4-410e-a1e8-cf44a11e6a19/book.epub",
+      "title": "Short Fiction"
+    },
+    {
+      "seSlug": "fanny-burney_evelina",
+      "readmigoId": "fb647345-23fb-4e71-88a2-b21d5934b524",
+      "epubUrl": "https://cdn.readmigo.app/books/fb647345-23fb-4e71-88a2-b21d5934b524/book.epub",
+      "title": "Evelina"
+    },
+    {
+      "seSlug": "frances-ellen-watkins-harper_poetry",
+      "readmigoId": "48d0c5d5-d5e8-492d-867b-8839cce91c32",
+      "epubUrl": "https://cdn.readmigo.app/books/48d0c5d5-d5e8-492d-867b-8839cce91c32/book.epub",
+      "title": "Poetry"
+    },
+    {
+      "seSlug": "frances-noyes-hart/the-bellamy-trial",
+      "readmigoId": "8df68325-2754-4327-b8fe-94ff326e23ac",
+      "epubUrl": "https://cdn.readmigo.app/books/8df68325-2754-4327-b8fe-94ff326e23ac/book.epub",
+      "title": "The Bellamy Trial"
+    },
+    {
+      "seSlug": "frank-hamilton-cushing_zuni-folktales",
+      "readmigoId": "24c1c370-d564-42d7-93b3-14cea5e17760",
+      "epubUrl": "https://cdn.readmigo.app/books/24c1c370-d564-42d7-93b3-14cea5e17760/book.epub",
+      "title": "Zuni Folktales"
+    },
+    {
+      "seSlug": "frank-norris_mcteague",
+      "readmigoId": "208d42e1-6a75-4e47-b285-3fc8da424058",
+      "epubUrl": "https://cdn.readmigo.app/books/208d42e1-6a75-4e47-b285-3fc8da424058/book.epub",
+      "title": "McTeague"
+    },
+    {
+      "seSlug": "frank-norris_the-octopus",
+      "readmigoId": "09c09a76-d67c-498f-a8fa-29e63d2ffeec",
+      "epubUrl": "https://cdn.readmigo.app/books/09c09a76-d67c-498f-a8fa-29e63d2ffeec/book.epub",
+      "title": "The Octopus"
+    },
+    {
+      "seSlug": "frank-norris/the-pit",
+      "readmigoId": "5a949b4d-5499-4aa0-af20-543682290278",
+      "epubUrl": "https://cdn.readmigo.app/books/5a949b4d-5499-4aa0-af20-543682290278/book.epub",
+      "title": "The Pit"
+    },
+    {
+      "seSlug": "franklin-w-dixon/the-mystery-of-cabin-island",
+      "readmigoId": "98bb4c81-cd8d-4c4e-a4d5-8d6183822186",
+      "epubUrl": "https://cdn.readmigo.app/books/98bb4c81-cd8d-4c4e-a4d5-8d6183822186/book.epub",
+      "title": "The Mystery of Cabin Island"
+    },
+    {
+      "seSlug": "franklin-w-dixon/the-secret-of-the-caves",
+      "readmigoId": "6da12186-6133-4425-aa10-b7636398a0b6",
+      "epubUrl": "https://cdn.readmigo.app/books/6da12186-6133-4425-aa10-b7636398a0b6/book.epub",
+      "title": "The Secret of the Caves"
+    },
+    {
+      "seSlug": "frederik-pohl_c-m-kornbluth_search-the-sky",
+      "readmigoId": "c4d91c8d-da18-46be-be85-1725d1ebb3f7",
+      "epubUrl": "https://cdn.readmigo.app/books/c4d91c8d-da18-46be-be85-1725d1ebb3f7/book.epub",
+      "title": "Search the Sky"
+    },
+    {
+      "seSlug": "frederik-pohl_short-fiction",
+      "readmigoId": "319d46b0-be26-4e56-ad3f-1de2e99debc1",
+      "epubUrl": "https://cdn.readmigo.app/books/319d46b0-be26-4e56-ad3f-1de2e99debc1/book.epub",
+      "title": "Short Fiction"
+    },
+    {
+      "seSlug": "freeman-wills-crofts_the-ponson-case",
+      "readmigoId": "c7a95642-1405-484b-b99b-9490df4c73d2",
+      "epubUrl": "https://cdn.readmigo.app/books/c7a95642-1405-484b-b99b-9490df4c73d2/book.epub",
+      "title": "The Ponson Case"
+    },
+    {
+      "seSlug": "freeman-wills-crofts/the-box-office-murders",
+      "readmigoId": "f5f8bdab-c65d-4cd1-857f-5e63b8ca84b9",
+      "epubUrl": "https://cdn.readmigo.app/books/f5f8bdab-c65d-4cd1-857f-5e63b8ca84b9/book.epub",
+      "title": "The Box Office Murders"
+    },
+    {
+      "seSlug": "freeman-wills-crofts/the-starvel-hollow-tragedy",
+      "readmigoId": "94ebc2c5-af91-4931-9c74-55e5e51f2e9d",
+      "epubUrl": "https://cdn.readmigo.app/books/94ebc2c5-af91-4931-9c74-55e5e51f2e9d/book.epub",
+      "title": "The Starvel Hollow Tragedy"
+    },
+    {
+      "seSlug": "friedrich-nietzsche_thus-spake-zarathustra_thomas-common",
+      "readmigoId": "046e9d70-0b46-465b-b66f-6e37853ab40d",
+      "epubUrl": "https://cdn.readmigo.app/books/046e9d70-0b46-465b-b66f-6e37853ab40d/book.epub",
+      "title": "Thus Spake Zarathustra"
+    },
+    {
+      "seSlug": "fyodor-dostoevsky/the-house-of-the-dead/constance-garnett",
+      "readmigoId": "0d9649e6-bc7a-49e4-9182-c1e999e90645",
+      "epubUrl": "https://cdn.readmigo.app/books/0d9649e6-bc7a-49e4-9182-c1e999e90645/book.epub",
+      "title": "The House of the Dead"
+    },
+    {
+      "seSlug": "fyodor-sologub_short-fiction_various-translators",
+      "readmigoId": "8af641e2-c548-432e-a533-999572e63c1c",
+      "epubUrl": "https://cdn.readmigo.app/books/8af641e2-c548-432e-a533-999572e63c1c/book.epub",
+      "title": "Short Fiction"
+    },
+    {
+      "seSlug": "fyodor-sologub_the-little-demon_john-cournos_richard-aldington",
+      "readmigoId": "b932011b-7e1c-4227-9e4f-e6af95decd20",
+      "epubUrl": "https://cdn.readmigo.app/books/b932011b-7e1c-4227-9e4f-e6af95decd20/book.epub",
+      "title": "The Little Demon"
+    },
+    {
+      "seSlug": "g-a-henty_beric-the-briton",
+      "readmigoId": "2c803495-9db7-49a8-a298-69f077439b42",
+      "epubUrl": "https://cdn.readmigo.app/books/2c803495-9db7-49a8-a298-69f077439b42/book.epub",
+      "title": "Beric the Briton"
+    },
+    {
+      "seSlug": "g-d-h-cole_the-brooklyn-murders",
+      "readmigoId": "d5f1fa8c-2909-4c18-a141-27642911b2d4",
+      "epubUrl": "https://cdn.readmigo.app/books/d5f1fa8c-2909-4c18-a141-27642911b2d4/book.epub",
+      "title": "The Brooklyn Murders"
+    },
+    {
+      "seSlug": "g-k-chesterton/whats-wrong-with-the-world",
+      "readmigoId": "b52c4dce-d132-4142-a5ea-8ca1d4844421",
+      "epubUrl": "https://cdn.readmigo.app/books/b52c4dce-d132-4142-a5ea-8ca1d4844421/book.epub",
+      "title": "What’s Wrong with the World"
+    },
+    {
+      "seSlug": "george-barr-mccutcheon/brewsters-millions",
+      "readmigoId": "3866011a-23fb-4ef9-8c66-448f6251363f",
+      "epubUrl": "https://cdn.readmigo.app/books/3866011a-23fb-4ef9-8c66-448f6251363f/book.epub",
+      "title": "Brewster’s Millions"
+    },
+    {
+      "seSlug": "george-bernard-shaw_arms-and-the-man",
+      "readmigoId": "b6bf4e2c-f3b5-4192-87b5-51ba611436cf",
+      "epubUrl": "https://cdn.readmigo.app/books/b6bf4e2c-f3b5-4192-87b5-51ba611436cf/book.epub",
+      "title": "Arms and the Man"
+    },
+    {
+      "seSlug": "george-bernard-shaw_fannys-first-play",
+      "readmigoId": "536258be-355d-4ac6-9c6e-b81f9b5ad3bd",
+      "epubUrl": "https://cdn.readmigo.app/books/536258be-355d-4ac6-9c6e-b81f9b5ad3bd/book.epub",
+      "title": "Fanny’s First Play"
+    },
+    {
+      "seSlug": "george-bernard-shaw_getting-married",
+      "readmigoId": "5ef3a05a-b4cf-48ba-82a8-fdac64680b82",
+      "epubUrl": "https://cdn.readmigo.app/books/5ef3a05a-b4cf-48ba-82a8-fdac64680b82/book.epub",
+      "title": "Getting Married"
+    },
+    {
+      "seSlug": "george-bernard-shaw_man-and-superman",
+      "readmigoId": "28bfccdc-cba0-4abc-b352-89c7a8feed15",
+      "epubUrl": "https://cdn.readmigo.app/books/28bfccdc-cba0-4abc-b352-89c7a8feed15/book.epub",
+      "title": "Man and Superman"
+    },
+    {
+      "seSlug": "george-bernard-shaw_misalliance",
+      "readmigoId": "a8678a10-a591-42f8-b2e5-c8c97e3e599f",
+      "epubUrl": "https://cdn.readmigo.app/books/a8678a10-a591-42f8-b2e5-c8c97e3e599f/book.epub",
+      "title": "Misalliance"
+    },
+    {
+      "seSlug": "george-bernard-shaw_pygmalion",
+      "readmigoId": "33605946-8009-47a4-b19c-28ab45db443f",
+      "epubUrl": "https://cdn.readmigo.app/books/33605946-8009-47a4-b19c-28ab45db443f/book.epub",
+      "title": "Pygmalion"
+    },
+    {
+      "seSlug": "george-bernard-shaw_saint-joan",
+      "readmigoId": "0f8a6144-01d9-42c5-81c1-ffa062c03bc6",
+      "epubUrl": "https://cdn.readmigo.app/books/0f8a6144-01d9-42c5-81c1-ffa062c03bc6/book.epub",
+      "title": "Saint Joan"
+    },
+    {
+      "seSlug": "george-bernard-shaw_short-plays",
+      "readmigoId": "35ce3b5f-886b-41cd-a11b-42edd0031986",
+      "epubUrl": "https://cdn.readmigo.app/books/35ce3b5f-886b-41cd-a11b-42edd0031986/book.epub",
+      "title": "Short Plays"
+    },
+    {
+      "seSlug": "george-bernard-shaw_the-apple-cart",
+      "readmigoId": "3b60d40e-e0b1-4241-b596-8fe99fbb2205",
+      "epubUrl": "https://cdn.readmigo.app/books/3b60d40e-e0b1-4241-b596-8fe99fbb2205/book.epub",
+      "title": "The Apple Cart"
+    },
+    {
+      "seSlug": "george-bernard-shaw_the-doctors-dilemma",
+      "readmigoId": "f39f72a1-37d1-4153-b72a-702425e6b180",
+      "epubUrl": "https://cdn.readmigo.app/books/f39f72a1-37d1-4153-b72a-702425e6b180/book.epub",
+      "title": "The Doctor’s Dilemma"
+    },
+    {
+      "seSlug": "george-bernard-shaw_the-man-of-destiny",
+      "readmigoId": "5848c48e-f4af-4534-be64-feb08b3dc256",
+      "epubUrl": "https://cdn.readmigo.app/books/5848c48e-f4af-4534-be64-feb08b3dc256/book.epub",
+      "title": "The Man of Destiny"
+    },
+    {
+      "seSlug": "george-dilnot/the-lazy-detective",
+      "readmigoId": "41e31ae8-c348-4cf5-90f9-01dfe1019d63",
+      "epubUrl": "https://cdn.readmigo.app/books/41e31ae8-c348-4cf5-90f9-01dfe1019d63/book.epub",
+      "title": "The Lazy Detective"
+    },
+    {
+      "seSlug": "george-eliot/silas-marner",
+      "readmigoId": "74730410-7c2e-4abf-8cdf-d55d84e5aca2",
+      "epubUrl": "https://cdn.readmigo.app/books/74730410-7c2e-4abf-8cdf-d55d84e5aca2/book.epub",
+      "title": "Silas Marner"
+    },
+    {
+      "seSlug": "george-macdonald_lilith",
+      "readmigoId": "5e765645-5d5b-4434-b90d-283ad0b19b47",
+      "epubUrl": "https://cdn.readmigo.app/books/5e765645-5d5b-4434-b90d-283ad0b19b47/book.epub",
+      "title": "Lilith"
+    },
+    {
+      "seSlug": "george-macdonald_poetry",
+      "readmigoId": "69fa1db0-8366-4de0-9019-66f17a667be6",
+      "epubUrl": "https://cdn.readmigo.app/books/69fa1db0-8366-4de0-9019-66f17a667be6/book.epub",
+      "title": "Poetry"
+    },
+    {
+      "seSlug": "george-sand_the-devils-pool_jane-minot-sedgwick_ellery-sedgwick",
+      "readmigoId": "e4960e59-9579-4c2c-b688-ed0cac779a2a",
+      "epubUrl": "https://cdn.readmigo.app/books/e4960e59-9579-4c2c-b688-ed0cac779a2a/book.epub",
+      "title": "The Devil’s Pool"
+    },
+    {
+      "seSlug": "george-william-russell/the-national-being",
+      "readmigoId": "9f9c5176-da91-4e83-9eed-f992f057cc13",
+      "epubUrl": "https://cdn.readmigo.app/books/9f9c5176-da91-4e83-9eed-f992f057cc13/book.epub",
+      "title": "The National Being"
+    },
+    {
+      "seSlug": "georgette-heyer/beauvallet",
+      "readmigoId": "1dff56fd-639a-41ed-b0b5-fcb04cbf4612",
+      "epubUrl": "https://cdn.readmigo.app/books/1dff56fd-639a-41ed-b0b5-fcb04cbf4612/book.epub",
+      "title": "Beauvallet"
+    },
+    {
+      "seSlug": "georgette-heyer/simon-the-coldheart",
+      "readmigoId": "7758c274-fe78-40ae-afde-370a345b28b3",
+      "epubUrl": "https://cdn.readmigo.app/books/7758c274-fe78-40ae-afde-370a345b28b3/book.epub",
+      "title": "Simon the Coldheart"
+    },
+    {
+      "seSlug": "georgette-heyer/the-great-roxhythe",
+      "readmigoId": "80f2d761-916d-45d3-9116-196a2f6ab589",
+      "epubUrl": "https://cdn.readmigo.app/books/80f2d761-916d-45d3-9116-196a2f6ab589/book.epub",
+      "title": "The Great Roxhythe"
+    },
+    {
+      "seSlug": "georgia-douglas-johnson_poetry",
+      "readmigoId": "b130c0c9-1080-4c92-9f7e-da84b349bd3b",
+      "epubUrl": "https://cdn.readmigo.app/books/b130c0c9-1080-4c92-9f7e-da84b349bd3b/book.epub",
+      "title": "Poetry"
+    },
+    {
+      "seSlug": "geronimo/geronimos-story-of-his-life",
+      "readmigoId": "bc8a1e55-4a2c-4704-8ff4-d1b96dfd0684",
+      "epubUrl": "https://cdn.readmigo.app/books/bc8a1e55-4a2c-4704-8ff4-d1b96dfd0684/book.epub",
+      "title": "Geronimo’s Story of His Life"
+    },
+    {
+      "seSlug": "giovanni-boccaccio_the-decameron_john-payne",
+      "readmigoId": "230dc1fb-5b66-4210-9899-b218600c492a",
+      "epubUrl": "https://cdn.readmigo.app/books/230dc1fb-5b66-4210-9899-b218600c492a/book.epub",
+      "title": "The Decameron"
+    },
+    {
+      "seSlug": "godfrey-r-benson/tracks-in-the-snow",
+      "readmigoId": "5023192c-bbf2-4f5b-935b-2e2feb447d1b",
+      "epubUrl": "https://cdn.readmigo.app/books/5023192c-bbf2-4f5b-935b-2e2feb447d1b/book.epub",
+      "title": "Tracks in the Snow"
+    },
+    {
+      "seSlug": "graham-greene/the-man-within",
+      "readmigoId": "eb74386e-ffe8-4c97-9410-d2c2fb6d5e17",
+      "epubUrl": "https://cdn.readmigo.app/books/eb74386e-ffe8-4c97-9410-d2c2fb6d5e17/book.epub",
+      "title": "The Man Within"
+    },
+    {
+      "seSlug": "grazia-deledda/after-the-divorce/maria-hornor-lansdale",
+      "readmigoId": "e565f85b-cd68-483f-9638-cf86f8862b97",
+      "epubUrl": "https://cdn.readmigo.app/books/e565f85b-cd68-483f-9638-cf86f8862b97/book.epub",
+      "title": "After the Divorce"
+    },
+    {
+      "seSlug": "gustave-flaubert_short-fiction_m-walter-dunne",
+      "readmigoId": "232f5f7d-6ad0-4017-9e77-459143881b10",
+      "epubUrl": "https://cdn.readmigo.app/books/232f5f7d-6ad0-4017-9e77-459143881b10/book.epub",
+      "title": "Short Fiction"
+    },
+    {
+      "seSlug": "guy-boothby_a-bid-for-fortune",
+      "readmigoId": "1257953d-c6ad-4bc6-b0a1-dcc48cb24e00",
+      "epubUrl": "https://cdn.readmigo.app/books/1257953d-c6ad-4bc6-b0a1-dcc48cb24e00/book.epub",
+      "title": "A Bid for Fortune"
+    },
+    {
+      "seSlug": "guy-de-maupassant_pierre-and-jean_clara-bell",
+      "readmigoId": "11d10186-876e-4fe9-824a-3305db22be19",
+      "epubUrl": "https://cdn.readmigo.app/books/11d10186-876e-4fe9-824a-3305db22be19/book.epub",
+      "title": "Pierre and Jean"
+    },
+    {
+      "seSlug": "h-beam-piper_uller-uprising",
+      "readmigoId": "e1bc0182-92d6-4ff9-9168-9795b3fa4207",
+      "epubUrl": "https://cdn.readmigo.app/books/e1bc0182-92d6-4ff9-9168-9795b3fa4207/book.epub",
+      "title": "Uller Uprising"
+    },
+    {
+      "seSlug": "h-g-wells_the-world-set-free",
+      "readmigoId": "6eea372c-cef9-4599-851c-600c815f32d5",
+      "epubUrl": "https://cdn.readmigo.app/books/6eea372c-cef9-4599-851c-600c815f32d5/book.epub",
+      "title": "The World Set Free"
+    },
+    {
+      "seSlug": "h-g-wells/mr-britling-sees-it-through",
+      "readmigoId": "a624a0fc-4180-4286-8588-49d8c29e9917",
+      "epubUrl": "https://cdn.readmigo.app/books/a624a0fc-4180-4286-8588-49d8c29e9917/book.epub",
+      "title": "Mr. Britling Sees It Through"
+    },
+    {
+      "seSlug": "h-g-wells/the-history-of-mr-polly",
+      "readmigoId": "d446284a-6dc1-4244-9b46-b47f37325609",
+      "epubUrl": "https://cdn.readmigo.app/books/d446284a-6dc1-4244-9b46-b47f37325609/book.epub",
+      "title": "The History of Mr. Polly"
+    },
+    {
+      "seSlug": "h-g-wells/the-wonderful-visit",
+      "readmigoId": "df2a37c2-af19-4057-b89b-a8cf1040d8e0",
+      "epubUrl": "https://cdn.readmigo.app/books/df2a37c2-af19-4057-b89b-a8cf1040d8e0/book.epub",
+      "title": "The Wonderful Visit"
+    },
+    {
+      "seSlug": "h-rider-haggard/maiwas-revenge",
+      "readmigoId": "ab603b15-574d-423e-b824-2bf6cf652ef8",
+      "epubUrl": "https://cdn.readmigo.app/books/ab603b15-574d-423e-b824-2bf6cf652ef8/book.epub",
+      "title": "Maiwa’s Revenge"
+    },
+    {
+      "seSlug": "harry-harrison_the-stainless-steel-rat",
+      "readmigoId": "e07d1cf9-08ac-44fc-b44a-1f7f076a2c46",
+      "epubUrl": "https://cdn.readmigo.app/books/e07d1cf9-08ac-44fc-b44a-1f7f076a2c46/book.epub",
+      "title": "The Stainless Steel Rat"
+    },
+    {
+      "seSlug": "helen-herron-taft/recollections-of-full-years",
+      "readmigoId": "4b210deb-5562-4b67-925a-55a182fec3be",
+      "epubUrl": "https://cdn.readmigo.app/books/4b210deb-5562-4b67-925a-55a182fec3be/book.epub",
+      "title": "Recollections of Full Years"
+    },
+    {
+      "seSlug": "henrik-ibsen_a-dolls-house_r-farquharson-sharp",
+      "readmigoId": "7a842bf0-e7a3-44b8-9885-2dddc8b3214a",
+      "epubUrl": "https://cdn.readmigo.app/books/7a842bf0-e7a3-44b8-9885-2dddc8b3214a/book.epub",
+      "title": "A Doll’s House"
+    },
+    {
+      "seSlug": "henrik-ibsen_ghosts_william-archer",
+      "readmigoId": "9f54a952-9b83-4ac3-85ff-d74dcdf48d88",
+      "epubUrl": "https://cdn.readmigo.app/books/9f54a952-9b83-4ac3-85ff-d74dcdf48d88/book.epub",
+      "title": "Ghosts"
+    },
+    {
+      "seSlug": "henry-handel-richardson_the-getting-of-wisdom",
+      "readmigoId": "4dfe5a80-72a5-4caf-a711-eec2afbace93",
+      "epubUrl": "https://cdn.readmigo.app/books/4dfe5a80-72a5-4caf-a711-eec2afbace93/book.epub",
+      "title": "The Getting of Wisdom"
+    },
+    {
+      "seSlug": "henry-james_the-golden-bowl",
+      "readmigoId": "ca2461e8-bb9a-46fe-bb1b-e2b715f98837",
+      "epubUrl": "https://cdn.readmigo.app/books/ca2461e8-bb9a-46fe-bb1b-e2b715f98837/book.epub",
+      "title": "The Golden Bowl"
+    },
+    {
+      "seSlug": "henry-james_washington-square",
+      "readmigoId": "3972b19d-6112-4055-aad3-f14a33b502e9",
+      "epubUrl": "https://cdn.readmigo.app/books/3972b19d-6112-4055-aad3-f14a33b502e9/book.epub",
+      "title": "Washington Square"
+    },
+    {
+      "seSlug": "henry-kuttner_short-fiction",
+      "readmigoId": "c951d0da-40c6-49c7-adc5-aca71645cc6a",
+      "epubUrl": "https://cdn.readmigo.app/books/c951d0da-40c6-49c7-adc5-aca71645cc6a/book.epub",
+      "title": "Short Fiction"
+    },
+    {
+      "seSlug": "henry-lawson_while-the-billy-boils",
+      "readmigoId": "b98da9c1-5111-4478-8d61-029259cd1462",
+      "epubUrl": "https://cdn.readmigo.app/books/b98da9c1-5111-4478-8d61-029259cd1462/book.epub",
+      "title": "While the Billy Boils"
+    },
+    {
+      "seSlug": "henry-van-dyke-jr_poetry",
+      "readmigoId": "72b4199b-3eb2-4897-981f-f28eb8bd98f3",
+      "epubUrl": "https://cdn.readmigo.app/books/72b4199b-3eb2-4897-981f-f28eb8bd98f3/book.epub",
+      "title": "Poetry"
+    },
+    {
+      "seSlug": "hermann-hesse/demian/n-h-priday",
+      "readmigoId": "78c4f521-4e59-479f-9419-7fdc4dc67b6c",
+      "epubUrl": "https://cdn.readmigo.app/books/78c4f521-4e59-479f-9419-7fdc4dc67b6c/book.epub",
+      "title": "Demian"
+    },
+    {
+      "seSlug": "honore-de-balzac_a-daughter-of-eve_ellen-marriage",
+      "readmigoId": "479e9cc5-766d-4c83-b95e-d2d8911c7a58",
+      "epubUrl": "https://cdn.readmigo.app/books/479e9cc5-766d-4c83-b95e-d2d8911c7a58/book.epub",
+      "title": "A Daughter of Eve"
+    },
+    {
+      "seSlug": "honore-de-balzac_a-marriage-settlement_clara-bell",
+      "readmigoId": "a39fae6b-d1a4-4ca3-be42-02947b3b0a59",
+      "epubUrl": "https://cdn.readmigo.app/books/a39fae6b-d1a4-4ca3-be42-02947b3b0a59/book.epub",
+      "title": "A Marriage Settlement"
+    },
+    {
+      "seSlug": "honore-de-balzac_albert-savarus_ellen-marriage",
+      "readmigoId": "a73af619-d9ab-4fc9-8d73-b0073766714f",
+      "epubUrl": "https://cdn.readmigo.app/books/a73af619-d9ab-4fc9-8d73-b0073766714f/book.epub",
+      "title": "Albert Savarus"
+    },
+    {
+      "seSlug": "honore-de-balzac_shorts-from-scenes-from-private-life_various-translators",
+      "readmigoId": "8e3f0589-43ae-48ce-a054-58faaf0771d3",
+      "epubUrl": "https://cdn.readmigo.app/books/8e3f0589-43ae-48ce-a054-58faaf0771d3/book.epub",
+      "title": "Shorts from Scenes from Private Life"
+    },
+    {
+      "seSlug": "honore-de-balzac_the-jealousies-of-a-country-town_ellen-marriage",
+      "readmigoId": "03f88c4b-907c-4676-9cdf-e73263c1bb50",
+      "epubUrl": "https://cdn.readmigo.app/books/03f88c4b-907c-4676-9cdf-e73263c1bb50/book.epub",
+      "title": "The Jealousies of a Country Town"
+    },
+    {
+      "seSlug": "honore-de-balzac_the-lily-of-the-valley_james-waring",
+      "readmigoId": "f749ce59-599f-4864-a7d3-4183211c5c69",
+      "epubUrl": "https://cdn.readmigo.app/books/f749ce59-599f-4864-a7d3-4183211c5c69/book.epub",
+      "title": "The Lily of the Valley"
+    },
+    {
+      "seSlug": "honore-de-balzac/a-woman-of-thirty/ellen-marriage",
+      "readmigoId": "6de4a609-b9be-4fa8-af7f-27f0b2ff6218",
+      "epubUrl": "https://cdn.readmigo.app/books/6de4a609-b9be-4fa8-af7f-27f0b2ff6218/book.epub",
+      "title": "A Woman of Thirty"
+    },
+    {
+      "seSlug": "hugh-lofting_the-story-of-doctor-dolittle",
+      "readmigoId": "1a87ffd3-ec69-402b-844e-cd78200df2a1",
+      "epubUrl": "https://cdn.readmigo.app/books/1a87ffd3-ec69-402b-844e-cd78200df2a1/book.epub",
+      "title": "The Story of Doctor Dolittle"
+    },
+    {
+      "seSlug": "isaac-asimov_short-science-fiction",
+      "readmigoId": "8e425289-8b23-4847-9b5b-2f7b72c71fab",
+      "epubUrl": "https://cdn.readmigo.app/books/8e425289-8b23-4847-9b5b-2f7b72c71fab/book.epub",
+      "title": "Short Science Fiction"
+    },
+    {
+      "seSlug": "israel-zangwill_the-big-bow-mystery",
+      "readmigoId": "09d3a39a-95d7-4577-9e6d-fcf63c8e5bcd",
+      "epubUrl": "https://cdn.readmigo.app/books/09d3a39a-95d7-4577-9e6d-fcf63c8e5bcd/book.epub",
+      "title": "The Big Bow Mystery"
+    },
+    {
+      "seSlug": "ivan-bunin_short-fiction_various-translators",
+      "readmigoId": "8af05fed-58a6-4980-bbe1-c87a0a873339",
+      "epubUrl": "https://cdn.readmigo.app/books/8af05fed-58a6-4980-bbe1-c87a0a873339/book.epub",
+      "title": "Short Fiction"
+    },
+    {
+      "seSlug": "ivan-turgenev_a-house-of-gentlefolk_constance-garnett",
+      "readmigoId": "19cd6046-f43c-4872-91f1-29bedb189fd7",
+      "epubUrl": "https://cdn.readmigo.app/books/19cd6046-f43c-4872-91f1-29bedb189fd7/book.epub",
+      "title": "A House of Gentlefolk"
+    },
+    {
+      "seSlug": "j-b-priestley_the-good-companions",
+      "readmigoId": "ccb435f2-ac9a-465b-b451-3e706da56870",
+      "epubUrl": "https://cdn.readmigo.app/books/ccb435f2-ac9a-465b-b451-3e706da56870/book.epub",
+      "title": "The Good Companions"
+    },
+    {
+      "seSlug": "j-j-connington_murder-in-the-maze",
+      "readmigoId": "7f5782d3-b8b0-46bc-8a40-9f79c8d3f1f5",
+      "epubUrl": "https://cdn.readmigo.app/books/7f5782d3-b8b0-46bc-8a40-9f79c8d3f1f5/book.epub",
+      "title": "Murder in the Maze"
+    },
+    {
+      "seSlug": "j-j-connington/mystery-at-lynden-sands",
+      "readmigoId": "b49bc977-39d9-4ac6-8c08-54b1a54183a4",
+      "epubUrl": "https://cdn.readmigo.app/books/b49bc977-39d9-4ac6-8c08-54b1a54183a4/book.epub",
+      "title": "Mystery at Lynden Sands"
+    },
+    {
+      "seSlug": "j-j-connington/nordenholts-million",
+      "readmigoId": "13288f85-9a18-4578-9f7b-b57aa0757418",
+      "epubUrl": "https://cdn.readmigo.app/books/13288f85-9a18-4578-9f7b-b57aa0757418/book.epub",
+      "title": "Nordenholt’s Million"
+    },
+    {
+      "seSlug": "j-k-huysmans_la-bas_keene-wallace",
+      "readmigoId": "0d6edd3e-9263-4344-94c3-649261195e1a",
+      "epubUrl": "https://cdn.readmigo.app/books/0d6edd3e-9263-4344-94c3-649261195e1a/book.epub",
+      "title": "Là-Bas"
+    },
+    {
+      "seSlug": "j-m-barrie/peter-and-wendy",
+      "readmigoId": "a463961c-cc22-4720-8d8b-05cb03f155de",
+      "epubUrl": "https://cdn.readmigo.app/books/a463961c-cc22-4720-8d8b-05cb03f155de/book.epub",
+      "title": "Peter and Wendy"
+    },
+    {
+      "seSlug": "j-m-barrie/the-little-white-bird",
+      "readmigoId": "7cd962e7-464e-4cd4-a66a-4fc195ce8374",
+      "epubUrl": "https://cdn.readmigo.app/books/7cd962e7-464e-4cd4-a66a-4fc195ce8374/book.epub",
+      "title": "The Little White Bird"
+    },
+    {
+      "seSlug": "j-s-fletcher_the-charing-cross-mystery",
+      "readmigoId": "ee868ebc-0387-4640-b6b0-cc70f3afd830",
+      "epubUrl": "https://cdn.readmigo.app/books/ee868ebc-0387-4640-b6b0-cc70f3afd830/book.epub",
+      "title": "The Charing Cross Mystery"
+    },
+    {
+      "seSlug": "j-s-fletcher_the-middle-temple-murder",
+      "readmigoId": "9d28cca0-045d-4314-bd75-b4020118ff04",
+      "epubUrl": "https://cdn.readmigo.app/books/9d28cca0-045d-4314-bd75-b4020118ff04/book.epub",
+      "title": "The Middle Temple Murder"
+    },
+    {
+      "seSlug": "j-s-fletcher/the-middle-of-things",
+      "readmigoId": "fd5f7f9e-7bdf-4158-a4dd-64235d20ac12",
+      "epubUrl": "https://cdn.readmigo.app/books/fd5f7f9e-7bdf-4158-a4dd-64235d20ac12/book.epub",
+      "title": "The Middle of Things"
+    },
+    {
+      "seSlug": "j-s-fletcher/the-paradise-mystery",
+      "readmigoId": "63b2345c-93f7-42c3-9801-6f34c343d19e",
+      "epubUrl": "https://cdn.readmigo.app/books/63b2345c-93f7-42c3-9801-6f34c343d19e/book.epub",
+      "title": "The Paradise Mystery"
+    },
+    {
+      "seSlug": "j-s-fletcher/when-charles-the-first-was-king",
+      "readmigoId": "6e2175d1-87a0-4df5-b559-85c1adbd99ab",
+      "epubUrl": "https://cdn.readmigo.app/books/6e2175d1-87a0-4df5-b559-85c1adbd99ab/book.epub",
+      "title": "When Charles the First Was King"
+    },
+    {
+      "seSlug": "j-sheridan-le-fanu_short-fiction",
+      "readmigoId": "b39ee404-a2db-42ca-8ec4-4f2c20cfaa79",
+      "epubUrl": "https://cdn.readmigo.app/books/b39ee404-a2db-42ca-8ec4-4f2c20cfaa79/book.epub",
+      "title": "Short Fiction"
+    },
+    {
+      "seSlug": "j-sheridan-le-fanu_the-room-in-the-dragon-volant",
+      "readmigoId": "f84d294a-f35b-4495-9a88-fe2536e3be77",
+      "epubUrl": "https://cdn.readmigo.app/books/f84d294a-f35b-4495-9a88-fe2536e3be77/book.epub",
+      "title": "The Room in the Dragon Volant"
+    },
+    {
+      "seSlug": "j-storer-clouston/simon",
+      "readmigoId": "91ce00fd-a6a7-4ece-988e-6e13d83e6239",
+      "epubUrl": "https://cdn.readmigo.app/books/91ce00fd-a6a7-4ece-988e-6e13d83e6239/book.epub",
+      "title": "Simon"
+    },
+    {
+      "seSlug": "j-storer-clouston/the-spy-in-black",
+      "readmigoId": "21609008-905f-45d5-ad46-31890362c503",
+      "epubUrl": "https://cdn.readmigo.app/books/21609008-905f-45d5-ad46-31890362c503/book.epub",
+      "title": "The Spy in Black"
+    },
+    {
+      "seSlug": "jack-london_the-son-of-the-wolf",
+      "readmigoId": "d2020761-c710-438f-8538-c9c39b7d01c1",
+      "epubUrl": "https://cdn.readmigo.app/books/d2020761-c710-438f-8538-c9c39b7d01c1/book.epub",
+      "title": "The Son of the Wolf"
+    },
+    {
+      "seSlug": "james-weldon-johnson_poetry",
+      "readmigoId": "537dd9b0-1bd7-4231-a540-7dd546bc0f9d",
+      "epubUrl": "https://cdn.readmigo.app/books/537dd9b0-1bd7-4231-a540-7dd546bc0f9d/book.epub",
+      "title": "Poetry"
+    },
+    {
+      "seSlug": "jane-addams_twenty-years-at-hull-house",
+      "readmigoId": "395a2199-c4c0-4284-87d5-4d90fcaa3eeb",
+      "epubUrl": "https://cdn.readmigo.app/books/395a2199-c4c0-4284-87d5-4d90fcaa3eeb/book.epub",
+      "title": "Twenty Years at Hull House"
+    },
+    {
+      "seSlug": "jane-austen_mansfield-park",
+      "readmigoId": "5145d94a-eec4-4c54-a8c4-af922de35303",
+      "epubUrl": "https://cdn.readmigo.app/books/5145d94a-eec4-4c54-a8c4-af922de35303/book.epub",
+      "title": "Mansfield Park"
+    },
+    {
+      "seSlug": "jean-jacques-rousseau_the-social-contract_g-d-h-cole",
+      "readmigoId": "bca98989-1030-4da8-91ce-2bf2405a0439",
+      "epubUrl": "https://cdn.readmigo.app/books/bca98989-1030-4da8-91ce-2bf2405a0439/book.epub",
+      "title": "The Social Contract"
+    },
+    {
+      "seSlug": "jean-toomer_cane",
+      "readmigoId": "af3ccdc8-48bb-4fd7-b92e-56545430cae0",
+      "epubUrl": "https://cdn.readmigo.app/books/af3ccdc8-48bb-4fd7-b92e-56545430cae0/book.epub",
+      "title": "Cane"
+    },
+    {
+      "seSlug": "johanna-spyri/cornelli/elisabeth-p-stork",
+      "readmigoId": "29cd50d5-19aa-450d-9f29-2b5ba59b8c9f",
+      "epubUrl": "https://cdn.readmigo.app/books/29cd50d5-19aa-450d-9f29-2b5ba59b8c9f/book.epub",
+      "title": "Cornelli"
+    },
+    {
+      "seSlug": "john-buchan/midwinter",
+      "readmigoId": "d5a95575-8da2-4e51-b9f6-c7355f0e6a32",
+      "epubUrl": "https://cdn.readmigo.app/books/d5a95575-8da2-4e51-b9f6-c7355f0e6a32/book.epub",
+      "title": "Midwinter"
+    },
+    {
+      "seSlug": "john-cowper-powys/wolf-solent",
+      "readmigoId": "63c7c373-487b-4742-bccc-0828275adc48",
+      "epubUrl": "https://cdn.readmigo.app/books/63c7c373-487b-4742-bccc-0828275adc48/book.epub",
+      "title": "Wolf Solent"
+    },
+    {
+      "seSlug": "john-dos-passos/manhattan-transfer",
+      "readmigoId": "6dbe77a8-729a-4fa9-aab1-af900b971412",
+      "epubUrl": "https://cdn.readmigo.app/books/6dbe77a8-729a-4fa9-aab1-af900b971412/book.epub",
+      "title": "Manhattan Transfer"
+    },
+    {
+      "seSlug": "john-henry-newman_verses-on-various-occasions",
+      "readmigoId": "878ed3b9-f35f-4c47-ab0d-cc14b40c4fbd",
+      "epubUrl": "https://cdn.readmigo.app/books/878ed3b9-f35f-4c47-ab0d-cc14b40c4fbd/book.epub",
+      "title": "Verses on Various Occasions"
+    },
+    {
+      "seSlug": "john-meade-falkner/moonfleet",
+      "readmigoId": "99c97dc9-37cf-4030-8b27-86999b1e2b19",
+      "epubUrl": "https://cdn.readmigo.app/books/99c97dc9-37cf-4030-8b27-86999b1e2b19/book.epub",
+      "title": "Moonfleet"
+    },
+    {
+      "seSlug": "john-meade-falkner/the-nebuly-coat",
+      "readmigoId": "99df35fa-e4b5-47ae-8ed9-35d5ddc820c7",
+      "epubUrl": "https://cdn.readmigo.app/books/99df35fa-e4b5-47ae-8ed9-35d5ddc820c7/book.epub",
+      "title": "The Nebuly Coat"
+    },
+    {
+      "seSlug": "john-milton_paradise-lost",
+      "readmigoId": "657ce22f-02fa-41ae-a685-bb54e096d2d7",
+      "epubUrl": "https://cdn.readmigo.app/books/657ce22f-02fa-41ae-a685-bb54e096d2d7/book.epub",
+      "title": "Paradise Lost"
+    },
+    {
+      "seSlug": "john-reed_ten-days-that-shook-the-world",
+      "readmigoId": "efcaa8f5-0d29-414c-a25d-e8e0f2648cab",
+      "epubUrl": "https://cdn.readmigo.app/books/efcaa8f5-0d29-414c-a25d-e8e0f2648cab/book.epub",
+      "title": "Ten Days That Shook the World"
+    },
+    {
+      "seSlug": "john-rhode/the-murders-in-praed-street",
+      "readmigoId": "fa5f27ca-e35f-4bbe-b969-9c6149958962",
+      "epubUrl": "https://cdn.readmigo.app/books/fa5f27ca-e35f-4bbe-b969-9c6149958962/book.epub",
+      "title": "The Murders in Praed Street"
+    },
+    {
+      "seSlug": "john-steinbeck/cup-of-gold",
+      "readmigoId": "47a4007d-f955-426d-a4d2-1ea43587341a",
+      "epubUrl": "https://cdn.readmigo.app/books/47a4007d-f955-426d-a4d2-1ea43587341a/book.epub",
+      "title": "Cup of Gold"
+    },
+    {
+      "seSlug": "john-webster_the-duchess-of-malfi",
+      "readmigoId": "49908244-81ef-4229-a8fa-ac69f8ad0f43",
+      "epubUrl": "https://cdn.readmigo.app/books/49908244-81ef-4229-a8fa-ac69f8ad0f43/book.epub",
+      "title": "The Duchess of Malfi"
+    },
+    {
+      "seSlug": "joseph-conrad_almayers-folly",
+      "readmigoId": "543e3ee5-15d1-4102-a8ec-966e836715b1",
+      "epubUrl": "https://cdn.readmigo.app/books/543e3ee5-15d1-4102-a8ec-966e836715b1/book.epub",
+      "title": "Almayer’s Folly"
+    },
+    {
+      "seSlug": "joseph-conrad_ford-madox-ford_romance",
+      "readmigoId": "166bbe10-5ef8-4af9-801e-a5f2fe254a12",
+      "epubUrl": "https://cdn.readmigo.app/books/166bbe10-5ef8-4af9-801e-a5f2fe254a12/book.epub",
+      "title": "Romance"
+    },
+    {
+      "seSlug": "joseph-conrad_ford-madox-ford_the-inheritors",
+      "readmigoId": "20708f1b-0444-4c50-bbe7-4d121401378e",
+      "epubUrl": "https://cdn.readmigo.app/books/20708f1b-0444-4c50-bbe7-4d121401378e/book.epub",
+      "title": "The Inheritors"
+    },
+    {
+      "seSlug": "joseph-conrad_lord-jim",
+      "readmigoId": "5692c158-94c9-4579-8bf7-d200b5cf27a8",
+      "epubUrl": "https://cdn.readmigo.app/books/5692c158-94c9-4579-8bf7-d200b5cf27a8/book.epub",
+      "title": "Lord Jim"
+    },
+    {
+      "seSlug": "joseph-conrad_the-nigger-of-the-narcissus",
+      "readmigoId": "7397fbc8-d9f2-4b67-b11a-93f5af31ec27",
+      "epubUrl": "https://cdn.readmigo.app/books/7397fbc8-d9f2-4b67-b11a-93f5af31ec27/book.epub",
+      "title": "The Nigger of the Narcissus"
+    },
+    {
+      "seSlug": "joseph-conrad_under-western-eyes",
+      "readmigoId": "a2e62fe5-e773-46a8-8ec2-08043e2636e4",
+      "epubUrl": "https://cdn.readmigo.app/books/a2e62fe5-e773-46a8-8ec2-08043e2636e4/book.epub",
+      "title": "Under Western Eyes"
+    },
+    {
+      "seSlug": "joseph-conrad/a-personal-record",
+      "readmigoId": "e3617e26-de04-4fb3-b1b1-72b60a3a3dd5",
+      "epubUrl": "https://cdn.readmigo.app/books/e3617e26-de04-4fb3-b1b1-72b60a3a3dd5/book.epub",
+      "title": "A Personal Record"
+    },
+    {
+      "seSlug": "joseph-conrad/an-outcast-of-the-islands",
+      "readmigoId": "c00a3ed3-2606-4d25-ba52-9b9c02090239",
+      "epubUrl": "https://cdn.readmigo.app/books/c00a3ed3-2606-4d25-ba52-9b9c02090239/book.epub",
+      "title": "An Outcast of the Islands"
+    },
+    {
+      "seSlug": "joseph-conrad/the-end-of-the-tether",
+      "readmigoId": "99e78d73-8ad9-483c-af25-67ccb35f2121",
+      "epubUrl": "https://cdn.readmigo.app/books/99e78d73-8ad9-483c-af25-67ccb35f2121/book.epub",
+      "title": "The End of the Tether"
+    },
+    {
+      "seSlug": "joseph-conrad/the-shadow-line",
+      "readmigoId": "57ce1cd5-5b87-454a-9ee8-7d3623253ed6",
+      "epubUrl": "https://cdn.readmigo.app/books/57ce1cd5-5b87-454a-9ee8-7d3623253ed6/book.epub",
+      "title": "The Shadow Line"
+    },
+    {
+      "seSlug": "joseph-jacobs_indian-fairy-tales",
+      "readmigoId": "ae37958e-61a7-4342-bd59-7d375b70ec96",
+      "epubUrl": "https://cdn.readmigo.app/books/ae37958e-61a7-4342-bd59-7d375b70ec96/book.epub",
+      "title": "Indian Fairy Tales"
+    },
+    {
+      "seSlug": "josephine-tey/the-man-in-the-queue",
+      "readmigoId": "44882775-a686-4742-b81b-07e2411360d4",
+      "epubUrl": "https://cdn.readmigo.app/books/44882775-a686-4742-b81b-07e2411360d4/book.epub",
+      "title": "The Man in the Queue"
+    },
+    {
+      "seSlug": "jules-verne_dick-sands-the-boy-captain_ellen-e-frewer",
+      "readmigoId": "e3f3c509-d24b-4264-a49b-81b519bd965d",
+      "epubUrl": "https://cdn.readmigo.app/books/e3f3c509-d24b-4264-a49b-81b519bd965d/book.epub",
+      "title": "Dick Sands, the Boy Captain"
+    },
+    {
+      "seSlug": "jules-verne_topsy-turvy_j-g-ogilvie",
+      "readmigoId": "5a5949e1-de9e-4e19-b0e4-27547181f17f",
+      "epubUrl": "https://cdn.readmigo.app/books/5a5949e1-de9e-4e19-b0e4-27547181f17f/book.epub",
+      "title": "Topsy-Turvy"
+    },
+    {
+      "seSlug": "julia-peterkin_scarlet-sister-mary",
+      "readmigoId": "a1f52373-7dd4-4bb0-9e15-4c7b2083f70a",
+      "epubUrl": "https://cdn.readmigo.app/books/a1f52373-7dd4-4bb0-9e15-4c7b2083f70a/book.epub",
+      "title": "Scarlet Sister Mary"
+    },
+    {
+      "seSlug": "julius-caesar_commentaries-on-the-gallic-war_w-a-mcdevitte_w-s-bohn",
+      "readmigoId": "51b570cc-5de4-451d-b0a8-0b13aa6d585e",
+      "epubUrl": "https://cdn.readmigo.app/books/51b570cc-5de4-451d-b0a8-0b13aa6d585e/book.epub",
+      "title": "Commentaries on the Gallic War"
+    },
+    {
+      "seSlug": "karl-marx_friedrich-engels_the-communist-manifesto_samuel-moore",
+      "readmigoId": "6fd2ebfe-b685-4c52-98f3-0d8d75ae5519",
+      "epubUrl": "https://cdn.readmigo.app/books/6fd2ebfe-b685-4c52-98f3-0d8d75ae5519/book.epub",
+      "title": "The Communist Manifesto"
+    },
+    {
+      "seSlug": "kate-chopin_short-fiction",
+      "readmigoId": "1e5d7f0e-5859-40cb-8b45-ba6a3c6a0379",
+      "epubUrl": "https://cdn.readmigo.app/books/1e5d7f0e-5859-40cb-8b45-ba6a3c6a0379/book.epub",
+      "title": "Short Fiction"
+    },
+    {
+      "seSlug": "katharine-susannah-prichard_the-black-opal",
+      "readmigoId": "ca6f4f88-a168-4825-b060-00c779a8ba86",
+      "epubUrl": "https://cdn.readmigo.app/books/ca6f4f88-a168-4825-b060-00c779a8ba86/book.epub",
+      "title": "The Black Opal"
+    },
+    {
+      "seSlug": "l-frank-baum_the-road-to-oz",
+      "readmigoId": "b4ae40d4-44ce-4dae-a68f-0242fa972bdf",
+      "epubUrl": "https://cdn.readmigo.app/books/b4ae40d4-44ce-4dae-a68f-0242fa972bdf/book.epub",
+      "title": "The Road to Oz"
+    },
+    {
+      "seSlug": "leo-tolstoy_hadji-murad_aylmer-maude",
+      "readmigoId": "fd7c7e95-71ce-4aab-ab0f-56b3ae27767c",
+      "epubUrl": "https://cdn.readmigo.app/books/fd7c7e95-71ce-4aab-ab0f-56b3ae27767c/book.epub",
+      "title": "Hadji Murád"
+    },
+    {
+      "seSlug": "leonid-andreyev_he-who-gets-slapped_gregory-zilboorg",
+      "readmigoId": "603271b2-0626-4338-82c1-28eb11a57b2e",
+      "epubUrl": "https://cdn.readmigo.app/books/603271b2-0626-4338-82c1-28eb11a57b2e/book.epub",
+      "title": "He Who Gets Slapped"
+    },
+    {
+      "seSlug": "leonid-andreyev_short-fiction_various-translators",
+      "readmigoId": "1dde97fb-804e-4ee2-a417-4e3512e6cb6d",
+      "epubUrl": "https://cdn.readmigo.app/books/1dde97fb-804e-4ee2-a417-4e3512e6cb6d/book.epub",
+      "title": "Short Fiction"
+    },
+    {
+      "seSlug": "lewis-mumford_sticks-and-stones",
+      "readmigoId": "9a37d3e1-0751-4d81-b968-cc8864916604",
+      "epubUrl": "https://cdn.readmigo.app/books/9a37d3e1-0751-4d81-b968-cc8864916604/book.epub",
+      "title": "Sticks and Stones"
+    },
+    {
+      "seSlug": "liam-oflaherty/the-informer",
+      "readmigoId": "32896975-0263-4ba1-86a2-687f1b8dc0d5",
+      "epubUrl": "https://cdn.readmigo.app/books/32896975-0263-4ba1-86a2-687f1b8dc0d5/book.epub",
+      "title": "The Informer"
+    },
+    {
+      "seSlug": "lloyd-c-douglas/magnificent-obsession",
+      "readmigoId": "7c9fe2d5-cd3c-4c9b-b2c3-d6f0f4efe522",
+      "epubUrl": "https://cdn.readmigo.app/books/7c9fe2d5-cd3c-4c9b-b2c3-d6f0f4efe522/book.epub",
+      "title": "Magnificent Obsession"
+    },
+    {
+      "seSlug": "lord-dunsany/the-charwomans-shadow",
+      "readmigoId": "2d7e922c-2d41-4589-96ea-9ef87462f2d6",
+      "epubUrl": "https://cdn.readmigo.app/books/2d7e922c-2d41-4589-96ea-9ef87462f2d6/book.epub",
+      "title": "The Charwoman’s Shadow"
+    },
+    {
+      "seSlug": "louis-couperus/the-tour/alexander-teixeira-de-mattos",
+      "readmigoId": "92e3d818-b976-4602-9770-378807702fd0",
+      "epubUrl": "https://cdn.readmigo.app/books/92e3d818-b976-4602-9770-378807702fd0/book.epub",
+      "title": "The Tour"
+    },
+    {
+      "seSlug": "louis-h-sullivan/the-autobiography-of-an-idea",
+      "readmigoId": "5403dd4b-446b-48ce-a6a2-a63e46ff7533",
+      "epubUrl": "https://cdn.readmigo.app/books/5403dd4b-446b-48ce-a6a2-a63e46ff7533/book.epub",
+      "title": "The Autobiography of an Idea"
+    },
+    {
+      "seSlug": "ludwig-wittgenstein_tractatus-logico-philosophicus_c-k-ogden",
+      "readmigoId": "f9478952-8422-4350-8e81-2f910781a8f0",
+      "epubUrl": "https://cdn.readmigo.app/books/f9478952-8422-4350-8e81-2f910781a8f0/book.epub",
+      "title": "Tractatus Logico-Philosophicus"
+    },
+    {
+      "seSlug": "luigi-pirandello_six-characters-in-search-of-an-author_edward-storer",
+      "readmigoId": "53de82d2-9d3c-4108-81b5-382db8c05a78",
+      "epubUrl": "https://cdn.readmigo.app/books/53de82d2-9d3c-4108-81b5-382db8c05a78/book.epub",
+      "title": "Six Characters in Search of an Author"
+    },
+    {
+      "seSlug": "lytton-strachey/eminent-victorians",
+      "readmigoId": "0e5f91ea-9ff9-4726-be15-ef9c9eec52e2",
+      "epubUrl": "https://cdn.readmigo.app/books/0e5f91ea-9ff9-4726-be15-ef9c9eec52e2/book.epub",
+      "title": "Eminent Victorians"
+    },
+    {
+      "seSlug": "m-p-shiel_the-purple-cloud",
+      "readmigoId": "7ce0d88d-090a-40ad-944c-437f652777b1",
+      "epubUrl": "https://cdn.readmigo.app/books/7ce0d88d-090a-40ad-944c-437f652777b1/book.epub",
+      "title": "The Purple Cloud"
+    },
+    {
+      "seSlug": "m-r-james_short-fiction",
+      "readmigoId": "aac8f5b7-3015-409f-a9d8-ecb6a5974783",
+      "epubUrl": "https://cdn.readmigo.app/books/aac8f5b7-3015-409f-a9d8-ecb6a5974783/book.epub",
+      "title": "Short Fiction"
+    },
+    {
+      "seSlug": "mahatma-gandhi/the-story-of-my-experiments-with-truth/mahadev-desai",
+      "readmigoId": "85073ad3-5364-4390-a77f-4018bd748953",
+      "epubUrl": "https://cdn.readmigo.app/books/85073ad3-5364-4390-a77f-4018bd748953/book.epub",
+      "title": "The Story of My Experiments with Truth"
+    },
+    {
+      "seSlug": "margaret-oliphant_phoebe-junior",
+      "readmigoId": "d0bec807-72f7-4841-bd6e-5690bbbce9d2",
+      "epubUrl": "https://cdn.readmigo.app/books/d0bec807-72f7-4841-bd6e-5690bbbce9d2/book.epub",
+      "title": "Phoebe, Junior"
+    },
+    {
+      "seSlug": "margaret-oliphant/a-country-gentleman-and-his-family",
+      "readmigoId": "252d5e4e-fb85-4388-b095-a48207128333",
+      "epubUrl": "https://cdn.readmigo.app/books/252d5e4e-fb85-4388-b095-a48207128333/book.epub",
+      "title": "A Country Gentleman and His Family"
+    },
+    {
+      "seSlug": "margery-allingham/the-crime-at-black-dudley",
+      "readmigoId": "c778e757-3b5a-470a-8409-cd3a659b6b63",
+      "epubUrl": "https://cdn.readmigo.app/books/c778e757-3b5a-470a-8409-cd3a659b6b63/book.epub",
+      "title": "The Crime at Black Dudley"
+    },
+    {
+      "seSlug": "maria-bochkareva/yashka",
+      "readmigoId": "6551e159-e392-45d1-ad78-994c6c7a0724",
+      "epubUrl": "https://cdn.readmigo.app/books/6551e159-e392-45d1-ad78-994c6c7a0724/book.epub",
+      "title": "Yashka"
+    },
+    {
+      "seSlug": "mark-twain_personal-recollections-of-joan-of-arc",
+      "readmigoId": "375f3a80-eb17-44ad-9f7a-267f13eef7bd",
+      "epubUrl": "https://cdn.readmigo.app/books/375f3a80-eb17-44ad-9f7a-267f13eef7bd/book.epub",
+      "title": "Personal Recollections of Joan of Arc"
+    },
+    {
+      "seSlug": "marmaduke-pickthall_veiled-women",
+      "readmigoId": "54b0e10d-720f-493d-8beb-f36e2ac29af6",
+      "epubUrl": "https://cdn.readmigo.app/books/54b0e10d-720f-493d-8beb-f36e2ac29af6/book.epub",
+      "title": "Veiled Women"
+    },
+    {
+      "seSlug": "martin-andersen-nexo_pelle-the-conqueror_jessie-muir_bernard-miall",
+      "readmigoId": "3470fda6-2ea2-435b-b611-b54a9b0f2681",
+      "epubUrl": "https://cdn.readmigo.app/books/3470fda6-2ea2-435b-b611-b54a9b0f2681/book.epub",
+      "title": "Pelle the Conqueror"
+    },
+    {
+      "seSlug": "mary-roberts-rinehart_the-man-in-lower-ten",
+      "readmigoId": "a4cdac7d-d88e-44c1-81b1-59a559e69c8b",
+      "epubUrl": "https://cdn.readmigo.app/books/a4cdac7d-d88e-44c1-81b1-59a559e69c8b/book.epub",
+      "title": "The Man in Lower Ten"
+    },
+    {
+      "seSlug": "mary-shelley_short-fiction",
+      "readmigoId": "630d37f3-db75-41eb-96a9-dd836518b880",
+      "epubUrl": "https://cdn.readmigo.app/books/630d37f3-db75-41eb-96a9-dd836518b880/book.epub",
+      "title": "Short Fiction"
+    },
+    {
+      "seSlug": "mary-weston-fordham_magnolia-leaves",
+      "readmigoId": "86326a79-1ee3-4dde-8f9f-cfae9b54cff5",
+      "epubUrl": "https://cdn.readmigo.app/books/86326a79-1ee3-4dde-8f9f-cfae9b54cff5/book.epub",
+      "title": "Magnolia Leaves"
+    },
+    {
+      "seSlug": "matthew-arnold_poetry",
+      "readmigoId": "59d2d295-f93d-45e1-bd2c-02abd64119f4",
+      "epubUrl": "https://cdn.readmigo.app/books/59d2d295-f93d-45e1-bd2c-02abd64119f4/book.epub",
+      "title": "Poetry"
+    },
+    {
+      "seSlug": "matthew-henson_a-negro-explorer-at-the-north-pole",
+      "readmigoId": "9e960efb-2d13-492b-8374-149087999a21",
+      "epubUrl": "https://cdn.readmigo.app/books/9e960efb-2d13-492b-8374-149087999a21/book.epub",
+      "title": "A Negro Explorer at the North Pole"
+    },
+    {
+      "seSlug": "maurice-leblanc_the-eight-strokes-of-the-clock_alexander-teixeira-de-mattos",
+      "readmigoId": "3eaebcdc-020a-4394-b236-c1293e2fc48f",
+      "epubUrl": "https://cdn.readmigo.app/books/3eaebcdc-020a-4394-b236-c1293e2fc48f/book.epub",
+      "title": "The Eight Strokes of the Clock"
+    },
+    {
+      "seSlug": "maurice-leblanc/813/alexander-teixeira-de-mattos",
+      "readmigoId": "a428e72d-7a48-46e9-bdea-9e052a826b8c",
+      "epubUrl": "https://cdn.readmigo.app/books/a428e72d-7a48-46e9-bdea-9e052a826b8c/book.epub",
+      "title": "813"
+    },
+    {
+      "seSlug": "maurice-leblanc/arsene-lupin-versus-herlock-sholmes/george-morehead",
+      "readmigoId": "50ea92c6-ecd3-45e9-94d7-68b324259b14",
+      "epubUrl": "https://cdn.readmigo.app/books/50ea92c6-ecd3-45e9-94d7-68b324259b14/book.epub",
+      "title": "Arsène Lupin Versus Herlock Sholmes"
+    },
+    {
+      "seSlug": "maurice-leblanc/the-crystal-stopper/alexander-teixeira-de-mattos",
+      "readmigoId": "17d17a84-20ee-4fa3-9a30-35820b7bb9fc",
+      "epubUrl": "https://cdn.readmigo.app/books/17d17a84-20ee-4fa3-9a30-35820b7bb9fc/book.epub",
+      "title": "The Crystal Stopper"
+    },
+    {
+      "seSlug": "maurice-maeterlinck_georgette-leblanc_the-blue-bird_alexander-teixeira-de-mattos",
+      "readmigoId": "c5e7c348-486c-4ba9-aabf-5179768c4302",
+      "epubUrl": "https://cdn.readmigo.app/books/c5e7c348-486c-4ba9-aabf-5179768c4302/book.epub",
+      "title": "The Blue Bird"
+    },
+    {
+      "seSlug": "michael-arlen/the-green-hat",
+      "readmigoId": "149170aa-a16a-45fe-9e87-815d128d646d",
+      "epubUrl": "https://cdn.readmigo.app/books/149170aa-a16a-45fe-9e87-815d128d646d/book.epub",
+      "title": "The Green Hat"
+    },
+    {
+      "seSlug": "moliere_tartuffe_curtis-hidden-page",
+      "readmigoId": "3e9dfdf7-5eeb-4e8e-93da-c577cf03f2e9",
+      "epubUrl": "https://cdn.readmigo.app/books/3e9dfdf7-5eeb-4e8e-93da-c577cf03f2e9/book.epub",
+      "title": "Tartuffe"
+    },
+    {
+      "seSlug": "nathaniel-hawthorne_the-house-of-the-seven-gables",
+      "readmigoId": "49b164b1-6744-498f-854b-eb818955ad28",
+      "epubUrl": "https://cdn.readmigo.app/books/49b164b1-6744-498f-854b-eb818955ad28/book.epub",
+      "title": "The House of the Seven Gables"
+    },
+    {
+      "seSlug": "nella-larsen/quicksand",
+      "readmigoId": "a8341dde-0066-4075-a954-b91185fe7e8f",
+      "epubUrl": "https://cdn.readmigo.app/books/a8341dde-0066-4075-a954-b91185fe7e8f/book.epub",
+      "title": "Quicksand"
+    },
+    {
+      "seSlug": "norbert-jacques_dr-mabuse-the-gambler_lilian-a-clare",
+      "readmigoId": "024fa564-bdd2-4709-a3a5-faf033a89037",
+      "epubUrl": "https://cdn.readmigo.app/books/024fa564-bdd2-4709-a3a5-faf033a89037/book.epub",
+      "title": "Dr. Mabuse, the Gambler"
+    },
+    {
+      "seSlug": "oscar-wilde_an-ideal-husband",
+      "readmigoId": "12caa604-57c3-4f9d-9f7f-d5ca06da0695",
+      "epubUrl": "https://cdn.readmigo.app/books/12caa604-57c3-4f9d-9f7f-d5ca06da0695/book.epub",
+      "title": "An Ideal Husband"
+    },
+    {
+      "seSlug": "oscar-wilde_childrens-stories",
+      "readmigoId": "4ffab3c1-ad49-4e8e-af9c-88963e11fe3f",
+      "epubUrl": "https://cdn.readmigo.app/books/4ffab3c1-ad49-4e8e-af9c-88963e11fe3f/book.epub",
+      "title": "Children’s Stories"
+    },
+    {
+      "seSlug": "oscar-wilde_lord-arthur-saviles-crime-and-other-stories",
+      "readmigoId": "f6beac77-1405-431d-92df-8e75cb5a0c22",
+      "epubUrl": "https://cdn.readmigo.app/books/f6beac77-1405-431d-92df-8e75cb5a0c22/book.epub",
+      "title": "Lord Arthur Savile’s Crime and Other Stories"
+    },
+    {
+      "seSlug": "owen-wister/the-virginian",
+      "readmigoId": "1a028642-384c-4f5c-ac32-24a84b3fbe55",
+      "epubUrl": "https://cdn.readmigo.app/books/1a028642-384c-4f5c-ac32-24a84b3fbe55/book.epub",
+      "title": "The Virginian"
+    },
+    {
+      "seSlug": "p-g-wodehouse_jeeves-stories",
+      "readmigoId": "9c96df35-e997-4c21-b47a-fc6b96fa92d5",
+      "epubUrl": "https://cdn.readmigo.app/books/9c96df35-e997-4c21-b47a-fc6b96fa92d5/book.epub",
+      "title": "Jeeves Stories"
+    },
+    {
+      "seSlug": "p-g-wodehouse_psmith-in-the-city",
+      "readmigoId": "f47a0367-7922-498b-a197-20b8829d4c9d",
+      "epubUrl": "https://cdn.readmigo.app/books/f47a0367-7922-498b-a197-20b8829d4c9d/book.epub",
+      "title": "Psmith in the City"
+    },
+    {
+      "seSlug": "p-g-wodehouse_psmith-journalist",
+      "readmigoId": "5d278a67-0c2c-4350-902d-1dd7668812e4",
+      "epubUrl": "https://cdn.readmigo.app/books/5d278a67-0c2c-4350-902d-1dd7668812e4/book.epub",
+      "title": "Psmith, Journalist"
+    },
+    {
+      "seSlug": "p-g-wodehouse_short-fiction",
+      "readmigoId": "21ea82c6-8001-46ad-8e40-be052205dd6c",
+      "epubUrl": "https://cdn.readmigo.app/books/21ea82c6-8001-46ad-8e40-be052205dd6c/book.epub",
+      "title": "Short Fiction"
+    },
+    {
+      "seSlug": "p-g-wodehouse/love-among-the-chickens",
+      "readmigoId": "a3545540-b528-4db6-a65d-ce246ec1f69b",
+      "epubUrl": "https://cdn.readmigo.app/books/a3545540-b528-4db6-a65d-ce246ec1f69b/book.epub",
+      "title": "Love Among the Chickens"
+    },
+    {
+      "seSlug": "p-g-wodehouse/something-new",
+      "readmigoId": "00f2b9d8-231c-4bfb-9b7f-8e2bf8d06bf7",
+      "epubUrl": "https://cdn.readmigo.app/books/00f2b9d8-231c-4bfb-9b7f-8e2bf8d06bf7/book.epub",
+      "title": "Something New"
+    },
+    {
+      "seSlug": "p-g-wodehouse/the-small-bachelor",
+      "readmigoId": "72a6677f-4e0a-4fdd-8c54-2a9f14c1de56",
+      "epubUrl": "https://cdn.readmigo.app/books/72a6677f-4e0a-4fdd-8c54-2a9f14c1de56/book.epub",
+      "title": "The Small Bachelor"
+    },
+    {
+      "seSlug": "p-t-barnum/struggles-and-triumphs",
+      "readmigoId": "b4eb932e-af00-4abd-b714-3d2be4b3ac99",
+      "epubUrl": "https://cdn.readmigo.app/books/b4eb932e-af00-4abd-b714-3d2be4b3ac99/book.epub",
+      "title": "Struggles and Triumphs"
+    },
+    {
+      "seSlug": "paul-dukes/red-dusk-and-the-morrow",
+      "readmigoId": "52081268-3ae6-45ff-ba77-e841927528a3",
+      "epubUrl": "https://cdn.readmigo.app/books/52081268-3ae6-45ff-ba77-e841927528a3/book.epub",
+      "title": "Red Dusk and the Morrow"
+    },
+    {
+      "seSlug": "percy-marks_the-plastic-age",
+      "readmigoId": "e605823f-7a90-4eb3-b7b6-881e886bf373",
+      "epubUrl": "https://cdn.readmigo.app/books/e605823f-7a90-4eb3-b7b6-881e886bf373/book.epub",
+      "title": "The Plastic Age"
+    },
+    {
+      "seSlug": "peter-kropotkin_the-conquest-of-bread_chapman-and-hall",
+      "readmigoId": "970af859-68ea-4623-9bc6-fd079905723b",
+      "epubUrl": "https://cdn.readmigo.app/books/970af859-68ea-4623-9bc6-fd079905723b/book.epub",
+      "title": "The Conquest of Bread"
+    },
+    {
+      "seSlug": "philip-francis-nowlan/the-airlords-of-han",
+      "readmigoId": "f10affc0-fd7c-443d-be8d-831d8258034a",
+      "epubUrl": "https://cdn.readmigo.app/books/f10affc0-fd7c-443d-be8d-831d8258034a/book.epub",
+      "title": "The Airlords of Han"
+    },
+    {
+      "seSlug": "philip-gibbs_now-it-can-be-told",
+      "readmigoId": "0b7f11e9-4d9a-4a8b-9d8d-836fc43f1541",
+      "epubUrl": "https://cdn.readmigo.app/books/0b7f11e9-4d9a-4a8b-9d8d-836fc43f1541/book.epub",
+      "title": "Now It Can Be Told"
+    },
+    {
+      "seSlug": "r-a-lafferty_short-fiction",
+      "readmigoId": "05c43e85-7ee7-429e-82dd-5e6724d28e20",
+      "epubUrl": "https://cdn.readmigo.app/books/05c43e85-7ee7-429e-82dd-5e6724d28e20/book.epub",
+      "title": "Short Fiction"
+    },
+    {
+      "seSlug": "r-austin-freeman_the-mystery-of-31-new-inn",
+      "readmigoId": "e162851d-2ad6-4198-9a90-f92a91762182",
+      "epubUrl": "https://cdn.readmigo.app/books/e162851d-2ad6-4198-9a90-f92a91762182/book.epub",
+      "title": "The Mystery of 31, New Inn"
+    },
+    {
+      "seSlug": "r-austin-freeman/the-darblay-mystery",
+      "readmigoId": "b88c68f5-a62c-46a8-868b-0e1e6cad52bb",
+      "epubUrl": "https://cdn.readmigo.app/books/b88c68f5-a62c-46a8-868b-0e1e6cad52bb/book.epub",
+      "title": "The D’Arblay Mystery"
+    },
+    {
+      "seSlug": "r-austin-freeman/the-eye-of-osiris",
+      "readmigoId": "ce34ffe3-ac9e-4c52-9f93-5155ca28c63c",
+      "epubUrl": "https://cdn.readmigo.app/books/ce34ffe3-ac9e-4c52-9f93-5155ca28c63c/book.epub",
+      "title": "The Eye of Osiris"
+    },
+    {
+      "seSlug": "r-h-tawney_religion-and-the-rise-of-capitalism",
+      "readmigoId": "a8268d86-a035-4077-9ac7-4f9013b33cc8",
+      "epubUrl": "https://cdn.readmigo.app/books/a8268d86-a035-4077-9ac7-4f9013b33cc8/book.epub",
+      "title": "Religion and the Rise of Capitalism"
+    },
+    {
+      "seSlug": "rabindranath-tagore_my-reminiscences_the-macmillan-company",
+      "readmigoId": "39badd78-edb9-4489-ade5-27eb424267a2",
+      "epubUrl": "https://cdn.readmigo.app/books/39badd78-edb9-4489-ade5-27eb424267a2/book.epub",
+      "title": "My Reminiscences"
+    },
+    {
+      "seSlug": "radclyffe-hall_adams-breed",
+      "readmigoId": "e5ca51b8-20e8-4f46-bf59-8e2f6c27e1cc",
+      "epubUrl": "https://cdn.readmigo.app/books/e5ca51b8-20e8-4f46-bf59-8e2f6c27e1cc/book.epub",
+      "title": "Adam’s Breed"
+    },
+    {
+      "seSlug": "rafael-sabatini/bellarion-the-fortunate",
+      "readmigoId": "b31cd43c-8b83-4eb8-a2bd-10d95239f35e",
+      "epubUrl": "https://cdn.readmigo.app/books/b31cd43c-8b83-4eb8-a2bd-10d95239f35e/book.epub",
+      "title": "Bellarion the Fortunate"
+    },
+    {
+      "seSlug": "ralph-waldo-emerson_essays",
+      "readmigoId": "0353bb27-720a-432f-8ef0-c1f9cc4e34bc",
+      "epubUrl": "https://cdn.readmigo.app/books/0353bb27-720a-432f-8ef0-c1f9cc4e34bc/book.epub",
+      "title": "Essays"
+    },
+    {
+      "seSlug": "ralph-waldo-emerson/representative-men",
+      "readmigoId": "210ab6e0-c3b1-4294-9e7c-555e1f457ac6",
+      "epubUrl": "https://cdn.readmigo.app/books/210ab6e0-c3b1-4294-9e7c-555e1f457ac6/book.epub",
+      "title": "Representative Men"
+    },
+    {
+      "seSlug": "ray-bradbury_short-fiction",
+      "readmigoId": "a030c4aa-dbff-4a34-9f0b-024bee9013a3",
+      "epubUrl": "https://cdn.readmigo.app/books/a030c4aa-dbff-4a34-9f0b-024bee9013a3/book.epub",
+      "title": "Short Fiction"
+    },
+    {
+      "seSlug": "richard-brinsley-sheridan_the-school-for-scandal",
+      "readmigoId": "37ec6b7b-fd6e-4bbe-affd-219ce7c5b35f",
+      "epubUrl": "https://cdn.readmigo.app/books/37ec6b7b-fd6e-4bbe-affd-219ce7c5b35f/book.epub",
+      "title": "The School for Scandal"
+    },
+    {
+      "seSlug": "richard-henry-dana-jr_to-cuba-and-back",
+      "readmigoId": "cc26ec58-8dd2-4bd3-af26-0d9ef95f81bf",
+      "epubUrl": "https://cdn.readmigo.app/books/cc26ec58-8dd2-4bd3-af26-0d9ef95f81bf/book.epub",
+      "title": "To Cuba and Back"
+    },
+    {
+      "seSlug": "ring-lardner_jack-keefe-stories",
+      "readmigoId": "4e371903-a746-479b-9b8a-dc390db47ef8",
+      "epubUrl": "https://cdn.readmigo.app/books/4e371903-a746-479b-9b8a-dc390db47ef8/book.epub",
+      "title": "Jack Keefe Stories"
+    },
+    {
+      "seSlug": "ring-lardner_my-four-weeks-in-france",
+      "readmigoId": "5725b96d-7bcf-47a2-a55c-fcd6390856ed",
+      "epubUrl": "https://cdn.readmigo.app/books/5725b96d-7bcf-47a2-a55c-fcd6390856ed/book.epub",
+      "title": "My Four Weeks in France"
+    },
+    {
+      "seSlug": "ring-lardner_poetry",
+      "readmigoId": "2d455f78-7d01-4088-a6ff-202385a098ce",
+      "epubUrl": "https://cdn.readmigo.app/books/2d455f78-7d01-4088-a6ff-202385a098ce/book.epub",
+      "title": "Poetry"
+    },
+    {
+      "seSlug": "robert-e-howard_conan-stories",
+      "readmigoId": "3a5dd2e4-909c-4e2d-a7ce-dbcad61f789a",
+      "epubUrl": "https://cdn.readmigo.app/books/3a5dd2e4-909c-4e2d-a7ce-dbcad61f789a/book.epub",
+      "title": "Conan Stories"
+    },
+    {
+      "seSlug": "robert-louis-stevenson_travel-essays",
+      "readmigoId": "b79a165a-6d51-4d0d-9706-76dac042cac5",
+      "epubUrl": "https://cdn.readmigo.app/books/b79a165a-6d51-4d0d-9706-76dac042cac5/book.epub",
+      "title": "Travel Essays"
+    },
+    {
+      "seSlug": "rolf-boldrewood_robbery-under-arms",
+      "readmigoId": "07148cad-f05c-4444-ac3e-759e4f9c8fe8",
+      "epubUrl": "https://cdn.readmigo.app/books/07148cad-f05c-4444-ac3e-759e4f9c8fe8/book.epub",
+      "title": "Robbery Under Arms"
+    },
+    {
+      "seSlug": "romain-rolland_clerambault_katherine-miller",
+      "readmigoId": "667810a2-f859-4d45-b700-2c72bba9fe94",
+      "epubUrl": "https://cdn.readmigo.app/books/667810a2-f859-4d45-b700-2c72bba9fe94/book.epub",
+      "title": "Clerambault"
+    },
+    {
+      "seSlug": "ronald-a-knox_the-viaduct-murder",
+      "readmigoId": "0d583c58-73f5-4335-9ba0-be34728312ca",
+      "epubUrl": "https://cdn.readmigo.app/books/0d583c58-73f5-4335-9ba0-be34728312ca/book.epub",
+      "title": "The Viaduct Murder"
+    },
+    {
+      "seSlug": "rose-macaulay/dangerous-ages",
+      "readmigoId": "58d83459-8427-4895-a686-d89b71ef5b21",
+      "epubUrl": "https://cdn.readmigo.app/books/58d83459-8427-4895-a686-d89b71ef5b21/book.epub",
+      "title": "Dangerous Ages"
+    },
+    {
+      "seSlug": "roswitha-of-gandersheim_plays_christopher-st-john",
+      "readmigoId": "933056e9-1531-47a1-b1e3-4e96af3af19b",
+      "epubUrl": "https://cdn.readmigo.app/books/933056e9-1531-47a1-b1e3-4e96af3af19b/book.epub",
+      "title": "Plays"
+    },
+    {
+      "seSlug": "s-m-mitra_hindu-tales-from-the-sanskrit",
+      "readmigoId": "14fd4635-7855-4150-a65e-660a70bec81a",
+      "epubUrl": "https://cdn.readmigo.app/books/14fd4635-7855-4150-a65e-660a70bec81a/book.epub",
+      "title": "Hindu Tales from the Sanskrit"
+    },
+    {
+      "seSlug": "saki_short-fiction",
+      "readmigoId": "1e301cdc-4acd-4602-8072-deb22697b39b",
+      "epubUrl": "https://cdn.readmigo.app/books/1e301cdc-4acd-4602-8072-deb22697b39b/book.epub",
+      "title": "Short Fiction"
+    },
+    {
+      "seSlug": "samuel-richardson_clarissa",
+      "readmigoId": "18cef3f5-5c05-4243-869b-54dcbabb883e",
+      "epubUrl": "https://cdn.readmigo.app/books/18cef3f5-5c05-4243-869b-54dcbabb883e/book.epub",
+      "title": "Clarissa"
+    },
+    {
+      "seSlug": "selma-lagerlof_short-fiction_various-translators",
+      "readmigoId": "f4ece6e4-4738-4b12-a46b-7b2d5d561ce1",
+      "epubUrl": "https://cdn.readmigo.app/books/f4ece6e4-4738-4b12-a46b-7b2d5d561ce1/book.epub",
+      "title": "Short Fiction"
+    },
+    {
+      "seSlug": "selma-lagerlof/the-story-of-gosta-berling/pauline-bancroft-flach",
+      "readmigoId": "c4375c0f-fe4d-402d-8466-0f732895c709",
+      "epubUrl": "https://cdn.readmigo.app/books/c4375c0f-fe4d-402d-8466-0f732895c709/book.epub",
+      "title": "The Story of Gösta Berling"
+    },
+    {
+      "seSlug": "sigrid-undset_the-bridal-wreath_charles-archer_j-s-scott",
+      "readmigoId": "5ee19205-b71e-46e7-8074-dc6ddef49942",
+      "epubUrl": "https://cdn.readmigo.app/books/5ee19205-b71e-46e7-8074-dc6ddef49942/book.epub",
+      "title": "The Bridal Wreath"
+    },
+    {
+      "seSlug": "sigrid-undset/the-bridal-wreath/charles-archer_j-s-scott",
+      "readmigoId": "326b15b3-ca03-4e2d-a8cb-5bfa4e37e2fc",
+      "epubUrl": "https://cdn.readmigo.app/books/326b15b3-ca03-4e2d-a8cb-5bfa4e37e2fc/book.epub",
+      "title": "The Bridal Wreath"
+    },
+    {
+      "seSlug": "sinclair-lewis/dodsworth",
+      "readmigoId": "f6897741-9437-4b82-8f94-835f69f95168",
+      "epubUrl": "https://cdn.readmigo.app/books/f6897741-9437-4b82-8f94-835f69f95168/book.epub",
+      "title": "Dodsworth"
+    },
+    {
+      "seSlug": "sophocles_oedipus-rex_francis-storr",
+      "readmigoId": "23a373f5-5d31-41ca-bb26-c793a45e22b2",
+      "epubUrl": "https://cdn.readmigo.app/books/23a373f5-5d31-41ca-bb26-c793a45e22b2/book.epub",
+      "title": "Oedipus Rex"
+    },
+    {
+      "seSlug": "stendhal/the-charterhouse-of-parma/c-k-scott-moncrieff",
+      "readmigoId": "d74a70fb-219a-4a4b-9677-ab8089626a77",
+      "epubUrl": "https://cdn.readmigo.app/books/d74a70fb-219a-4a4b-9677-ab8089626a77/book.epub",
+      "title": "The Charterhouse of Parma"
+    },
+    {
+      "seSlug": "stephen-vincent-benet_john-browns-body",
+      "readmigoId": "51629317-ba53-48f8-9489-f14a1ab58ca6",
+      "epubUrl": "https://cdn.readmigo.app/books/51629317-ba53-48f8-9489-f14a1ab58ca6/book.epub",
+      "title": "John Brown’s Body"
+    },
+    {
+      "seSlug": "suetonius_the-lives-of-the-caesars_j-c-rolfe",
+      "readmigoId": "487e5025-d994-4903-b090-c467b617e4ea",
+      "epubUrl": "https://cdn.readmigo.app/books/487e5025-d994-4903-b090-c467b617e4ea/book.epub",
+      "title": "The Lives of the Caesars"
+    },
+    {
+      "seSlug": "sun-tzu_the-art-of-war_lionel-giles",
+      "readmigoId": "6b01841a-4503-40bc-8075-642d673a534a",
+      "epubUrl": "https://cdn.readmigo.app/books/6b01841a-4503-40bc-8075-642d673a534a/book.epub",
+      "title": "The Art of War"
+    },
+    {
+      "seSlug": "theodore-dreiser_an-american-tragedy",
+      "readmigoId": "c7821e61-8437-4c8e-8b3f-7944c2a3dd8d",
+      "epubUrl": "https://cdn.readmigo.app/books/c7821e61-8437-4c8e-8b3f-7944c2a3dd8d/book.epub",
+      "title": "An American Tragedy"
+    },
+    {
+      "seSlug": "thomas-gray_poetry",
+      "readmigoId": "06fbe6bf-cc6a-4d0f-9015-8382dd56ebfe",
+      "epubUrl": "https://cdn.readmigo.app/books/06fbe6bf-cc6a-4d0f-9015-8382dd56ebfe/book.epub",
+      "title": "Poetry"
+    },
+    {
+      "seSlug": "thomas-hardy_short-fiction",
+      "readmigoId": "fc4bf89e-0a23-4d3e-b210-4c3a262127fe",
+      "epubUrl": "https://cdn.readmigo.app/books/fc4bf89e-0a23-4d3e-b210-4c3a262127fe/book.epub",
+      "title": "Short Fiction"
+    },
+    {
+      "seSlug": "thomas-hardy/the-return-of-the-native",
+      "readmigoId": "aede0688-1c84-4b02-b10d-831e2c7da4be",
+      "epubUrl": "https://cdn.readmigo.app/books/aede0688-1c84-4b02-b10d-831e2c7da4be/book.epub",
+      "title": "The Return of the Native"
+    },
+    {
+      "seSlug": "thomas-hardy/the-woodlanders",
+      "readmigoId": "66e7e535-cfc6-4298-9eab-73e71c39aff1",
+      "epubUrl": "https://cdn.readmigo.app/books/66e7e535-cfc6-4298-9eab-73e71c39aff1/book.epub",
+      "title": "The Woodlanders"
+    },
+    {
+      "seSlug": "thomas-hughes/tom-browns-school-days",
+      "readmigoId": "1321aa0e-0557-4491-a8c0-7b62ecc3ffd9",
+      "epubUrl": "https://cdn.readmigo.app/books/1321aa0e-0557-4491-a8c0-7b62ecc3ffd9/book.epub",
+      "title": "Tom Brown’s School Days"
+    },
+    {
+      "seSlug": "thomas-love-peacock/nightmare-abbey",
+      "readmigoId": "1edb22b4-029f-4fb7-9904-0161c80b1784",
+      "epubUrl": "https://cdn.readmigo.app/books/1edb22b4-029f-4fb7-9904-0161c80b1784/book.epub",
+      "title": "Nightmare Abbey"
+    },
+    {
+      "seSlug": "thomas-mann_buddenbrooks_h-t-lowe-porter",
+      "readmigoId": "31616284-fcf5-4a22-a4c6-f3f57b1fff24",
+      "epubUrl": "https://cdn.readmigo.app/books/31616284-fcf5-4a22-a4c6-f3f57b1fff24/book.epub",
+      "title": "Buddenbrooks"
+    },
+    {
+      "seSlug": "thomas-mann/the-magic-mountain/h-t-lowe-porter",
+      "readmigoId": "4bc14a21-3b49-4513-b440-591ed0058e43",
+      "epubUrl": "https://cdn.readmigo.app/books/4bc14a21-3b49-4513-b440-591ed0058e43/book.epub",
+      "title": "The Magic Mountain"
+    },
+    {
+      "seSlug": "thomas-wolfe/look-homeward-angel",
+      "readmigoId": "361aad42-fff3-4a4b-8e47-f17110cc221e",
+      "epubUrl": "https://cdn.readmigo.app/books/361aad42-fff3-4a4b-8e47-f17110cc221e/book.epub",
+      "title": "Look Homeward, Angel"
+    },
+    {
+      "seSlug": "tom-godwin/the-survivors",
+      "readmigoId": "c2c5c4af-6f00-4f3f-9d82-972bac24aebb",
+      "epubUrl": "https://cdn.readmigo.app/books/c2c5c4af-6f00-4f3f-9d82-972bac24aebb/book.epub",
+      "title": "The Survivors"
+    },
+    {
+      "seSlug": "tom-taylor_our-american-cousin",
+      "readmigoId": "950775d7-d661-442d-ac94-699021a5fe0e",
+      "epubUrl": "https://cdn.readmigo.app/books/950775d7-d661-442d-ac94-699021a5fe0e/book.epub",
+      "title": "Our American Cousin"
+    },
+    {
+      "seSlug": "virgil_the-aeneid_john-dryden",
+      "readmigoId": "e7652033-1bf0-4dd6-882e-5fed752b38f1",
+      "epubUrl": "https://cdn.readmigo.app/books/e7652033-1bf0-4dd6-882e-5fed752b38f1/book.epub",
+      "title": "The Aeneid"
+    },
+    {
+      "seSlug": "virginia-woolf_mrs-dalloway",
+      "readmigoId": "cfb8722f-cf78-4a43-998e-6b50654201ab",
+      "epubUrl": "https://cdn.readmigo.app/books/cfb8722f-cf78-4a43-998e-6b50654201ab/book.epub",
+      "title": "Mrs. Dalloway"
+    },
+    {
+      "seSlug": "virginia-woolf/the-voyage-out",
+      "readmigoId": "fcded55a-5d62-4301-9641-06e056ff4f1c",
+      "epubUrl": "https://cdn.readmigo.app/books/fcded55a-5d62-4301-9641-06e056ff4f1c/book.epub",
+      "title": "The Voyage Out"
+    },
+    {
+      "seSlug": "w-b-yeats_poetry",
+      "readmigoId": "08087178-9970-41b7-a98c-7cde19dcc59e",
+      "epubUrl": "https://cdn.readmigo.app/books/08087178-9970-41b7-a98c-7cde19dcc59e/book.epub",
+      "title": "Poetry"
+    },
+    {
+      "seSlug": "w-e-b-du-bois_dark-princess",
+      "readmigoId": "7e498e1a-32fe-457f-963a-b04fc0876fd7",
+      "epubUrl": "https://cdn.readmigo.app/books/7e498e1a-32fe-457f-963a-b04fc0876fd7/book.epub",
+      "title": "Dark Princess"
+    },
+    {
+      "seSlug": "w-h-hudson/the-purple-land",
+      "readmigoId": "e178f2d5-860f-4d0e-9ff4-2f3b47747d71",
+      "epubUrl": "https://cdn.readmigo.app/books/e178f2d5-860f-4d0e-9ff4-2f3b47747d71/book.epub",
+      "title": "The Purple Land"
+    },
+    {
+      "seSlug": "w-n-p-barbellion_the-journal-of-a-disappointed-man",
+      "readmigoId": "fc0d1c81-d20f-48a0-9c8c-4188d5b7037a",
+      "epubUrl": "https://cdn.readmigo.app/books/fc0d1c81-d20f-48a0-9c8c-4188d5b7037a/book.epub",
+      "title": "The Journal of a Disappointed Man"
+    },
+    {
+      "seSlug": "w-somerset-maugham_the-painted-veil",
+      "readmigoId": "5e4bc2aa-d6e5-4c11-9036-e06cf95b4c55",
+      "epubUrl": "https://cdn.readmigo.app/books/5e4bc2aa-d6e5-4c11-9036-e06cf95b4c55/book.epub",
+      "title": "The Painted Veil"
+    },
+    {
+      "seSlug": "wallace-thurman_the-blacker-the-berry",
+      "readmigoId": "1bb78b05-9eb6-493a-ab48-2bf3e26fd939",
+      "epubUrl": "https://cdn.readmigo.app/books/1bb78b05-9eb6-493a-ab48-2bf3e26fd939/book.epub",
+      "title": "The Blacker the Berry"
+    },
+    {
+      "seSlug": "walt-whitman_leaves-of-grass",
+      "readmigoId": "8a93784a-0741-4070-949f-05117226580f",
+      "epubUrl": "https://cdn.readmigo.app/books/8a93784a-0741-4070-949f-05117226580f/book.epub",
+      "title": "Leaves of Grass"
+    },
+    {
+      "seSlug": "walter-bagehot_the-english-constitution",
+      "readmigoId": "bd82cbd0-9d44-49f5-b0df-b65d1069487a",
+      "epubUrl": "https://cdn.readmigo.app/books/bd82cbd0-9d44-49f5-b0df-b65d1069487a/book.epub",
+      "title": "The English Constitution"
+    },
+    {
+      "seSlug": "walter-scott/waverley",
+      "readmigoId": "bb20ad2c-bb85-4a10-96b4-952030d3547a",
+      "epubUrl": "https://cdn.readmigo.app/books/bb20ad2c-bb85-4a10-96b4-952030d3547a/book.epub",
+      "title": "Waverley"
+    },
+    {
+      "seSlug": "wilkie-collins_man-and-wife",
+      "readmigoId": "e6ccaa84-bea9-4d3b-9890-5dadc6fe45d9",
+      "epubUrl": "https://cdn.readmigo.app/books/e6ccaa84-bea9-4d3b-9890-5dadc6fe45d9/book.epub",
+      "title": "Man and Wife"
+    },
+    {
+      "seSlug": "wilkie-collins_the-haunted-hotel",
+      "readmigoId": "9070125b-d86e-4c3f-846b-9023387a0c3f",
+      "epubUrl": "https://cdn.readmigo.app/books/9070125b-d86e-4c3f-846b-9023387a0c3f/book.epub",
+      "title": "The Haunted Hotel"
+    },
+    {
+      "seSlug": "willa-cather_my-antonia",
+      "readmigoId": "fc8edce2-fd84-46f7-9d4d-845a65bb0d77",
+      "epubUrl": "https://cdn.readmigo.app/books/fc8edce2-fd84-46f7-9d4d-845a65bb0d77/book.epub",
+      "title": "My Ántonia"
+    },
+    {
+      "seSlug": "willa-cather_o-pioneers",
+      "readmigoId": "09d0fbcd-b59c-4909-af3b-c249c62d4d8b",
+      "epubUrl": "https://cdn.readmigo.app/books/09d0fbcd-b59c-4909-af3b-c249c62d4d8b/book.epub",
+      "title": "O Pioneers!"
+    },
+    {
+      "seSlug": "willa-cather_the-song-of-the-lark",
+      "readmigoId": "7361afe7-0ffa-45b1-8d70-82193f6dced0",
+      "epubUrl": "https://cdn.readmigo.app/books/7361afe7-0ffa-45b1-8d70-82193f6dced0/book.epub",
+      "title": "The Song of the Lark"
+    },
+    {
+      "seSlug": "william-carlos-williams_poetry",
+      "readmigoId": "741f8a66-6d01-40c5-91a3-79099915fb0b",
+      "epubUrl": "https://cdn.readmigo.app/books/741f8a66-6d01-40c5-91a3-79099915fb0b/book.epub",
+      "title": "Poetry"
+    },
+    {
+      "seSlug": "william-dean-howells_indian-summer",
+      "readmigoId": "67f54078-0f4c-4af3-b57f-31a0e5c91178",
+      "epubUrl": "https://cdn.readmigo.app/books/67f54078-0f4c-4af3-b57f-31a0e5c91178/book.epub",
+      "title": "Indian Summer"
+    },
+    {
+      "seSlug": "william-dean-howells_the-rise-of-silas-lapham",
+      "readmigoId": "e6bc87db-3076-4d71-8dbd-c72313ba4163",
+      "epubUrl": "https://cdn.readmigo.app/books/e6bc87db-3076-4d71-8dbd-c72313ba4163/book.epub",
+      "title": "The Rise of Silas Lapham"
+    },
+    {
+      "seSlug": "william-james_a-pluralistic-universe",
+      "readmigoId": "994b3105-3862-4360-ad19-df49807a292d",
+      "epubUrl": "https://cdn.readmigo.app/books/994b3105-3862-4360-ad19-df49807a292d/book.epub",
+      "title": "A Pluralistic Universe"
+    },
+    {
+      "seSlug": "william-makepeace-thackeray_the-history-of-henry-esmond",
+      "readmigoId": "a4c21689-f5ba-4f61-9f07-2653d7bc27e5",
+      "epubUrl": "https://cdn.readmigo.app/books/a4c21689-f5ba-4f61-9f07-2653d7bc27e5/book.epub",
+      "title": "The History of Henry Esmond"
+    },
+    {
+      "seSlug": "william-morris/the-well-at-the-worlds-end",
+      "readmigoId": "24fee61f-fba6-4def-b538-4b89689eace8",
+      "epubUrl": "https://cdn.readmigo.app/books/24fee61f-fba6-4def-b538-4b89689eace8/book.epub",
+      "title": "The Well at the World’s End"
+    },
+    {
+      "seSlug": "william-shakespeare_edward-iii",
+      "readmigoId": "35de3fb7-53ec-4b26-a857-729ae33ed68b",
+      "epubUrl": "https://cdn.readmigo.app/books/35de3fb7-53ec-4b26-a857-729ae33ed68b/book.epub",
+      "title": "Edward III"
+    },
+    {
+      "seSlug": "william-shakespeare_hamlet",
+      "readmigoId": "e47acecb-e872-428b-a1cd-d5ea583c84eb",
+      "epubUrl": "https://cdn.readmigo.app/books/e47acecb-e872-428b-a1cd-d5ea583c84eb/book.epub",
+      "title": "Hamlet"
+    },
+    {
+      "seSlug": "william-shakespeare_henry-iv-part-i",
+      "readmigoId": "1d2e35eb-2c01-4723-b997-e48e63e112b0",
+      "epubUrl": "https://cdn.readmigo.app/books/1d2e35eb-2c01-4723-b997-e48e63e112b0/book.epub",
+      "title": "Henry IV, Part I"
+    },
+    {
+      "seSlug": "william-shakespeare_henry-iv-part-ii",
+      "readmigoId": "5e213a0e-dfea-4644-90f3-0c763e9c1356",
+      "epubUrl": "https://cdn.readmigo.app/books/5e213a0e-dfea-4644-90f3-0c763e9c1356/book.epub",
+      "title": "Henry IV, Part II"
+    },
+    {
+      "seSlug": "william-shakespeare_henry-v",
+      "readmigoId": "f1228ee4-cd0c-4171-9599-d6bb8bf2854e",
+      "epubUrl": "https://cdn.readmigo.app/books/f1228ee4-cd0c-4171-9599-d6bb8bf2854e/book.epub",
+      "title": "Henry V"
+    },
+    {
+      "seSlug": "william-shakespeare_henry-vi-part-i",
+      "readmigoId": "1b327fce-f193-4fb7-a8cf-fb57ea547a51",
+      "epubUrl": "https://cdn.readmigo.app/books/1b327fce-f193-4fb7-a8cf-fb57ea547a51/book.epub",
+      "title": "Henry VI, Part I"
+    },
+    {
+      "seSlug": "william-shakespeare_henry-vi-part-ii",
+      "readmigoId": "4ead18a4-d45d-48f9-9c81-f9a72c729648",
+      "epubUrl": "https://cdn.readmigo.app/books/4ead18a4-d45d-48f9-9c81-f9a72c729648/book.epub",
+      "title": "Henry VI, Part II"
+    },
+    {
+      "seSlug": "william-shakespeare_henry-vi-part-iii",
+      "readmigoId": "63305c98-9d84-4b6b-a24b-43281729ee7e",
+      "epubUrl": "https://cdn.readmigo.app/books/63305c98-9d84-4b6b-a24b-43281729ee7e/book.epub",
+      "title": "Henry VI, Part III"
+    },
+    {
+      "seSlug": "william-shakespeare_julius-caesar",
+      "readmigoId": "1c7a4dce-111b-4359-a8ca-8fc7cef4dae2",
+      "epubUrl": "https://cdn.readmigo.app/books/1c7a4dce-111b-4359-a8ca-8fc7cef4dae2/book.epub",
+      "title": "Julius Caesar"
+    },
+    {
+      "seSlug": "william-shakespeare_king-lear",
+      "readmigoId": "a702ad5a-9db8-4af2-8d2b-397f0663d039",
+      "epubUrl": "https://cdn.readmigo.app/books/a702ad5a-9db8-4af2-8d2b-397f0663d039/book.epub",
+      "title": "King Lear"
+    },
+    {
+      "seSlug": "william-shakespeare_othello",
+      "readmigoId": "16fe7e8a-190e-4552-affa-f28f098855c7",
+      "epubUrl": "https://cdn.readmigo.app/books/16fe7e8a-190e-4552-affa-f28f098855c7/book.epub",
+      "title": "Othello"
+    },
+    {
+      "seSlug": "william-shakespeare_richard-ii",
+      "readmigoId": "730a1cdd-8e5f-440a-b63e-b3b567783a95",
+      "epubUrl": "https://cdn.readmigo.app/books/730a1cdd-8e5f-440a-b63e-b3b567783a95/book.epub",
+      "title": "Richard II"
+    },
+    {
+      "seSlug": "william-shakespeare_richard-iii",
+      "readmigoId": "5430a889-32c8-4c90-a5db-164fd1fafcb4",
+      "epubUrl": "https://cdn.readmigo.app/books/5430a889-32c8-4c90-a5db-164fd1fafcb4/book.epub",
+      "title": "Richard III"
+    },
+    {
+      "seSlug": "william-shakespeare_the-merry-wives-of-windsor",
+      "readmigoId": "cf63a894-4fb9-42a5-9141-a1a73d39314f",
+      "epubUrl": "https://cdn.readmigo.app/books/cf63a894-4fb9-42a5-9141-a1a73d39314f/book.epub",
+      "title": "The Merry Wives of Windsor"
+    },
+    {
+      "seSlug": "william-wycherley_the-country-wife",
+      "readmigoId": "9daf650c-662f-45e8-868f-b81ee882d08a",
+      "epubUrl": "https://cdn.readmigo.app/books/9daf650c-662f-45e8-868f-b81ee882d08a/book.epub",
+      "title": "The Country Wife"
+    },
+    {
+      "seSlug": "winston-churchill/savrola",
+      "readmigoId": "375d80a7-52c6-4404-b65c-c5aa8e051b8d",
+      "epubUrl": "https://cdn.readmigo.app/books/375d80a7-52c6-4404-b65c-c5aa8e051b8d/book.epub",
+      "title": "Savrola"
+    },
+    {
+      "seSlug": "wladyslaw-reymont_the-peasants_michael-henry-dziewicki",
+      "readmigoId": "376eaf11-1cb7-4cab-a88b-426c6a2671ae",
+      "epubUrl": "https://cdn.readmigo.app/books/376eaf11-1cb7-4cab-a88b-426c6a2671ae/book.epub",
+      "title": "The Peasants"
+    },
+    {
+      "seSlug": "woodrow-wilson/the-new-freedom",
+      "readmigoId": "016092ab-5586-4709-9ff6-725005ae92f8",
+      "epubUrl": "https://cdn.readmigo.app/books/016092ab-5586-4709-9ff6-725005ae92f8/book.epub",
+      "title": "The New Freedom"
+    },
+    {
+      "seSlug": "zofia-nalkowska/women/michael-henry-dziewicki",
+      "readmigoId": "33d7d265-b57c-49ad-9ee2-e375d2ebd5f0",
+      "epubUrl": "https://cdn.readmigo.app/books/33d7d265-b57c-49ad-9ee2-e375d2ebd5f0/book.epub",
+      "title": "Women"
+    }
+  ]
+}

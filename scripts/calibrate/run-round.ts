@@ -74,6 +74,7 @@ interface ResultsFile {
 
 const CAL_DIR = path.resolve(__dirname);
 const INDEX_FILE = path.join(CAL_DIR, 'se-pg-index.json');
+const R2_INDEX_FILE = path.join(CAL_DIR, 'se-r2-index.json');
 const RESULTS_FILE = path.join(CAL_DIR, 'results.json');
 // Cache downloaded EPUBs so re-runs don't re-hit Gutenberg (which rate
 // limits aggressively on bursty downloads).
@@ -130,18 +131,37 @@ function parseArgs(): { size: number } {
   return { size };
 }
 
-function loadIndex(): IndexEntry[] {
+interface R2IndexEntry {
+  seSlug: string;
+  readmigoId: string;
+  epubUrl: string;
+  title: string;
+}
+
+function loadR2Index(): Map<string, R2IndexEntry> {
+  if (!fs.existsSync(R2_INDEX_FILE)) return new Map();
+  const raw = JSON.parse(fs.readFileSync(R2_INDEX_FILE, 'utf8')) as {
+    entries: R2IndexEntry[];
+  };
+  const m = new Map<string, R2IndexEntry>();
+  for (const e of raw.entries) m.set(e.seSlug, e);
+  return m;
+}
+
+function loadIndex(r2Index: Map<string, R2IndexEntry>): IndexEntry[] {
   if (!fs.existsSync(INDEX_FILE)) {
     throw new Error(`se-pg-index.json not found. Run build-se-index.ts first.`);
   }
   const raw = JSON.parse(fs.readFileSync(INDEX_FILE, 'utf8')) as IndexFile;
-  // Only single-source SE editions are comparable — when SE lists multiple
-  // gutenberg.org URLs in dc:source it has merged several PG books into
-  // one curated volume (the Vicomte de Bragelonne trilogy, Ambrose Bierce
-  // collected poetry, Algis Budrys short fiction, etc.), and our pipeline
-  // cannot reconstruct that merge from a single PG download. We'd rather
-  // skip these entries than report spurious "failures".
-  return raw.entries.filter((e) => e.pgIds.length === 1);
+  // Keep only single-source SE editions (see earlier note on Vicomte / Bierce
+  // / Budrys multi-source merges) and — when standardebooks.org is rate
+  // limiting us — further require that each entry has an SE EPUB mirror
+  // available in the Readmigo R2 index. Readmigo already ingested ~400 SE
+  // books and stores each under https://cdn.readmigo.app/books/{id}/book.epub
+  // which has no rate limit.
+  return raw.entries
+    .filter((e) => e.pgIds.length === 1)
+    .filter((e) => r2Index.has(e.seSlug));
 }
 
 function loadResults(): ResultsFile {
@@ -285,11 +305,15 @@ function pgEpubUrl(pgId: number): string {
   return `https://aleph.pglaf.org/cache/epub/${pgId}/pg${pgId}-images.epub`;
 }
 
-function seEpubUrl(repo: string, seSlug: string): string {
-  // SE publishes EPUBs at /ebooks/{slug}/downloads/{flattened-slug}.epub.
-  // The flattened slug is repo name (slashes -> underscores) lowercased.
-  // The ?source=download query bypasses SE's "your download has started"
-  // interstitial and goes straight to the file.
+function seEpubUrl(
+  repo: string,
+  seSlug: string,
+  r2Index: Map<string, R2IndexEntry>,
+): string {
+  // Prefer the Readmigo R2 mirror when available — it has no rate limit.
+  // Fall back to standardebooks.org for entries not yet imported to R2.
+  const r2 = r2Index.get(seSlug);
+  if (r2) return r2.epubUrl;
   const filename = repo.toLowerCase();
   return `https://standardebooks.org/ebooks/${seSlug}/downloads/${filename}.epub?source=download`;
 }
@@ -297,6 +321,7 @@ function seEpubUrl(repo: string, seSlug: string): string {
 async function testBook(
   entry: IndexEntry,
   round: number,
+  r2Index: Map<string, R2IndexEntry>,
 ): Promise<CalibrationRow> {
   const pgId = entry.pgIds[0]; // Primary source if compilation.
   const notes: string[] = [];
@@ -305,7 +330,7 @@ async function testBook(
 
   try {
     pgPath = await downloadToTemp(pgEpubUrl(pgId), `pg-${pgId}`);
-    sePath = await downloadToTemp(seEpubUrl(entry.seRepo, entry.seSlug), `se-${pgId}`);
+    sePath = await downloadToTemp(seEpubUrl(entry.seRepo, entry.seSlug, r2Index), `se-${pgId}`);
 
     const [pgSummary, seGroundTruth] = await Promise.all([
       runPipelineOnPg(pgPath),
@@ -375,9 +400,11 @@ async function testBook(
 
 async function main() {
   const { size } = parseArgs();
-  const index = loadIndex();
+  const r2Index = loadR2Index();
+  const index = loadIndex(r2Index);
   const results = loadResults();
   const already = testedPgIds(results);
+  console.log(`Index: ${index.length} single-source SE entries with R2 mirror`);
 
   const candidates = index.filter((e) => !already.has(e.pgIds[0]));
   if (candidates.length < size) {
@@ -401,7 +428,7 @@ async function main() {
   for (let i = 0; i < selected.length; i++) {
     const entry = selected[i];
     console.log(`[${i + 1}/${selected.length}] ${entry.seSlug} (PG #${entry.pgIds[0]})`);
-    const row = await testBook(entry, round);
+    const row = await testBook(entry, round, r2Index);
     rows.push(row);
     if (row.overallPass) {
       console.log(
