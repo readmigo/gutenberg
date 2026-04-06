@@ -132,42 +132,75 @@ const TITLE_PAGE_MARKERS = [
 ];
 
 /**
- * Detect front-matter / divider / advertising chapters that should never be
- * treated as narrative content. These are things like title pages, volume
- * dividers, dedications, publication notices, and "by the same author"
- * advertising blocks that PG's first-edition scans tend to include but
- * Standard Ebooks curates out.
- *
- * The heuristic is layered:
- *   1. Very short (<30 words) — obvious junk regardless of title.
- *   2. Short (<300 words) with a non-chapter title — dividers, dedications,
- *      back-cover ads.
- *   3. Any length but the first 500 characters match a title-page marker
+ * Detect content-level front-matter signals that apply regardless of where
+ * a chapter appears in the book:
+ *   1. Very short (<30 words) — obvious junk (volume dividers, blank pages).
+ *   2. Any length but the first 500 characters match a title-page marker
  *      phrase like "AUTHOR OF" or "COPYRIGHT BY" — catches the 32,000-word
  *      "THE FOUR FEATHERS BY A. E. W. MASON AUTHOR OF..." blob where PG
  *      merges title page + preface + prologue into a single anchor range.
+ *
+ * Position-based short-chapter filtering (the "Courtship of Maurice Buckler"
+ * style back-matter advertisement) is handled separately in
+ * `dropEdgeFrontMatter` so that mid-book short entries like Aesop's fables
+ * are not mistaken for junk.
  */
 function isFrontMatterFragment(title: string, wordCount: number, rawHtml: string): boolean {
   if (wordCount < 30) return true;
 
-  const lowerTitle = (title || '').toLowerCase();
-  const hasChapterKeyword =
-    /\b(chapter|book|part|prologue|epilogue|introduction|preface|foreword|appendix|act|scene|canto|volume)\b/.test(
-      lowerTitle,
-    );
-
-  // Short segment that is not labeled as a chapter/prologue/etc.
-  if (wordCount < 300 && !hasChapterKeyword) return true;
-
-  // Content-based title-page detection. Sampling the first 500 chars of
-  // stripped text catches the marker phrases without scanning the full
-  // body of long chapters.
   const sample = stripHtml(rawHtml).slice(0, 500).toUpperCase();
   for (const re of TITLE_PAGE_MARKERS) {
     if (re.test(sample)) return true;
   }
-
   return false;
+}
+
+/**
+ * Post-processing pass that drops short non-narrative chapters that sit at
+ * the very beginning or end of the extracted list. The intent is to catch
+ * front-matter blurbs and back-matter advertising blocks without touching
+ * mid-book short entries (poems, fables, vignettes).
+ *
+ * "Edge" here means: among the first few or last few chapters of the list,
+ * the chapter is short AND not labeled with a chapter/book/part-style
+ * heading AND its removal would not leave the book empty.
+ */
+function dropEdgeFrontMatter(chapters: ParsedChapter[]): ParsedChapter[] {
+  if (chapters.length <= 3) return chapters;
+
+  const SHORT = 300;
+  const EDGE_WINDOW = 3;
+  const keywordRe =
+    /\b(chapter|book|part|prologue|epilogue|introduction|preface|foreword|appendix|act|scene|canto|volume)\b/i;
+
+  const hasNarrativeKeyword = (ch: ParsedChapter): boolean =>
+    keywordRe.test(ch.title || '');
+
+  // Strip from the head as long as the first chapter is short-and-untitled
+  // and sits inside the edge window.
+  let head = 0;
+  while (
+    head < Math.min(EDGE_WINDOW, chapters.length - 1) &&
+    chapters[head].wordCount < SHORT &&
+    !hasNarrativeKeyword(chapters[head])
+  ) {
+    head++;
+  }
+
+  // Strip from the tail similarly.
+  let tail = chapters.length;
+  while (
+    tail > Math.max(chapters.length - EDGE_WINDOW, head + 1) &&
+    chapters[tail - 1].wordCount < SHORT &&
+    !hasNarrativeKeyword(chapters[tail - 1])
+  ) {
+    tail--;
+  }
+
+  if (head === 0 && tail === chapters.length) return chapters;
+  return chapters
+    .slice(head, tail)
+    .map((ch, i) => ({ ...ch, order: i + 1 }));
 }
 
 // Detect license/colophon chapters to skip. Uses word-boundary matching on
@@ -411,7 +444,7 @@ export async function extractChapters(epub: any): Promise<ParsedChapter[]> {
       }
     }
 
-    return dedupeByContentHash(chapters);
+    return dropEdgeFrontMatter(dedupeByContentHash(chapters));
   }
 
   // Normal path: one chapter per TOC entry (or per flow item if no TOC).
@@ -448,7 +481,7 @@ export async function extractChapters(epub: any): Promise<ParsedChapter[]> {
     });
   }
 
-  return dedupeByContentHash(chapters);
+  return dropEdgeFrontMatter(dedupeByContentHash(chapters));
 }
 
 /**
