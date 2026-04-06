@@ -116,6 +116,32 @@ export async function extractImages(epub: any): Promise<EpubImage[]> {
   return images;
 }
 
+/**
+ * Detect front-matter / divider chapters that should never be treated as
+ * narrative content. These are things like title pages, volume dividers,
+ * dedications, and publication notices in PG's multi-volume first editions.
+ *
+ * The heuristic: a chapter is junk if its raw word count is very low AND
+ * its title does not look like an actual chapter/book/part label. The
+ * explicit "chapter/book/part" allowlist keeps legitimately short chapters
+ * (e.g. a 60-word prologue explicitly titled "Prologue") from being lost.
+ */
+function isFrontMatterFragment(title: string, wordCount: number): boolean {
+  // Clearly empty or near-empty — filter outright regardless of title.
+  if (wordCount < 30) return true;
+  // Short segment that is not labeled as a chapter/prologue/epilogue/part.
+  // 200 words is the threshold below which P&P title pages (~14-54 words)
+  // and volume dividers reliably land, while a real 676-word short chapter
+  // like P&P ch. XII passes through comfortably.
+  if (wordCount < 200) {
+    const lower = (title || '').toLowerCase();
+    if (!/\b(chapter|book|part|prologue|epilogue|introduction|preface|foreword|appendix|act|scene|canto|volume)\b/.test(lower)) {
+      return true;
+    }
+  }
+  return false;
+}
+
 // Detect license/colophon chapters to skip. Uses word-boundary matching on
 // the title so that legitimate chapter headings containing substrings like
 // "Covering a screen" (Pride and Prejudice ch. VIII) are not filtered out.
@@ -386,6 +412,7 @@ export async function extractChapters(epub: any): Promise<ParsedChapter[]> {
         const headingTitle = extractTitleFromSegment(segment);
         const title = headingTitle || entry.title || `Chapter ${chapters.length + 1}`;
         if (isSkippableChapter(title, entry.href)) continue;
+        if (isFrontMatterFragment(title, wordCount)) continue;
 
         chapters.push({
           order: chapters.length + 1,
@@ -424,6 +451,7 @@ export async function extractChapters(epub: any): Promise<ParsedChapter[]> {
     if (isSkippableChapter(title, item.href)) continue;
 
     const wordCount = countWords(stripHtml(content));
+    if (isFrontMatterFragment(title, wordCount)) continue;
     chapters.push({
       order: chapters.length + 1,
       title,

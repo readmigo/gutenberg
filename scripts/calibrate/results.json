@@ -1,0 +1,52 @@
+{
+  "rounds": [
+    {
+      "round": 2,
+      "size": 2,
+      "completedAt": "2026-04-06T10:36:48.136Z",
+      "passRate": 1,
+      "rows": [
+        {
+          "round": 2,
+          "testedAt": "2026-04-06T10:36:36.188Z",
+          "seSlug": "a-a-milne/the-house-at-pooh-corner",
+          "pgId": 73011,
+          "pgTitle": "The house at Pooh Corner",
+          "pgChapters": 11,
+          "pgWords": 26038,
+          "pgQualityScore": 100,
+          "pgQualityTier": "auto_approved",
+          "seChapters": 11,
+          "seWords": 26238,
+          "chapterDiff": 0,
+          "wordDiffPct": -0.0076,
+          "chapterMatch": true,
+          "wordMatch": true,
+          "qualityMatch": true,
+          "overallPass": true,
+          "notes": []
+        },
+        {
+          "round": 2,
+          "testedAt": "2026-04-06T10:36:48.136Z",
+          "seSlug": "a-a-milne/the-red-house-mystery",
+          "pgId": 1872,
+          "pgTitle": "The Red House Mystery",
+          "pgChapters": 23,
+          "pgWords": 60461,
+          "pgQualityScore": 100,
+          "pgQualityTier": "auto_approved",
+          "seChapters": 22,
+          "seWords": 60769,
+          "chapterDiff": 1,
+          "wordDiffPct": -0.0051,
+          "chapterMatch": true,
+          "wordMatch": true,
+          "qualityMatch": true,
+          "overallPass": true,
+          "notes": []
+        }
+      ]
+    }
+  ]
+}

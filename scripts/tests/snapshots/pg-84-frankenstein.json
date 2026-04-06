@@ -2,191 +2,177 @@
   "title": "Frankenstein; or, the modern prometheus",
   "author": "Mary Wollstonecraft Shelley",
   "language": "en",
-  "chapterCount": 30,
-  "totalWords": 75085,
-  "qualityScore": 95,
+  "chapterCount": 28,
+  "totalWords": 75018,
+  "qualityScore": 100,
   "qualityTier": "auto_approved",
   "qualityPass": true,
-  "qualityIssues": [
-    "1 near-empty chapters (< 50 words)"
-  ],
+  "qualityIssues": [],
   "chapters": [
     {
       "order": 1,
-      "title": "The Project Gutenberg eBook of Frankenstein; or, the modern prometheus",
-      "wordCount": 10,
-      "sample": "Frankenstein; or, the Modern Prometheus by Mary Wollstonecraft (Godwin) Shelley"
-    },
-    {
-      "order": 2,
-      "title": "CONTENTS",
-      "wordCount": 57,
-      "sample": "CONTENTS Letter 1 Letter 2 Letter 3 Letter 4 Chapter 1 Chapter 2 Chapter 3 Chapter 4 Chapter 5 Chapter 6 Chapter 7 Chapter 8 Chapter 9 Chapter 10 Chapter 11 Cha"
-    },
-    {
-      "order": 3,
       "title": "Letter 1",
       "wordCount": 1200,
       "sample": "Letter 1 To Mrs. Saville, England. St. Petersburgh, Dec. 11th, 17⁠—. You will rejoice to hear that no disaster has accompanied the commencement of an enterprise"
     },
     {
-      "order": 4,
+      "order": 2,
       "title": "Letter 2",
       "wordCount": 1311,
       "sample": "Letter 2 To Mrs. Saville, England. Archangel, 28th March, 17⁠—. How slowly the time passes here, encompassed as I am by frost and snow! Yet a second step is tak"
     },
     {
-      "order": 5,
+      "order": 3,
       "title": "Letter 3",
       "wordCount": 300,
       "sample": "Letter 3 To Mrs. Saville, England. July 7th, 17⁠—. My dear Sister, I write a few lines in haste to say that I am safe⁠—and well advanced on my voyage. This lett"
     },
     {
-      "order": 6,
+      "order": 4,
       "title": "Letter 4",
       "wordCount": 2730,
       "sample": "Letter 4 To Mrs. Saville, England. August 5th, 17⁠—. So strange an accident has happened to us that I cannot forbear recording it, although it is very probable "
     },
     {
-      "order": 7,
+      "order": 5,
       "title": "Chapter 1",
       "wordCount": 1766,
       "sample": "Chapter 1 I am by birth a Genevese, and my family is one of the most distinguished of that republic. My ancestors had been for many years counsellors and syndic"
     },
     {
-      "order": 8,
+      "order": 6,
       "title": "Chapter 2",
       "wordCount": 2205,
       "sample": "Chapter 2 We were brought up together; there was not quite a year difference in our ages. I need not say that we were strangers to any species of disunion or di"
     },
     {
-      "order": 9,
+      "order": 7,
       "title": "Chapter 3",
       "wordCount": 2675,
       "sample": "Chapter 3 When I had attained the age of seventeen my parents resolved that I should become a student at the university of Ingolstadt. I had hitherto attended t"
     },
     {
-      "order": 10,
+      "order": 8,
       "title": "Chapter 4",
       "wordCount": 2535,
       "sample": "Chapter 4 From this day natural philosophy, and particularly chemistry, in the most comprehensive sense of the term, became nearly my sole occupation. I read wi"
     },
     {
-      "order": 11,
+      "order": 9,
       "title": "Chapter 5",
       "wordCount": 2358,
       "sample": "Chapter 5 It was on a dreary night of November that I beheld the accomplishment of my toils. With an anxiety that almost amounted to agony, I collected the inst"
     },
     {
-      "order": 12,
+      "order": 10,
       "title": "Chapter 6",
       "wordCount": 2718,
       "sample": "Chapter 6 Clerval then put the following letter into my hands. It was from my own Elizabeth: “My dearest Cousin, “You have been ill, very ill, and even the cons"
     },
     {
-      "order": 13,
+      "order": 11,
       "title": "Chapter 7",
       "wordCount": 3560,
       "sample": "Chapter 7 On my return, I found the following letter from my father:⁠— “My dear Victor, “You have probably waited impatiently for a letter to fix the date of yo"
     },
     {
-      "order": 14,
+      "order": 12,
       "title": "Chapter 8",
       "wordCount": 3093,
       "sample": "Chapter 8 We passed a few sad hours until eleven o’clock, when the trial was to commence. My father and the rest of the family being obliged to attend as witnes"
     },
     {
-      "order": 15,
+      "order": 13,
       "title": "Chapter 9",
       "wordCount": 2213,
       "sample": "Chapter 9 Nothing is more painful to the human mind than, after the feelings have been worked up by a quick succession of events, the dead calmness of inaction "
     },
     {
-      "order": 16,
+      "order": 14,
       "title": "Chapter 10",
       "wordCount": 2359,
       "sample": "Chapter 10 I spent the following day roaming through the valley. I stood beside the sources of the Arveiron, which take their rise in a glacier, that with slow "
     },
     {
-      "order": 17,
+      "order": 15,
       "title": "Chapter 11",
       "wordCount": 2907,
       "sample": "Chapter 11 “It is with considerable difficulty that I remember the original era of my being; all the events of that period appear confused and indistinct. A str"
     },
     {
-      "order": 18,
+      "order": 16,
       "title": "Chapter 12",
       "wordCount": 2072,
       "sample": "Chapter 12 “I lay on my straw, but I could not sleep. I thought of the occurrences of the day. What chiefly struck me was the gentle manners of these people, an"
     },
     {
-      "order": 19,
+      "order": 17,
       "title": "Chapter 13",
       "wordCount": 2033,
       "sample": "Chapter 13 “I now hasten to the more moving part of my story. I shall relate events that impressed me with feelings which, from what I had been, have made me wh"
     },
     {
-      "order": 20,
+      "order": 18,
       "title": "Chapter 14",
       "wordCount": 1854,
       "sample": "Chapter 14 “Some time elapsed before I learned the history of my friends. It was one which could not fail to impress itself deeply on my mind, unfolding as it d"
     },
     {
-      "order": 21,
+      "order": 19,
       "title": "Chapter 15",
       "wordCount": 3034,
       "sample": "Chapter 15 “Such was the history of my beloved cottagers. It impressed me deeply. I learned, from the views of social life which it developed, to admire their v"
     },
     {
-      "order": 22,
+      "order": 20,
       "title": "Chapter 16",
       "wordCount": 3204,
       "sample": "Chapter 16 “Cursed, cursed creator! Why did I live? Why, in that instant, did I not extinguish the spark of existence which you had so wantonly bestowed? I know"
     },
     {
-      "order": 23,
+      "order": 21,
       "title": "Chapter 17",
       "wordCount": 1917,
       "sample": "Chapter 17 The being finished speaking and fixed his looks upon me in the expectation of a reply. But I was bewildered, perplexed, and unable to arrange my idea"
     },
     {
-      "order": 24,
+      "order": 22,
       "title": "Chapter 18",
       "wordCount": 2844,
       "sample": "Chapter 18 Day after day, week after week, passed away on my return to Geneva; and I could not collect the courage to recommence my work. I feared the vengeance"
     },
     {
-      "order": 25,
+      "order": 23,
       "title": "Chapter 19",
       "wordCount": 2611,
       "sample": "Chapter 19 London was our present point of rest; we determined to remain several months in this wonderful and celebrated city. Clerval desired the intercourse o"
     },
     {
-      "order": 26,
+      "order": 24,
       "title": "Chapter 20",
       "wordCount": 3525,
       "sample": "Chapter 20 I sat one evening in my laboratory; the sun had set, and the moon was just rising from the sea; I had not sufficient light for my employment, and I r"
     },
     {
-      "order": 27,
+      "order": 25,
       "title": "Chapter 21",
       "wordCount": 3737,
       "sample": "Chapter 21 I was soon introduced into the presence of the magistrate, an old benevolent man with calm and mild manners. He looked upon me, however, with some de"
     },
     {
-      "order": 28,
+      "order": 26,
       "title": "Chapter 22",
       "wordCount": 3423,
       "sample": "Chapter 22 The voyage came to an end. We landed, and proceeded to Paris. I soon found that I had overtaxed my strength and that I must repose before I could con"
     },
     {
-      "order": 29,
+      "order": 27,
       "title": "Chapter 23",
       "wordCount": 2595,
       "sample": "Chapter 23 It was eight o’clock when we landed; we walked for a short time on the shore, enjoying the transitory light, and then retired to the inn and contempl"
     },
     {
-      "order": 30,
+      "order": 28,
       "title": "Chapter 24",
       "wordCount": 8239,
       "sample": "Chapter 24 My present situation was one in which all voluntary thought was swallowed up and lost. I was hurried away by fury; revenge alone endowed me with stre"
