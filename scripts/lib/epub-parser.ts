@@ -158,7 +158,28 @@ export async function extractChapters(epub: any): Promise<ParsedChapter[]> {
   const chapters: ParsedChapter[] = [];
   const toc = epub.toc || [];
   const flow = epub.flow || [];
-  const items = toc.length > 0 ? toc : flow;
+
+  // Multi-chapter-per-file detection: PG "Illustrated" editions pack many chapters
+  // into a single XHTML file and reference each chapter by #anchor in the TOC.
+  // Since getChapterContent() below cannot split by anchor, walking the TOC would
+  // return the entire file for every anchor entry — producing duplicate chapters
+  // with inflated word counts. When this is detected, fall back to flow-based
+  // extraction (one chapter per physical file) which is correct but coarser.
+  let items = toc.length > 0 ? toc : flow;
+  if (toc.length > 0 && flow.length > 0) {
+    const uniqueHrefs = new Set<string>();
+    for (const t of toc) {
+      const base = (t.href || '').split('#')[0];
+      if (base) uniqueHrefs.add(base);
+    }
+    if (uniqueHrefs.size > 0 && toc.length > uniqueHrefs.size * 1.5) {
+      console.warn(
+        `  [epub-parser] TOC has ${toc.length} entries but only ${uniqueHrefs.size} unique files — ` +
+        `falling back to flow-based extraction to avoid chapter duplication`,
+      );
+      items = flow;
+    }
+  }
 
   for (let i = 0; i < items.length; i++) {
     const item = items[i];

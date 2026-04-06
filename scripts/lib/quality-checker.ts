@@ -1,3 +1,5 @@
+import { createHash } from 'crypto';
+
 export interface QualityResult {
   score: number; // 0-100
   issues: string[];
@@ -106,6 +108,16 @@ export function checkBookQuality(book: BookData, chapters: ChapterData[]): Quali
     score -= 10;
   }
 
+  // Upper bound sanity check. War and Peace is ~587k words; anything beyond
+  // 1M is almost certainly the result of parser-level content duplication.
+  if (book.wordCount > 1_000_000) {
+    issues.push(`Impossible word count: ${book.wordCount} (parser duplication?)`);
+    score = 0;
+  } else if (book.wordCount > 500_000) {
+    issues.push(`Implausibly high word count: ${book.wordCount}`);
+    score -= 50;
+  }
+
   // Empty chapters
   const emptyChapters = chapters.filter((c) => c.wordCount < 50);
   if (emptyChapters.length > 0) {
@@ -190,9 +202,19 @@ export function checkBookQuality(book: BookData, chapters: ChapterData[]): Quali
       boilerplateChapters++;
     }
   }
-  if (boilerplateChapters > 0) {
-    issues.push(`Gutenberg boilerplate residue in ${boilerplateChapters} chapter(s)`);
-    score -= Math.min(15, boilerplateChapters * 5);
+  if (boilerplateChapters > 0 && chapters.length > 0) {
+    const ratio = boilerplateChapters / chapters.length;
+    issues.push(
+      `Gutenberg boilerplate residue in ${boilerplateChapters}/${chapters.length} chapter(s) (${Math.round(ratio * 100)}%)`,
+    );
+    if (ratio >= 0.5) {
+      // More than half the chapters contain PG boilerplate — this is a
+      // parser/cleaner failure, force the book below the rejected threshold.
+      score = Math.min(score, 30);
+    } else {
+      // Scale linearly by affected fraction, up to a 40-point penalty.
+      score -= Math.round(ratio * 40);
+    }
   }
 
   // 5. Repeated paragraphs (content duplication)
@@ -230,6 +252,33 @@ export function checkBookQuality(book: BookData, chapters: ChapterData[]): Quali
         issues.push(`High chapter length variation (CV: ${cv.toFixed(1)})`);
         score -= 5;
       }
+    }
+  }
+
+  // 8. Chapter content duplication check. The cheapest and most diagnostic
+  // guard against upstream parser bugs that copy the same file content into
+  // multiple chapter records. Any duplicate group is fatal — the book is
+  // unreadable regardless of what other checks say.
+  if (chapters.length > 1) {
+    const hashToChapters = new Map<string, number[]>();
+    for (let i = 0; i < chapters.length; i++) {
+      const text = stripHtml(chapters[i].htmlContent).toLowerCase().replace(/\s+/g, '');
+      if (text.length < 100) continue;
+      const hash = createHash('sha1').update(text).digest('hex');
+      if (!hashToChapters.has(hash)) hashToChapters.set(hash, []);
+      hashToChapters.get(hash)!.push(i + 1);
+    }
+    const duplicateGroups = [...hashToChapters.values()].filter((g) => g.length > 1);
+    if (duplicateGroups.length > 0) {
+      const duplicatedCount = duplicateGroups.reduce((s, g) => s + g.length, 0);
+      const sample = duplicateGroups
+        .slice(0, 3)
+        .map((g) => `[${g.join(',')}]`)
+        .join(' ');
+      issues.push(
+        `Chapter content duplication: ${duplicatedCount} chapters share identical content ${sample}`,
+      );
+      score = 0;
     }
   }
 

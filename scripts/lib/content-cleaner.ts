@@ -21,7 +21,10 @@ const GUTENBERG_PATTERNS: RegExp[] = [
   /The Project Gutenberg Literary Archive Foundation/i,
   /Volunteers and financial support/i,
   /This etext was prepared by/i,
-  /Produced by/i,
+  // Narrow "Produced by" to the PG credit format. The bare phrase also occurs
+  // in legitimate prose (e.g. "...was produced by the entrance...") and the
+  // block-level regex below would otherwise nuke the entire paragraph.
+  /Produced by [^<]{0,200}(?:Project Gutenberg|Online Distributed|Distributed Proofreading|David Widger|Internet Archive|PGDP|pgdp\.net)/i,
   /by David Widger/i,
   /Release Date:/i,
   /Character set encoding:/i,
@@ -33,12 +36,35 @@ const GUTENBERG_PATTERNS: RegExp[] = [
 ];
 
 // Block-level elements that may contain PG boilerplate
-const BLOCK_TAGS = 'p|div|span|pre|h[1-6]|li|blockquote';
+const BLOCK_TAGS = 'p|div|span|pre|h[1-6]|li|blockquote|section';
 
 // Remove paragraphs matching PG patterns
 export function cleanGutenbergContent(html: string): string {
   if (!html) return html;
   let cleaned = html;
+
+  // Remove entire PG boilerplate sections regardless of inner content.
+  // Modern PG EPUBs wrap the license/header/footer in identifiable wrappers
+  // whose inner structure (<h2>, <div>, <p>) may not individually contain
+  // keywords from GUTENBERG_PATTERNS, so pattern-based removal misses them.
+  cleaned = cleaned.replace(
+    /<section\b[^>]*(?:class="[^"]*\bpg-boilerplate\b|id="pg-(?:header|footer)")[^>]*>[\s\S]*?<\/section>/gi,
+    '',
+  );
+  cleaned = cleaned.replace(
+    /<div\b[^>]*id="pg-(?:machine-header|start-separator|end-separator)"[^>]*>[\s\S]*?<\/div>/gi,
+    '',
+  );
+
+  // Remove embedded table-of-contents blocks. PG's multi-chapter-per-file
+  // format embeds a TOC of anchor links at the top of the front-matter file;
+  // when flow-based extraction is used (see epub-parser.ts), this TOC would
+  // otherwise become part of chapter 1's content.
+  cleaned = cleaned.replace(
+    /<(p|div)\b[^>]*class="[^"]*\btoc\b[^"]*"[^>]*>[\s\S]*?<\/\1>/gi,
+    '',
+  );
+  cleaned = cleaned.replace(/<nav\b[^>]*>[\s\S]*?<\/nav>/gi, '');
 
   // Remove START/END blocks
   cleaned = cleaned.replace(/\*\*\*\s*START OF (THIS |THE )?PROJECT GUTENBERG[\s\S]*?\*\*\*/gi, '');
