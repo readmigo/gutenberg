@@ -1,0 +1,385 @@
+{
+  "title": "Pride and Prejudice",
+  "author": "Jane Austen",
+  "language": "en",
+  "chapterCount": 62,
+  "totalWords": 123273,
+  "qualityScore": 100,
+  "qualityTier": "auto_approved",
+  "qualityPass": true,
+  "qualityIssues": [],
+  "chapters": [
+    {
+      "order": 1,
+      "title": "PRIDE. and PREJUDICE",
+      "wordCount": 4925,
+      "sample": "PRIDE. and PREJUDICE by Jane Austen, with a Preface by George Saintsbury and Illustrations by Hugh Thomson Ruskin House. 156. Charing Cross Road. London George "
+    },
+    {
+      "order": 2,
+      "title": "Chapter I.",
+      "wordCount": 882,
+      "sample": "Chapter I . I T is a truth universally acknowledged, that a single man in possession of a good fortune must be in want of a wife. However little known the feeli"
+    },
+    {
+      "order": 3,
+      "title": "CHAPTER II.",
+      "wordCount": 815,
+      "sample": "I hope Mr. Bingley will like it. CHAPTER II . R. BENNET was among the earliest of those who waited on Mr. Bingley. He had always intended to visit him, though t"
+    },
+    {
+      "order": 4,
+      "title": "CHAPTER III.",
+      "wordCount": 1733,
+      "sample": "He rode a black horse. CHAPTER III . OT all that Mrs. Bennet, however, with the assistance of her five daughters, could ask on the subject, was sufficient to dr"
+    },
+    {
+      "order": 5,
+      "title": "CHAPTER IV.",
+      "wordCount": 1062,
+      "sample": "CHAPTER IV . HEN Jane and Elizabeth were alone, the former, who had been cautious in her praise of Mr. Bingley before, expressed to her sister how very much she"
+    },
+    {
+      "order": 6,
+      "title": "CHAPTER V.",
+      "wordCount": 977,
+      "sample": "CHAPTER V . ITHIN a short walk of Longbourn lived a family with whom the Bennets were particularly intimate. Sir William Lucas had been formerly in trade in Mer"
+    },
+    {
+      "order": 7,
+      "title": "CHAPTER VI.",
+      "wordCount": 2358,
+      "sample": "CHAPTER VI . HE ladies of Longbourn soon waited on those of Netherfield. The visit was returned in due form. Miss Bennet’s pleasing manners grew on the good-wil"
+    },
+    {
+      "order": 8,
+      "title": "CHAPTER VII.",
+      "wordCount": 2003,
+      "sample": "A note for Miss Bennet. CHAPTER VII . R. BENNET’S property consisted almost entirely in an estate of two thousand a year, which, unfortunately for his daughters"
+    },
+    {
+      "order": 9,
+      "title": "CHAPTER VIII.",
+      "wordCount": 1937,
+      "sample": "Covering a screen. CHAPTER VIII . T five o’clock the two ladies retired to dress, and at half-past six Elizabeth was summoned to dinner. To the civil inquiries "
+    },
+    {
+      "order": 10,
+      "title": "CHAPTER IX.",
+      "wordCount": 1742,
+      "sample": "Mrs Bennet and her two youngest girls. CHAPTER IX . LIZABETH passed the chief of the night in her sister’s room, and in the morning had the pleasure of being ab"
+    },
+    {
+      "order": 11,
+      "title": "CHAPTER X.",
+      "wordCount": 1935,
+      "sample": "CHAPTER X . HE day passed much as the day before had done. Mrs. Hurst and Miss Bingley had spent some hours of the morning with the invalid, who continued, thou"
+    },
+    {
+      "order": 12,
+      "title": "CHAPTER XI.",
+      "wordCount": 1608,
+      "sample": "Piling up the fire. CHAPTER XI . HEN the ladies removed after dinner Elizabeth ran up to her sister, and seeing her well guarded from cold, attended her into th"
+    },
+    {
+      "order": 13,
+      "title": "CHAPTER XII.",
+      "wordCount": 676,
+      "sample": "CHAPTER XII . N consequence of an agreement between the sisters, Elizabeth wrote the next morning to her mother, to beg that the carriage might be sent for them"
+    },
+    {
+      "order": 14,
+      "title": "CHAPTER XIII",
+      "wordCount": 1693,
+      "sample": "CHAPTER XIII hope, my dear,” said Mr. Bennet to his wife, as they were at breakfast the next morning, “that you have ordered a good dinner to-day, because I hav"
+    },
+    {
+      "order": 15,
+      "title": "CHAPTER XIV",
+      "wordCount": 1127,
+      "sample": "CHAPTER XIV URING dinner, Mr. Bennet scarcely spoke at all; but when the servants were withdrawn, he thought it time to have some conversation with his guest, a"
+    },
+    {
+      "order": 16,
+      "title": "CHAPTER XV.",
+      "wordCount": 1692,
+      "sample": "CHAPTER XV . R. COLLINS was not a sensible man, and the deficiency of nature had been but little assisted by education or society; the greatest part of his life"
+    },
+    {
+      "order": 17,
+      "title": "CHAPTER XVI.",
+      "wordCount": 3382,
+      "sample": "CHAPTER XVI . S no objection was made to the young people’s engagement with their aunt, and all Mr. Collins’s scruples of leaving Mr. and Mrs. Bennet for a sing"
+    },
+    {
+      "order": 18,
+      "title": "CHAPTER XVII.",
+      "wordCount": 1286,
+      "sample": "delighted to see their dear friend again. CHAPTER XVII . LIZABETH related to Jane, the next day, what had passed between Mr. Wickham and herself. Jane listened "
+    },
+    {
+      "order": 19,
+      "title": "CHAPTER XVIII.",
+      "wordCount": 5198,
+      "sample": "CHAPTER XVIII . ILL Elizabeth entered the drawing-room at Netherfield, and looked in vain for Mr. Wickham among the cluster of red coats there assembled, a doub"
+    },
+    {
+      "order": 20,
+      "title": "CHAPTER XIX.",
+      "wordCount": 1922,
+      "sample": "“to assure you in the most animated language.” CHAPTER XIX . HE next day opened a new scene at Longbourn. Mr. Collins made his declaration in form. Having resol"
+    },
+    {
+      "order": 21,
+      "title": "CHAPTER XX.",
+      "wordCount": 1657,
+      "sample": "CHAPTER XX . R. COLLINS was not left long to the silent contemplation of his successful love; for Mrs. Bennet, having dawdled about in the vestibule to watch fo"
+    },
+    {
+      "order": 22,
+      "title": "CHAPTER XXI.",
+      "wordCount": 2022,
+      "sample": "CHAPTER XXI . HE discussion of Mr. Collins’s offer was now nearly at an end, and Elizabeth had only to suffer from the uncomfortable feelings necessarily attend"
+    },
+    {
+      "order": 23,
+      "title": "CHAPTER XXII.",
+      "wordCount": 486,
+      "sample": "CHAPTER XXII . HE Bennets were engaged to dine with the Lucases; and again, during the chief of the day, was Miss Lucas so kind as to listen to Mr. Collins. Eli"
+    },
+    {
+      "order": 24,
+      "title": "CHAPTER XXIII.",
+      "wordCount": 1628,
+      "sample": "“Protested he must be entirely mistaken.” CHAPTER XXIII . LIZABETH was sitting with her mother and sisters, reflecting on what she had heard, and doubting wheth"
+    },
+    {
+      "order": 25,
+      "title": "CHAPTER XXIV.",
+      "wordCount": 1929,
+      "sample": "CHAPTER XXIV . ISS BINGLEY’S letter arrived, and put an end to doubt. The very first sentence conveyed the assurance of their being all settled in London for th"
+    },
+    {
+      "order": 26,
+      "title": "CHAPTER XXV.",
+      "wordCount": 1533,
+      "sample": "CHAPTER XXV . FTER a week spent in professions of love and schemes of felicity, Mr. Collins was called from his amiable Charlotte by the arrival of Saturday. Th"
+    },
+    {
+      "order": 27,
+      "title": "CHAPTER XXVI.",
+      "wordCount": 2345,
+      "sample": "“Will you come and see me.” CHAPTER XXVI . RS. GARDINER’S caution to Elizabeth was punctually and kindly given on the first favourable opportunity of speaking t"
+    },
+    {
+      "order": 28,
+      "title": "CHAPTERXXVII.",
+      "wordCount": 1263,
+      "sample": "“On the Stairs.” CHAPTERXXVII. ITH no greater events than these in the Longbourn family, and otherwise diversified by little beyond the walks to Meryton, someti"
+    },
+    {
+      "order": 29,
+      "title": "CHAPTERXXVIII.",
+      "wordCount": 1463,
+      "sample": "“At the door.” CHAPTERXXVIII. VERY object in the next day’s journey was new and interesting to Elizabeth; and her spirits were in a state of enjoyment; for she "
+    },
+    {
+      "order": 30,
+      "title": "CHAPTER XXIX.",
+      "wordCount": 2393,
+      "sample": "“Lady Catherine, said she, you have given me a treasure.” CHAPTER XXIX . R. COLLINS’S triumph, in consequence of this invitation, was complete. The power of dis"
+    },
+    {
+      "order": 31,
+      "title": "CHAPTER XXX.",
+      "wordCount": 1248,
+      "sample": "CHAPTER XXX . IR WILLIAM stayed only a week at Hunsford; but his visit was long enough to convince him of his daughter’s being most comfortably settled, and of "
+    },
+    {
+      "order": 32,
+      "title": "CHAPTER XXXI.",
+      "wordCount": 1556,
+      "sample": "CHAPTER XXXI . OLONEL FITZWILLIAM’S manners were very much admired at the Parsonage, and the ladies all felt that he must add considerably to the pleasure of th"
+    },
+    {
+      "order": 33,
+      "title": "CHAPTER XXXII.",
+      "wordCount": 1509,
+      "sample": "CHAPTER XXXII . LIZABETH was sitting by herself the next morning, and writing to Jane, while Mrs. Collins and Maria were gone on business into the village, when"
+    },
+    {
+      "order": 34,
+      "title": "CHAPTER XXXIII.",
+      "wordCount": 1863,
+      "sample": "“On looking up.” CHAPTER XXXIII . ORE than once did Elizabeth, in her ramble within the park, unexpectedly meet Mr. Darcy. She felt all the perverseness of the "
+    },
+    {
+      "order": 35,
+      "title": "CHAPTER XXXIV.",
+      "wordCount": 2102,
+      "sample": "CHAPTER XXXIV . HEN they were gone, Elizabeth, as if intending to exasperate herself as much as possible against Mr. Darcy, chose for her employment the examina"
+    },
+    {
+      "order": 36,
+      "title": "CHAPTER XXXV.",
+      "wordCount": 3001,
+      "sample": "“Hearing herself called.” CHAPTER XXXV . LIZABETH awoke the next morning to the same thoughts and meditations which had at length closed her eyes. She could not"
+    },
+    {
+      "order": 37,
+      "title": "CHAPTER XXXVI.",
+      "wordCount": 717,
+      "sample": "CHAPTER XXXVI . ELIZABETH, when Mr. Darcy gave her the letter, did not expect it to contain a renewal of his offers, she had formed no expectation at all of its"
+    },
+    {
+      "order": 38,
+      "title": "CHAPTER XXXVII.",
+      "wordCount": 1383,
+      "sample": "“His parting obeisance.” CHAPTER XXXVII . HE two gentlemen left Rosings the next morning; and Mr. Collins having been in waiting near the lodges, to make them h"
+    },
+    {
+      "order": 39,
+      "title": "CHAPTER XXXVIII.",
+      "wordCount": 1052,
+      "sample": "“The elevation of his feelings.” CHAPTER XXXVIII . N Saturday morning Elizabeth and Mr. Collins met for breakfast a few minutes before the others appeared; and "
+    },
+    {
+      "order": 40,
+      "title": "CHAPTER XXXIX.",
+      "wordCount": 1642,
+      "sample": "“How nicely we are crammed in.” CHAPTER XXXIX . T was the second week in May, in which the three young ladies set out together from Gracechurch Street for the t"
+    },
+    {
+      "order": 41,
+      "title": "CHAPTER XL.",
+      "wordCount": 1690,
+      "sample": "CHAPTER XL . LIZABETH’S impatience to acquaint Jane with what had happened could no longer be overcome; and at length resolving to suppress every particular in "
+    },
+    {
+      "order": 42,
+      "title": "CHAPTER XLI.",
+      "wordCount": 2284,
+      "sample": "“When Colonel Miller’s regiment went.” CHAPTER XLI . HE first week of their return was soon gone. The second began. It was the last of the regiment’s stay in Me"
+    },
+    {
+      "order": 43,
+      "title": "CHAPTER XLII.",
+      "wordCount": 1831,
+      "sample": "“The arrival of the Gardiners.” CHAPTER XLII . AD Elizabeth’s opinion been all drawn from her own family, she could not have formed a very pleasing picture of c"
+    },
+    {
+      "order": 44,
+      "title": "CHAPTER XLIII.",
+      "wordCount": 4860,
+      "sample": "“Conjecturing as to the date.” CHAPTER XLIII . LIZABETH, as they drove along, watched for the first appearance of Pemberley Woods with some perturbation; and wh"
+    },
+    {
+      "order": 45,
+      "title": "CHAPTER XLIV.",
+      "wordCount": 2349,
+      "sample": "CHAPTER XLIV . LIZABETH had settled it that Mr. Darcy would bring his sister to visit her the very day after her reaching Pemberley; and was, consequently, reso"
+    },
+    {
+      "order": 46,
+      "title": "CHAPTER XLV.",
+      "wordCount": 1736,
+      "sample": "“Engaged by the river.” CHAPTER XLV . ONVINCED as Elizabeth now was that Miss Bingley’s dislike of her had originated in jealousy, she could not help feeling ho"
+    },
+    {
+      "order": 47,
+      "title": "Chapter XLVI.",
+      "wordCount": 3020,
+      "sample": "Chapter XLVI . LIZABETH had been a good deal disappointed in not finding a letter from Jane on their first arrival at Lambton; and this disappointment had been "
+    },
+    {
+      "order": 48,
+      "title": "CHAPTER XLVII.",
+      "wordCount": 3299,
+      "sample": "“The first pleasing earnest of their welcome.” CHAPTER XLVII . “ HAVE been thinking it over again, Elizabeth,” said her uncle, as they drove from the town; “and"
+    },
+    {
+      "order": 49,
+      "title": "CHAPTER XLVIII.",
+      "wordCount": 2272,
+      "sample": "“The Post.” CHAPTER XLVIII . HE whole party were in hopes of a letter from Mr. Bennet the next morning, but the post came in without bringing a single line from"
+    },
+    {
+      "order": 50,
+      "title": "CHAPTER XLIX.",
+      "wordCount": 2261,
+      "sample": "CHAPTER XLIX . WO days after Mr. Bennet’s return, as Jane and Elizabeth were walking together in the shrubbery behind the house, they saw the housekeeper coming"
+    },
+    {
+      "order": 51,
+      "title": "CHAPTER L.",
+      "wordCount": 2207,
+      "sample": "“The spiteful old ladies.” CHAPTER L . R. BENNET had very often wished, before this period of his life, that, instead of spending his whole income, he had laid "
+    },
+    {
+      "order": 52,
+      "title": "CHAPTER LI.",
+      "wordCount": 2079,
+      "sample": "“With an affectionate smile.” CHAPTER LI . HEIR sister’s wedding-day arrived; and Jane and Elizabeth felt for her probably more than she felt for herself. The c"
+    },
+    {
+      "order": 53,
+      "title": "CHAPTER LII.",
+      "wordCount": 3046,
+      "sample": "“I am sure she did not listen.” CHAPTER LII . LIZABETH had the satisfaction of receiving an answer to her letter as soon as she possibly could. She was no soone"
+    },
+    {
+      "order": 54,
+      "title": "CHAPTER LIII.",
+      "wordCount": 2948,
+      "sample": "“ Mr. Darcy with him.” CHAPTER LIII . R. WICKHAM was so perfectly satisfied with this conversation, that he never again distressed himself, or provoked his dear"
+    },
+    {
+      "order": 55,
+      "title": "CHAPTER LIV.",
+      "wordCount": 1611,
+      "sample": "“Jane happened to look round.” CHAPTER LIV . S soon as they were gone, Elizabeth walked out to recover her spirits; or, in other words, to dwell without interru"
+    },
+    {
+      "order": 56,
+      "title": "CHAPTER LV.",
+      "wordCount": 2341,
+      "sample": "“Lizzy, my dear, I want to speak to you.” CHAPTER LV . FEW days after this visit, Mr. Bingley called again, and alone. His friend had left him that morning for "
+    },
+    {
+      "order": 57,
+      "title": "CHAPTER LVI.",
+      "wordCount": 2750,
+      "sample": "CHAPTER LVI . NE morning, about a week after Bingley’s engagement with Jane had been formed, as he and the females of the family were sitting together in the di"
+    },
+    {
+      "order": 58,
+      "title": "CHAPTER LVII.",
+      "wordCount": 1665,
+      "sample": "“But now it comes out.” CHAPTER LVII . HE discomposure of spirits which this extraordinary visit threw Elizabeth into could not be easily overcome; nor could sh"
+    },
+    {
+      "order": 59,
+      "title": "CHAPTER LVIII.",
+      "wordCount": 2446,
+      "sample": "“The efforts of his aunt.” CHAPTER LVIII . NSTEAD of receiving any such letter of excuse from his friend, as Elizabeth half expected Mr. Bingley to do, he was a"
+    },
+    {
+      "order": 60,
+      "title": "CHAPTER LIX.",
+      "wordCount": 2482,
+      "sample": "“Unable to utter a syllable.” CHAPTER LIX . “ Y dear Lizzy, where can you have been walking to?” was a question which Elizabeth received from Jane as soon as sh"
+    },
+    {
+      "order": 61,
+      "title": "CHAPTER LX.",
+      "wordCount": 1102,
+      "sample": "“The obsequious civility.” CHAPTER LX . LIZABETH’S spirits soon rising to playfulness again, she wanted Mr. Darcy to account for his having ever fallen in love "
+    },
+    {
+      "order": 62,
+      "title": "CHAPTER LXI.",
+      "wordCount": 1249,
+      "sample": "CHAPTER LXI . APPY for all her maternal feelings was the day on which Mrs. Bennet got rid of her two most deserving daughters. With what delighted pride she aft"
+    }
+  ]
+}

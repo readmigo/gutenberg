@@ -34,7 +34,9 @@ import {
 //   1 — P0 fixes: flow-based fallback, section-wrapped boilerplate removal,
 //       duplication/word-ceiling quality checks
 //   2 — B1.2: anchor-based chapter splitting, word-boundary skip filter
-export const PIPELINE_VERSION = 2;
+//   3 — P3.2: chapter titles extracted from in-body headings instead of
+//       TOC labels (removes illustration-caption pollution)
+export const PIPELINE_VERSION = 3;
 
 // Strip HTML for word count (after cleaning)
 function stripHtml(html: string): string {

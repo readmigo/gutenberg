@@ -1,0 +1,379 @@
+{
+  "title": "Pride and Prejudice",
+  "author": "Jane Austen",
+  "language": "en-gb",
+  "chapterCount": 61,
+  "totalWords": 122237,
+  "qualityScore": 100,
+  "qualityTier": "auto_approved",
+  "qualityPass": true,
+  "qualityIssues": [],
+  "chapters": [
+    {
+      "order": 1,
+      "title": "I",
+      "wordCount": 856,
+      "sample": "I It is a truth universally acknowledged, that a single man in possession of a good fortune, must be in want of a wife. However little known the feelings or vie"
+    },
+    {
+      "order": 2,
+      "title": "II",
+      "wordCount": 802,
+      "sample": "II Mr. Bennet was among the earliest of those who waited on Mr. Bingley. He had always intended to visit him, though to the last always assuring his wife that h"
+    },
+    {
+      "order": 3,
+      "title": "III",
+      "wordCount": 1708,
+      "sample": "III Not all that Mrs. Bennet, however, with the assistance of her five daughters, could ask on the subject was sufficient to draw from her husband any satisfact"
+    },
+    {
+      "order": 4,
+      "title": "IV",
+      "wordCount": 1063,
+      "sample": "IV When Jane and Elizabeth were alone, the former, who had been cautious in her praise of Mr. Bingley before, expressed to her sister how very much she admired "
+    },
+    {
+      "order": 5,
+      "title": "V",
+      "wordCount": 966,
+      "sample": "V Within a short walk of Longbourn lived a family with whom the Bennets were particularly intimate. Sir William Lucas had been formerly in trade in Meryton, whe"
+    },
+    {
+      "order": 6,
+      "title": "VI",
+      "wordCount": 2356,
+      "sample": "VI The ladies of Longbourn soon waited on those of Netherfield. The visit was returned in due form. Miss Bennet’s pleasing manners grew on the good will of Mrs."
+    },
+    {
+      "order": 7,
+      "title": "VII",
+      "wordCount": 1996,
+      "sample": "VII Mr. Bennet’s property consisted almost entirely in an estate of two thousand a year, which, unfortunately for his daughters, was entailed in default of heir"
+    },
+    {
+      "order": 8,
+      "title": "VIII",
+      "wordCount": 1938,
+      "sample": "VIII At five o’clock the two ladies retired to dress, and at half past six Elizabeth was summoned to dinner. To the civil enquiries which then poured in, and am"
+    },
+    {
+      "order": 9,
+      "title": "IX",
+      "wordCount": 1736,
+      "sample": "IX Elizabeth passed the chief of the night in her sister’s room, and in the morning had the pleasure of being able to send a tolerable answer to the enquiries w"
+    },
+    {
+      "order": 10,
+      "title": "X",
+      "wordCount": 2221,
+      "sample": "X The day passed much as the day before had done. Mrs. Hurst and Miss Bingley had spent some hours of the morning with the invalid, who continued, though slowly"
+    },
+    {
+      "order": 11,
+      "title": "XI",
+      "wordCount": 1610,
+      "sample": "XI When the ladies removed after dinner, Elizabeth ran up to her sister, and seeing her well guarded from cold, attended her into the drawing-room; where she wa"
+    },
+    {
+      "order": 12,
+      "title": "XII",
+      "wordCount": 678,
+      "sample": "XII In consequence of an agreement between the sisters, Elizabeth wrote the next morning to her mother, to beg that the carriage might be sent for them in the c"
+    },
+    {
+      "order": 13,
+      "title": "XIII",
+      "wordCount": 1700,
+      "sample": "XIII “I hope, my dear,” said Mr. Bennet to his wife, as they were at breakfast the next morning, “that you have ordered a good dinner today, because I have reas"
+    },
+    {
+      "order": 14,
+      "title": "XIV",
+      "wordCount": 1122,
+      "sample": "XIV During dinner, Mr. Bennet scarcely spoke at all; but when the servants were withdrawn, he thought it time to have some conversation with his guest, and ther"
+    },
+    {
+      "order": 15,
+      "title": "XV",
+      "wordCount": 1703,
+      "sample": "XV Mr. Collins was not a sensible man, and the deficiency of nature had been but little assisted by education or society; the greatest part of his life having b"
+    },
+    {
+      "order": 16,
+      "title": "XVI",
+      "wordCount": 3395,
+      "sample": "XVI As no objection was made to the young people’s engagement with their aunt, and all Mr. Collins’s scruples of leaving Mr. and Mrs. Bennet for a single evenin"
+    },
+    {
+      "order": 17,
+      "title": "XVII",
+      "wordCount": 1281,
+      "sample": "XVII Elizabeth related to Jane the next day, what had passed between Mr. Wickham and herself. Jane listened with astonishment and concern; ⁠—she knew not how to"
+    },
+    {
+      "order": 18,
+      "title": "XVIII",
+      "wordCount": 5199,
+      "sample": "XVIII Till Elizabeth entered the drawing-room at Netherfield and looked in vain for Mr. Wickham among the cluster of red coats there assembled, a doubt of his b"
+    },
+    {
+      "order": 19,
+      "title": "XIX",
+      "wordCount": 1917,
+      "sample": "XIX The next day opened a new scene at Longbourn. Mr. Collins made his declaration in form. Having resolved to do it without loss of time, as his leave of absen"
+    },
+    {
+      "order": 20,
+      "title": "XX",
+      "wordCount": 1653,
+      "sample": "XX Mr. Collins was not left long to the silent contemplation of his successful love; for Mrs. Bennet, having dawdled about in the vestibule to watch for the end"
+    },
+    {
+      "order": 21,
+      "title": "XXI",
+      "wordCount": 2011,
+      "sample": "XXI The discussion of Mr. Collins’s offer was now nearly at an end, and Elizabeth had only to suffer from the uncomfortable feelings necessarily attending it, a"
+    },
+    {
+      "order": 22,
+      "title": "XXII",
+      "wordCount": 1734,
+      "sample": "XXII The Bennets were engaged to dine with the Lucases, and again during the chief of the day, was Miss Lucas so kind as to listen to Mr. Collins. Elizabeth too"
+    },
+    {
+      "order": 23,
+      "title": "XXIII",
+      "wordCount": 1618,
+      "sample": "XXIII Elizabeth was sitting with her mother and sisters, reflecting on what she had heard, and doubting whether she were authorised to mention it, when Sir Will"
+    },
+    {
+      "order": 24,
+      "title": "XXIV",
+      "wordCount": 1932,
+      "sample": "XXIV Miss Bingley’s letter arrived, and put an end to doubt. The very first sentence conveyed the assurance of their being all settled in London for the winter,"
+    },
+    {
+      "order": 25,
+      "title": "XXV",
+      "wordCount": 1519,
+      "sample": "XXV After a week spent in professions of love and schemes of felicity, Mr. Collins was called from his amiable Charlotte by the arrival of Saturday. The pain of"
+    },
+    {
+      "order": 26,
+      "title": "XXVI",
+      "wordCount": 2341,
+      "sample": "XXVI Mrs. Gardiner’s caution to Elizabeth was punctually and kindly given on the first favourable opportunity of speaking to her alone; after honestly telling h"
+    },
+    {
+      "order": 27,
+      "title": "XXVII",
+      "wordCount": 1261,
+      "sample": "XXVII With no greater events than these in the Longbourn family, and otherwise diversified by little beyond the walks to Meryton, sometimes dirty and sometimes "
+    },
+    {
+      "order": 28,
+      "title": "XXVIII",
+      "wordCount": 1452,
+      "sample": "XXVIII Every object in the next day’s journey was new and interesting to Elizabeth; and her spirits were in a state for enjoyment; for she had seen her sister l"
+    },
+    {
+      "order": 29,
+      "title": "XXIX",
+      "wordCount": 2391,
+      "sample": "XXIX Mr. Collins’s triumph in consequence of this invitation was complete. The power of displaying the grandeur of his patroness to his wondering visitors, and "
+    },
+    {
+      "order": 30,
+      "title": "XXX",
+      "wordCount": 1233,
+      "sample": "XXX Sir William stayed only a week at Hunsford; but his visit was long enough to convince him of his daughter’s being most comfortably settled, and of her posse"
+    },
+    {
+      "order": 31,
+      "title": "XXXI",
+      "wordCount": 1567,
+      "sample": "XXXI Colonel Fitzwilliam’s manners were very much admired at the parsonage, and the ladies all felt that he must add considerably to the pleasure of their engag"
+    },
+    {
+      "order": 32,
+      "title": "XXXII",
+      "wordCount": 1507,
+      "sample": "XXXII Elizabeth was sitting by herself the next morning, and writing to Jane, while Mrs. Collins and Maria were gone on business into the village, when she was "
+    },
+    {
+      "order": 33,
+      "title": "XXXIII",
+      "wordCount": 1866,
+      "sample": "XXXIII More than once did Elizabeth in her ramble within the Park, unexpectedly meet Mr. Darcy. She felt all the perverseness of the mischance that should bring"
+    },
+    {
+      "order": 34,
+      "title": "XXXIV",
+      "wordCount": 2109,
+      "sample": "XXXIV When they were gone, Elizabeth, as if intending to exasperate herself as much as possible against Mr. Darcy, chose for her employment the examination of a"
+    },
+    {
+      "order": 35,
+      "title": "XXXV",
+      "wordCount": 3003,
+      "sample": "XXXV Elizabeth awoke the next morning to the same thoughts and meditations which had at length closed her eyes. She could not yet recover from the surprise of w"
+    },
+    {
+      "order": 36,
+      "title": "XXXVI",
+      "wordCount": 2015,
+      "sample": "XXXVI If Elizabeth, when Mr. Darcy gave her the letter, did not expect it to contain a renewal of his offers, she had formed no expectation at all of its conten"
+    },
+    {
+      "order": 37,
+      "title": "XXXVII",
+      "wordCount": 1374,
+      "sample": "XXXVII The two gentlemen left Rosings the next morning; and Mr. Collins having been in waiting near the lodges, to make them his parting obeisance, was able to "
+    },
+    {
+      "order": 38,
+      "title": "XXXVIII",
+      "wordCount": 1040,
+      "sample": "XXXVIII On Saturday morning Elizabeth and Mr. Collins met for breakfast a few minutes before the others appeared; and he took the opportunity of paying the part"
+    },
+    {
+      "order": 39,
+      "title": "XXXIX",
+      "wordCount": 1644,
+      "sample": "XXXIX It was the second week in May, in which the three young ladies set out together from Gracechurch-street, for the town of⁠— ⁠— ⁠—in Hertfordshire; and, as "
+    },
+    {
+      "order": 40,
+      "title": "XL",
+      "wordCount": 1678,
+      "sample": "XL Elizabeth’s impatience to acquaint Jane with what had happened could no longer be overcome; and at length resolving to suppress every particular in which her"
+    },
+    {
+      "order": 41,
+      "title": "XLI",
+      "wordCount": 2280,
+      "sample": "XLI The first week of their return was soon gone. The second began. It was the last of the regiment’s stay in Meryton, and all the young ladies in the neighbour"
+    },
+    {
+      "order": 42,
+      "title": "XLII",
+      "wordCount": 1833,
+      "sample": "XLII Had Elizabeth’s opinion been all drawn from her own family, she could not have formed a very pleasing picture of conjugal felicity or domestic comfort. Her"
+    },
+    {
+      "order": 43,
+      "title": "XLIII",
+      "wordCount": 4861,
+      "sample": "XLIII Elizabeth, as they drove along, watched for the first appearance of Pemberley Woods with some perturbation; and when at length they turned in at the lodge"
+    },
+    {
+      "order": 44,
+      "title": "XLIV",
+      "wordCount": 2340,
+      "sample": "XLIV Elizabeth had settled it that Mr. Darcy would bring his sister to visit her, the very day after her reaching Pemberley; and was consequently resolved not t"
+    },
+    {
+      "order": 45,
+      "title": "XLV",
+      "wordCount": 1735,
+      "sample": "XLV Convinced as Elizabeth now was that Miss Bingley’s dislike of her had originated in jealousy, she could not help feeling how very unwelcome her appearance a"
+    },
+    {
+      "order": 46,
+      "title": "XLVI",
+      "wordCount": 3020,
+      "sample": "XLVI Elizabeth had been a good deal disappointed in not finding a letter from Jane, on their first arrival at Lambton; and this disappointment had been renewed "
+    },
+    {
+      "order": 47,
+      "title": "XLVII",
+      "wordCount": 4093,
+      "sample": "XLVII “I have been thinking it over again, Elizabeth,” said her uncle, as they drove from the town; “and really, upon serious consideration, I am much more incl"
+    },
+    {
+      "order": 48,
+      "title": "XLVIII",
+      "wordCount": 2259,
+      "sample": "XLVIII The whole party were in hopes of a letter from Mr. Bennet the next morning, but the post came in without bringing a single line from him. His family knew"
+    },
+    {
+      "order": 49,
+      "title": "XLIX",
+      "wordCount": 2250,
+      "sample": "XLIX Two days after Mr. Bennet’s return, as Jane and Elizabeth were walking together in the shrubbery behind the house, they saw the housekeeper coming towards "
+    },
+    {
+      "order": 50,
+      "title": "L",
+      "wordCount": 2206,
+      "sample": "L Mr. Bennet had very often wished, before this period of his life, that, instead of spending his whole income, he had laid by an annual sum, for the better pro"
+    },
+    {
+      "order": 51,
+      "title": "LI",
+      "wordCount": 2078,
+      "sample": "LI Their sister’s wedding day arrived; and Jane and Elizabeth felt for her probably more than she felt for herself. The carriage was sent to meet them at⁠— ⁠— ⁠"
+    },
+    {
+      "order": 52,
+      "title": "LII",
+      "wordCount": 3041,
+      "sample": "LII Elizabeth had the satisfaction of receiving an answer to her letter, as soon as she possibly could. She was no sooner in possession of it, than hurrying int"
+    },
+    {
+      "order": 53,
+      "title": "LIII",
+      "wordCount": 2950,
+      "sample": "LIII Mr. Wickham was so perfectly satisfied with this conversation, that he never again distressed himself, or provoked his dear sister Elizabeth, by introducin"
+    },
+    {
+      "order": 54,
+      "title": "LIV",
+      "wordCount": 1599,
+      "sample": "LIV As soon as they were gone, Elizabeth walked out to recover her spirits; or in other words, to dwell without interruption on those subjects that must deaden "
+    },
+    {
+      "order": 55,
+      "title": "LV",
+      "wordCount": 2332,
+      "sample": "LV A few days after this visit, Mr. Bingley called again, and alone. His friend had left him that morning for London, but was to return home in ten days’ time. "
+    },
+    {
+      "order": 56,
+      "title": "LVI",
+      "wordCount": 2747,
+      "sample": "LVI One morning, about a week after Bingley’s engagement with Jane had been formed, as he and the females of the family were sitting together in the dining-room"
+    },
+    {
+      "order": 57,
+      "title": "LVII",
+      "wordCount": 1665,
+      "sample": "LVII The discomposure of spirits which this extraordinary visit threw Elizabeth into could not be easily overcome; nor could she for many hours learn to think o"
+    },
+    {
+      "order": 58,
+      "title": "LVIII",
+      "wordCount": 2441,
+      "sample": "LVIII Instead of receiving any such letter of excuse from his friend, as Elizabeth half expected Mr. Bingley to do, he was able to bring Darcy with him to Longb"
+    },
+    {
+      "order": 59,
+      "title": "LIX",
+      "wordCount": 2479,
+      "sample": "LIX “My dear Lizzy, where can you have been walking to?” was a question which Elizabeth received from Jane as soon as she entered the room, and from all the oth"
+    },
+    {
+      "order": 60,
+      "title": "LX",
+      "wordCount": 1594,
+      "sample": "LX Elizabeth’s spirits soon rising to playfulness again, she wanted Mr. Darcy to account for his having ever fallen in love with her. “How could you begin?” sai"
+    },
+    {
+      "order": 61,
+      "title": "LXI",
+      "wordCount": 1239,
+      "sample": "LXI Happy for all her maternal feelings was the day on which Mrs. Bennet got rid of her two most deserving daughters. With what delighted pride she afterwards v"
+    }
+  ]
+}

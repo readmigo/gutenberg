@@ -163,6 +163,47 @@ function countWords(text: string): number {
 }
 
 /**
+ * Extract a chapter title from the first heading found inside a segment of
+ * HTML. Looks at h1..h3 in document order, returns the text content of the
+ * first match with whitespace collapsed. Returns null if no heading is found.
+ *
+ * Used to replace the TOC-derived title (which on PG illustrated editions
+ * is often polluted with illustration captions) with the heading actually
+ * printed in the chapter body.
+ *
+ * PG illustrated editions routinely wrap the chapter h2 around BOTH an
+ * illustration caption span AND the chapter label, e.g.
+ *
+ *   <h2 id="..."><img .../><span class="caption">I hope Mr. Bingley will
+ *   like it.</span><br/><br/>CHAPTER II.</h2>
+ *
+ * A naive `.text()` would concatenate the two into the same polluted string
+ * we saw in the TOC label. To get just the chapter label we clone the
+ * heading, drop any caption children, and only then serialize text.
+ */
+export function extractTitleFromSegment(html: string): string | null {
+  if (!html) return null;
+  const $ = cheerio.load(html);
+  const heading = $('h1, h2, h3').first();
+  if (heading.length === 0) return null;
+
+  // Work on a clone so we don't mutate the caller's parse tree. Drop image
+  // children and any span/div carrying a class that suggests a caption or
+  // illustration label; what remains should be the real chapter heading.
+  const clone = heading.clone();
+  clone.find('img').remove();
+  clone.find('[class*="caption" i]').remove();
+  clone.find('[class*="illustration" i]').remove();
+
+  const text = clone.text().replace(/\s+/g, ' ').trim();
+  if (!text) return null;
+  // Guard against titles that are themselves junk (e.g. just numbers or
+  // a single punctuation mark). Require at least 2 alphanumeric characters.
+  if (!/[A-Za-z0-9]{2,}/.test(text)) return null;
+  return text;
+}
+
+/**
  * Split a single XHTML file's content into per-chapter segments, keyed by
  * anchor IDs from the TOC. Used when a PG-style multi-chapter-per-file
  * layout packs many TOC entries into a single physical file via #anchors.
@@ -340,9 +381,15 @@ export async function extractChapters(epub: any): Promise<ParsedChapter[]> {
         const wordCount = countWords(stripHtml(segment));
         if (wordCount === 0) continue;
 
+        // Prefer the in-body heading (cleaner, avoids illustration captions
+        // pasted into TOC labels) with a fallback to the TOC title.
+        const headingTitle = extractTitleFromSegment(segment);
+        const title = headingTitle || entry.title || `Chapter ${chapters.length + 1}`;
+        if (isSkippableChapter(title, entry.href)) continue;
+
         chapters.push({
           order: chapters.length + 1,
-          title: entry.title || `Chapter ${chapters.length + 1}`,
+          title,
           href: entry.href,
           htmlContent: segment,
           wordCount,
@@ -357,9 +404,9 @@ export async function extractChapters(epub: any): Promise<ParsedChapter[]> {
   const items = toc.length > 0 ? toc : flow;
   for (let i = 0; i < items.length; i++) {
     const item = items[i];
-    const title = item.title?.trim() || `Chapter ${i + 1}`;
+    const tocTitle = item.title?.trim() || `Chapter ${i + 1}`;
 
-    if (isSkippableChapter(title, item.href)) continue;
+    if (isSkippableChapter(tocTitle, item.href)) continue;
 
     const baseHref = (item.href || '').split('#')[0];
     const flowItem = flow.find((f: any) => f.href === baseHref || f.href?.endsWith(baseHref));
@@ -371,6 +418,11 @@ export async function extractChapters(epub: any): Promise<ParsedChapter[]> {
 
     if (!content || content.length < 100) continue;
 
+    // Prefer in-body heading over TOC title when available.
+    const headingTitle = extractTitleFromSegment(content);
+    const title = headingTitle || tocTitle;
+    if (isSkippableChapter(title, item.href)) continue;
+
     const wordCount = countWords(stripHtml(content));
     chapters.push({
       order: chapters.length + 1,
@@ -381,5 +433,27 @@ export async function extractChapters(epub: any): Promise<ParsedChapter[]> {
     });
   }
 
-  return chapters;
+  // Final dedupe pass: when multiple TOC entries point to the same file via
+  // different #anchors that the splitter couldn't separate (e.g. Alice has 3
+  // front-matter entries in one file — "Alice's Adventures in Wonderland",
+  // "THE MILLENNIUM FULCRUM EDITION", "Contents" — all below the anchor-split
+  // ratio threshold), we end up with multiple chapters carrying identical
+  // content. Keep only the first occurrence of any duplicated content block
+  // so the book output stays clean without having to tune the threshold.
+  const seenHashes = new Set<string>();
+  const deduped: ParsedChapter[] = [];
+  for (const ch of chapters) {
+    const prefix = stripHtml(ch.htmlContent).slice(0, 500);
+    if (!prefix) continue;
+    if (seenHashes.has(prefix)) {
+      console.warn(
+        `  [epub-parser] dropping duplicate chapter "${ch.title}" (same content as earlier chapter)`,
+      );
+      continue;
+    }
+    seenHashes.add(prefix);
+    deduped.push({ ...ch, order: deduped.length + 1 });
+  }
+
+  return deduped;
 }

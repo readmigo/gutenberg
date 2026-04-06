@@ -27,3 +27,17 @@ jobs:
 
       - name: Type check scripts
         run: pnpm --filter scripts tsc --noEmit
+
+      - name: Cache test fixtures
+        id: cache-fixtures
+        uses: actions/cache@v4
+        with:
+          path: scripts/tests/fixtures
+          key: gutenberg-test-fixtures-v1
+
+      - name: Download test fixtures
+        if: steps.cache-fixtures.outputs.cache-hit != 'true'
+        run: bash scripts/tests/download-fixtures.sh
+
+      - name: Run pipeline tests
+        run: pnpm --filter scripts test

@@ -1,0 +1,91 @@
+{
+  "title": "Alice's Adventures in Wonderland",
+  "author": "Lewis Carroll",
+  "language": "en",
+  "chapterCount": 13,
+  "totalWords": 26669,
+  "qualityScore": 100,
+  "qualityTier": "auto_approved",
+  "qualityPass": true,
+  "qualityIssues": [],
+  "chapters": [
+    {
+      "order": 1,
+      "title": "The Project Gutenberg eBook of Alice's Adventures in Wonderland",
+      "wordCount": 95,
+      "sample": "Alice’s Adventures in Wonderland by Lewis Carroll THE MILLENNIUM FULCRUM EDITION 3.0 Contents CHAPTER I . Down the Rabbit-Hole CHAPTER II . The Pool of Tears CH"
+    },
+    {
+      "order": 2,
+      "title": "CHAPTER I. Down the Rabbit-Hole",
+      "wordCount": 2190,
+      "sample": "CHAPTER I . Down the Rabbit-Hole Alice was beginning to get very tired of sitting by her sister on the bank, and of having nothing to do: once or twice she had "
+    },
+    {
+      "order": 3,
+      "title": "CHAPTER II. The Pool of Tears",
+      "wordCount": 2106,
+      "sample": "CHAPTER II . The Pool of Tears “Curiouser and curiouser!” cried Alice (she was so much surprised, that for the moment she quite forgot how to speak good English"
+    },
+    {
+      "order": 4,
+      "title": "CHAPTER III. A Caucus-Race and a Long Tale",
+      "wordCount": 1713,
+      "sample": "CHAPTER III . A Caucus-Race and a Long Tale They were indeed a queer-looking party that assembled on the bank⁠—the birds with draggled feathers, the animals wit"
+    },
+    {
+      "order": 5,
+      "title": "CHAPTER IV. The Rabbit Sends in a Little Bill",
+      "wordCount": 2625,
+      "sample": "CHAPTER IV . The Rabbit Sends in a Little Bill It was the White Rabbit, trotting slowly back again, and looking anxiously about as it went, as if it had lost so"
+    },
+    {
+      "order": 6,
+      "title": "CHAPTER V. Advice from a Caterpillar",
+      "wordCount": 2197,
+      "sample": "CHAPTER V . Advice from a Caterpillar The Caterpillar and Alice looked at each other for some time in silence: at last the Caterpillar took the hookah out of it"
+    },
+    {
+      "order": 7,
+      "title": "CHAPTER VI. Pig and Pepper",
+      "wordCount": 2602,
+      "sample": "CHAPTER VI . Pig and Pepper For a minute or two she stood looking at the house, and wondering what to do next, when suddenly a footman in livery came running ou"
+    },
+    {
+      "order": 8,
+      "title": "CHAPTER VII. A Mad Tea-Party",
+      "wordCount": 2299,
+      "sample": "CHAPTER VII . A Mad Tea-Party There was a table set out under a tree in front of the house, and the March Hare and the Hatter were having tea at it: a Dormouse "
+    },
+    {
+      "order": 9,
+      "title": "CHAPTER VIII. The Queen’s Croquet-Ground",
+      "wordCount": 2493,
+      "sample": "CHAPTER VIII . The Queen’s Croquet-Ground A large rose-tree stood near the entrance of the garden: the roses growing on it were white, but there were three gard"
+    },
+    {
+      "order": 10,
+      "title": "CHAPTER IX. The Mock Turtle’s Story",
+      "wordCount": 2286,
+      "sample": "CHAPTER IX . The Mock Turtle’s Story “You can’t think how glad I am to see you again, you dear old thing!” said the Duchess, as she tucked her arm affectionatel"
+    },
+    {
+      "order": 11,
+      "title": "CHAPTER X. The Lobster Quadrille",
+      "wordCount": 2047,
+      "sample": "CHAPTER X . The Lobster Quadrille The Mock Turtle sighed deeply, and drew the back of one flapper across his eyes. He looked at Alice, and tried to speak, but f"
+    },
+    {
+      "order": 12,
+      "title": "CHAPTER XI. Who Stole the Tarts?",
+      "wordCount": 1885,
+      "sample": "CHAPTER XI . Who Stole the Tarts? The King and Queen of Hearts were seated on their throne when they arrived, with a great crowd assembled about them⁠—all sorts"
+    },
+    {
+      "order": 13,
+      "title": "CHAPTER XII. Alice’s Evidence",
+      "wordCount": 2131,
+      "sample": "CHAPTER XII . Alice’s Evidence “Here!” cried Alice, quite forgetting in the flurry of the moment how large she had grown in the last few minutes, and she jumped"
+    }
+  ]
+}

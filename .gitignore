@@ -7,3 +7,6 @@ dist/
 *.log
 .DS_Store
 temp/
+
+# Golden-snapshot test fixtures (downloaded via scripts/tests/download-fixtures.sh)
+scripts/tests/fixtures/
