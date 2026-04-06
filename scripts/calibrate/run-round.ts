@@ -75,6 +75,9 @@ interface ResultsFile {
 const CAL_DIR = path.resolve(__dirname);
 const INDEX_FILE = path.join(CAL_DIR, 'se-pg-index.json');
 const RESULTS_FILE = path.join(CAL_DIR, 'results.json');
+// Cache downloaded EPUBs so re-runs don't re-hit Gutenberg (which rate
+// limits aggressively on bursty downloads).
+const CACHE_DIR = path.join(os.tmpdir(), 'readmigo-gutenberg-calibrate-cache');
 
 // Calibration thresholds.
 //
@@ -132,7 +135,13 @@ function loadIndex(): IndexEntry[] {
     throw new Error(`se-pg-index.json not found. Run build-se-index.ts first.`);
   }
   const raw = JSON.parse(fs.readFileSync(INDEX_FILE, 'utf8')) as IndexFile;
-  return raw.entries.filter((e) => e.pgIds.length > 0);
+  // Only single-source SE editions are comparable — when SE lists multiple
+  // gutenberg.org URLs in dc:source it has merged several PG books into
+  // one curated volume (the Vicomte de Bragelonne trilogy, Ambrose Bierce
+  // collected poetry, Algis Budrys short fiction, etc.), and our pipeline
+  // cannot reconstruct that merge from a single PG download. We'd rather
+  // skip these entries than report spurious "failures".
+  return raw.entries.filter((e) => e.pgIds.length === 1);
 }
 
 function loadResults(): ResultsFile {
@@ -155,22 +164,38 @@ function testedPgIds(results: ResultsFile): Set<number> {
 }
 
 async function downloadToTemp(url: string, prefix: string): Promise<string> {
-  const tmpFile = path.join(os.tmpdir(), `${prefix}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}.epub`);
-  // Retry transient network failures (502s, stream aborts, timeouts).
+  // Cache by stable key derived from URL so repeated runs / retries do not
+  // hammer Gutenberg. If the cached file exists and is a valid ZIP, reuse it.
+  if (!fs.existsSync(CACHE_DIR)) fs.mkdirSync(CACHE_DIR, { recursive: true });
+  const key = url.replace(/[^a-zA-Z0-9]/g, '_');
+  const cachedFile = path.join(CACHE_DIR, `${prefix}-${key}.epub`);
+  if (fs.existsSync(cachedFile)) {
+    const existing = fs.readFileSync(cachedFile);
+    if (existing.length >= 4 && existing[0] === 0x50 && existing[1] === 0x4b) {
+      return cachedFile;
+    }
+    fs.unlinkSync(cachedFile);
+  }
+
+  // Retry transient network failures (502s, 429 rate limits, aborts, timeouts).
+  // PG's www.gutenberg.org is quick to rate limit; back off aggressively on 429.
   let lastErr: unknown;
-  for (let attempt = 1; attempt <= 3; attempt++) {
+  for (let attempt = 1; attempt <= 5; attempt++) {
     try {
       const res = await http.get<ArrayBuffer>(url, { responseType: 'arraybuffer' });
       const buf = Buffer.from(res.data);
       if (buf.length < 4 || buf[0] !== 0x50 || buf[1] !== 0x4b) {
         throw new Error(`downloaded file is not a ZIP/EPUB (${buf.length} bytes from ${url})`);
       }
-      fs.writeFileSync(tmpFile, buf);
-      return tmpFile;
-    } catch (err) {
+      fs.writeFileSync(cachedFile, buf);
+      return cachedFile;
+    } catch (err: any) {
       lastErr = err;
-      if (attempt < 3) {
-        await new Promise((r) => setTimeout(r, 2000 * attempt));
+      const status = err?.response?.status;
+      if (attempt < 5) {
+        // Exponential backoff with 429 pause: 429 means "wait" — pause 15s.
+        const baseDelay = status === 429 ? 15_000 : 2000;
+        await new Promise((r) => setTimeout(r, baseDelay * attempt));
       }
     }
   }
@@ -341,17 +366,8 @@ async function testBook(
       overallPass: false,
       notes: [`error: ${msg}`],
     };
-  } finally {
-    for (const p of [pgPath, sePath]) {
-      if (p && fs.existsSync(p)) {
-        try {
-          fs.unlinkSync(p);
-        } catch {
-          // ignore
-        }
-      }
-    }
   }
+  // No cleanup: downloaded files live in CACHE_DIR for reuse across runs.
 }
 
 async function main() {
@@ -392,6 +408,12 @@ async function main() {
       console.log(
         `  FAIL  pg=${row.pgChapters}ch/${row.pgWords}w  se=${row.seChapters}ch/${row.seWords}w  quality=${row.pgQualityScore}  notes=${row.notes.join('; ')}`,
       );
+    }
+    // Space out requests — PG rate-limits aggressively (hits HTTP 429 after
+    // only a handful of quick downloads). 3 seconds between books keeps us
+    // under the limit even for 16-book rounds.
+    if (i < selected.length - 1) {
+      await new Promise((r) => setTimeout(r, 3000));
     }
   }
 
