@@ -116,29 +116,57 @@ export async function extractImages(epub: any): Promise<EpubImage[]> {
   return images;
 }
 
+// Phrases that almost only appear in title pages / front matter in
+// pre-1923 English books. "AUTHOR OF" and "BY THE AUTHOR OF" are the
+// strongest signals — authors were credited this way on title pages of
+// the era but the phrase rarely appears in narrative prose. The other
+// markers catch bibliographic and copyright notices.
+const TITLE_PAGE_MARKERS = [
+  /\bAUTHOR OF\b/,
+  /\bBY THE AUTHOR OF\b/,
+  /\bPRINTED FOR\b/,
+  /\bCOPYRIGHT\s+(?:BY|\d{4})/,
+  /\bALL RIGHTS RESERVED\b/,
+  /\bFIRST (?:PUBLISHED|EDITION|PRINTED)\b/,
+  /\bPUBLISHED\s+(?:IN|BY)\b/,
+];
+
 /**
- * Detect front-matter / divider chapters that should never be treated as
- * narrative content. These are things like title pages, volume dividers,
- * dedications, and publication notices in PG's multi-volume first editions.
+ * Detect front-matter / divider / advertising chapters that should never be
+ * treated as narrative content. These are things like title pages, volume
+ * dividers, dedications, publication notices, and "by the same author"
+ * advertising blocks that PG's first-edition scans tend to include but
+ * Standard Ebooks curates out.
  *
- * The heuristic: a chapter is junk if its raw word count is very low AND
- * its title does not look like an actual chapter/book/part label. The
- * explicit "chapter/book/part" allowlist keeps legitimately short chapters
- * (e.g. a 60-word prologue explicitly titled "Prologue") from being lost.
+ * The heuristic is layered:
+ *   1. Very short (<30 words) — obvious junk regardless of title.
+ *   2. Short (<300 words) with a non-chapter title — dividers, dedications,
+ *      back-cover ads.
+ *   3. Any length but the first 500 characters match a title-page marker
+ *      phrase like "AUTHOR OF" or "COPYRIGHT BY" — catches the 32,000-word
+ *      "THE FOUR FEATHERS BY A. E. W. MASON AUTHOR OF..." blob where PG
+ *      merges title page + preface + prologue into a single anchor range.
  */
-function isFrontMatterFragment(title: string, wordCount: number): boolean {
-  // Clearly empty or near-empty — filter outright regardless of title.
+function isFrontMatterFragment(title: string, wordCount: number, rawHtml: string): boolean {
   if (wordCount < 30) return true;
-  // Short segment that is not labeled as a chapter/prologue/epilogue/part.
-  // 200 words is the threshold below which P&P title pages (~14-54 words)
-  // and volume dividers reliably land, while a real 676-word short chapter
-  // like P&P ch. XII passes through comfortably.
-  if (wordCount < 200) {
-    const lower = (title || '').toLowerCase();
-    if (!/\b(chapter|book|part|prologue|epilogue|introduction|preface|foreword|appendix|act|scene|canto|volume)\b/.test(lower)) {
-      return true;
-    }
+
+  const lowerTitle = (title || '').toLowerCase();
+  const hasChapterKeyword =
+    /\b(chapter|book|part|prologue|epilogue|introduction|preface|foreword|appendix|act|scene|canto|volume)\b/.test(
+      lowerTitle,
+    );
+
+  // Short segment that is not labeled as a chapter/prologue/etc.
+  if (wordCount < 300 && !hasChapterKeyword) return true;
+
+  // Content-based title-page detection. Sampling the first 500 chars of
+  // stripped text catches the marker phrases without scanning the full
+  // body of long chapters.
+  const sample = stripHtml(rawHtml).slice(0, 500).toUpperCase();
+  for (const re of TITLE_PAGE_MARKERS) {
+    if (re.test(sample)) return true;
   }
+
   return false;
 }
 
@@ -234,106 +262,65 @@ export function extractTitleFromSegment(html: string): string | null {
  * anchor IDs from the TOC. Used when a PG-style multi-chapter-per-file
  * layout packs many TOC entries into a single physical file via #anchors.
  *
- * Strategy: for each anchor, locate the element with that id, walk upward
- * until it sits at the same DOM depth as the other anchors' containing
- * elements, then collect that element plus all following siblings until
- * the next anchor's element (or end of parent).
+ * Strategy: scan the raw HTML as a string, find the character offset where
+ * each anchor's opening tag begins, and slice the HTML between consecutive
+ * offsets in document order. Slicing at character level sidesteps the DOM
+ * ancestry problems of the sibling-walk approach — if two anchors live at
+ * different nesting depths (e.g. one on a top-level title-page header and
+ * one on an `<h2>` inside a chapter `<div>`), the range between them in
+ * document order is exactly the content we want regardless of ancestry.
  *
- * Returns an array of HTML strings in the same order as `anchorIds`.
- * If an anchor cannot be located, its slot is returned as an empty string
- * so the caller can preserve ordering; callers should filter empties.
+ * The resulting slices are HTML fragments, not well-formed documents —
+ * an opening `<div>` in slice N may have its closing tag in slice N+3.
+ * This is fine for the downstream pipeline: stripHtml drops tags entirely,
+ * the content-cleaner works on text nodes, and the semanticizer wraps its
+ * output in a fresh `<section>` anyway.
+ *
+ * Returns an array of HTML strings in the same order as `anchorIds`. If an
+ * anchor cannot be located, its slot is returned as an empty string so the
+ * caller can preserve ordering; callers should filter empties.
  */
 export function splitFileByAnchors(html: string, anchorIds: string[]): string[] {
   if (!html || anchorIds.length === 0) return [];
 
-  // cheerio.load with `xmlMode: false` is sufficient for XHTML;
-  // setting the second arg to null keeps cheerio's default options.
-  const $ = cheerio.load(html);
-
-  // Resolve each anchor id to a "chapter block" element: the deepest
-  // ancestor (including the element itself) whose parent is shared with
-  // the other anchors. In the common case (PG Illustrated editions) the
-  // anchor is an <h2 id="..."> at body level, so no walking is needed.
-  // For robustness we still search for a common-ancestor depth.
-  const anchorElems: Array<ReturnType<typeof $>> = [];
-  for (const id of anchorIds) {
-    // Use attribute-equals selector to avoid CSS escaping issues with ids
-    // that contain punctuation / start with digits.
-    const cssEscaped = id.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
-    const el = $(`[id="${cssEscaped}"]`).first();
-    anchorElems.push(el);
+  // For each anchor, find the character offset of the tag that owns the
+  // `id="…"` attribute. We locate the attribute occurrence and walk back
+  // to the nearest `<` to anchor on the owning tag's opening.
+  const offsetByAnchorIndex = new Map<number, number>();
+  for (let i = 0; i < anchorIds.length; i++) {
+    const id = anchorIds[i];
+    // Escape any regex specials; id values in PG EPUBs are alphanumeric +
+    // underscore / digits but we defend against hypothetical punctuation.
+    const escaped = id.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const attrMatcher = new RegExp(`id=["']?${escaped}["']?`);
+    const found = attrMatcher.exec(html);
+    if (!found) continue;
+    const tagStart = html.lastIndexOf('<', found.index);
+    if (tagStart === -1) continue;
+    offsetByAnchorIndex.set(i, tagStart);
   }
 
-  // For each anchor, lift it up the tree to the element whose parent is
-  // the common ancestor of all anchor elements. We approximate "common
-  // ancestor" by finding the deepest element that is an ancestor (or
-  // self) of every non-empty anchor. In practice the <body> or its first
-  // container suffices.
-  const commonAncestor = findCommonAncestor(
-    $,
-    anchorElems.filter((e) => e.length > 0).map((e) => e[0] as any),
-  );
+  // Sort all located anchors by document order and compute each segment's
+  // end offset as the next anchor's start in document order (or EOF).
+  const orderedByDocument = [...offsetByAnchorIndex.entries()]
+    .map(([anchorIndex, offset]) => ({ anchorIndex, offset }))
+    .sort((a, b) => a.offset - b.offset);
 
-  const liftedBlocks: Array<ReturnType<typeof $>> = anchorElems.map((el) => {
-    if (el.length === 0) return el;
-    let current: any = el[0];
-    while (current && current.parent && current.parent !== commonAncestor) {
-      current = current.parent;
+  const segments: string[] = new Array(anchorIds.length).fill('');
+  for (let i = 0; i < anchorIds.length; i++) {
+    const startOffset = offsetByAnchorIndex.get(i);
+    if (startOffset === undefined) continue;
+    let endOffset = html.length;
+    for (const doc of orderedByDocument) {
+      if (doc.offset > startOffset) {
+        endOffset = doc.offset;
+        break;
+      }
     }
-    return $(current);
-  });
-
-  const segments: string[] = [];
-  for (let i = 0; i < liftedBlocks.length; i++) {
-    const block = liftedBlocks[i];
-    if (block.length === 0) {
-      segments.push('');
-      continue;
-    }
-    const next = liftedBlocks.slice(i + 1).find((b) => b.length > 0);
-    const parts: string[] = [$.html(block)];
-    let sibling = block.next();
-    while (sibling.length > 0) {
-      if (next && next.length > 0 && sibling[0] === next[0]) break;
-      parts.push($.html(sibling));
-      sibling = sibling.next();
-    }
-    segments.push(parts.join('\n'));
+    segments[i] = html.slice(startOffset, endOffset);
   }
 
   return segments;
-}
-
-/**
- * Find the deepest element that is an ancestor (or self) of every node in
- * the list. Returns undefined if the input is empty. Used by
- * splitFileByAnchors to know when to stop walking up from each anchor.
- */
-function findCommonAncestor($: cheerio.CheerioAPI, nodes: any[]): any {
-  if (nodes.length === 0) return undefined;
-  if (nodes.length === 1) return nodes[0].parent;
-  // Collect ancestor chain for each node (root → self).
-  const chains: any[][] = nodes.map((n) => {
-    const chain: any[] = [];
-    let cur: any = n;
-    while (cur) {
-      chain.unshift(cur);
-      cur = cur.parent;
-    }
-    return chain;
-  });
-  // Find the longest common prefix of the chains.
-  let common: any = undefined;
-  const minLen = Math.min(...chains.map((c) => c.length));
-  for (let i = 0; i < minLen; i++) {
-    const ref = chains[0][i];
-    if (chains.every((c) => c[i] === ref)) {
-      common = ref;
-    } else {
-      break;
-    }
-  }
-  return common;
 }
 
 // Extract chapters from EPUB
@@ -412,7 +399,7 @@ export async function extractChapters(epub: any): Promise<ParsedChapter[]> {
         const headingTitle = extractTitleFromSegment(segment);
         const title = headingTitle || entry.title || `Chapter ${chapters.length + 1}`;
         if (isSkippableChapter(title, entry.href)) continue;
-        if (isFrontMatterFragment(title, wordCount)) continue;
+        if (isFrontMatterFragment(title, wordCount, segment)) continue;
 
         chapters.push({
           order: chapters.length + 1,
@@ -424,7 +411,7 @@ export async function extractChapters(epub: any): Promise<ParsedChapter[]> {
       }
     }
 
-    return chapters;
+    return dedupeByContentHash(chapters);
   }
 
   // Normal path: one chapter per TOC entry (or per flow item if no TOC).
@@ -451,7 +438,7 @@ export async function extractChapters(epub: any): Promise<ParsedChapter[]> {
     if (isSkippableChapter(title, item.href)) continue;
 
     const wordCount = countWords(stripHtml(content));
-    if (isFrontMatterFragment(title, wordCount)) continue;
+    if (isFrontMatterFragment(title, wordCount, content)) continue;
     chapters.push({
       order: chapters.length + 1,
       title,
@@ -461,13 +448,26 @@ export async function extractChapters(epub: any): Promise<ParsedChapter[]> {
     });
   }
 
-  // Final dedupe pass: when multiple TOC entries point to the same file via
-  // different #anchors that the splitter couldn't separate (e.g. Alice has 3
-  // front-matter entries in one file — "Alice's Adventures in Wonderland",
-  // "THE MILLENNIUM FULCRUM EDITION", "Contents" — all below the anchor-split
-  // ratio threshold), we end up with multiple chapters carrying identical
-  // content. Keep only the first occurrence of any duplicated content block
-  // so the book output stays clean without having to tune the threshold.
+  return dedupeByContentHash(chapters);
+}
+
+/**
+ * Drop chapters whose first 500 characters of stripped text match an earlier
+ * chapter. This handles two related cases:
+ *
+ *   1. Multiple TOC entries pointing to the same file via different anchors
+ *      that the splitter couldn't separate (Alice: 3 front-matter entries
+ *      sharing one file).
+ *   2. PG editions that include duplicated boilerplate — front matter that
+ *      appears once per volume, or back-matter advertising other works by
+ *      the same author. The Four Feathers (#18883) has the title page
+ *      repeated 3x and a "Courtship of Maurice Buckler" ad repeated 2x,
+ *      contributing ~97k duplicate words on top of a 107k-word novel.
+ *
+ * Applied uniformly after both the anchor-split and TOC paths so neither
+ * can leak duplicates downstream.
+ */
+function dedupeByContentHash(chapters: ParsedChapter[]): ParsedChapter[] {
   const seenHashes = new Set<string>();
   const deduped: ParsedChapter[] = [];
   for (const ch of chapters) {
@@ -482,6 +482,5 @@ export async function extractChapters(epub: any): Promise<ParsedChapter[]> {
     seenHashes.add(prefix);
     deduped.push({ ...ch, order: deduped.length + 1 });
   }
-
   return deduped;
 }

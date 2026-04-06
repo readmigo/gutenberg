@@ -47,6 +47,94 @@
           "notes": []
         }
       ]
+    },
+    {
+      "round": 3,
+      "size": 4,
+      "completedAt": "2026-04-06T12:04:35.807Z",
+      "passRate": 1,
+      "rows": [
+        {
+          "round": 3,
+          "testedAt": "2026-04-06T12:03:53.503Z",
+          "seSlug": "a-e-w-mason/at-the-villa-rose",
+          "pgId": 4745,
+          "pgTitle": "At the Villa Rose",
+          "pgChapters": 21,
+          "pgWords": 72296,
+          "pgQualityScore": 100,
+          "pgQualityTier": "auto_approved",
+          "seChapters": 21,
+          "seWords": 72709,
+          "chapterDiff": 0,
+          "wordDiffPct": -0.0057,
+          "chapterMatch": true,
+          "wordMatch": true,
+          "qualityMatch": true,
+          "overallPass": true,
+          "notes": []
+        },
+        {
+          "round": 3,
+          "testedAt": "2026-04-06T12:04:08.169Z",
+          "seSlug": "a-e-w-mason/the-four-feathers",
+          "pgId": 18883,
+          "pgTitle": "The Four Feathers",
+          "pgChapters": 34,
+          "pgWords": 106855,
+          "pgQualityScore": 100,
+          "pgQualityTier": "auto_approved",
+          "seChapters": 34,
+          "seWords": 107335,
+          "chapterDiff": 0,
+          "wordDiffPct": -0.0045,
+          "chapterMatch": true,
+          "wordMatch": true,
+          "qualityMatch": true,
+          "overallPass": true,
+          "notes": []
+        },
+        {
+          "round": 3,
+          "testedAt": "2026-04-06T12:04:22.085Z",
+          "seSlug": "a-merritt/the-moon-pool",
+          "pgId": 765,
+          "pgTitle": "The Moon Pool",
+          "pgChapters": 36,
+          "pgWords": 96635,
+          "pgQualityScore": 100,
+          "pgQualityTier": "auto_approved",
+          "seChapters": 36,
+          "seWords": 97838,
+          "chapterDiff": 0,
+          "wordDiffPct": -0.0123,
+          "chapterMatch": true,
+          "wordMatch": true,
+          "qualityMatch": true,
+          "overallPass": true,
+          "notes": []
+        },
+        {
+          "round": 3,
+          "testedAt": "2026-04-06T12:04:35.807Z",
+          "seSlug": "a-n-afanasyev/russian-folktales/leonard-a-magnus",
+          "pgId": 62509,
+          "pgTitle": "Russian Folk-Tales",
+          "pgChapters": 68,
+          "pgWords": 99573,
+          "pgQualityScore": 90,
+          "pgQualityTier": "auto_approved",
+          "seChapters": 68,
+          "seWords": 100390,
+          "chapterDiff": 0,
+          "wordDiffPct": -0.0081,
+          "chapterMatch": true,
+          "wordMatch": true,
+          "qualityMatch": true,
+          "overallPass": true,
+          "notes": []
+        }
+      ]
     }
   ]
 }
