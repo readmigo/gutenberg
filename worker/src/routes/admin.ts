@@ -1,6 +1,6 @@
 import { Hono } from 'hono';
 import { drizzle } from 'drizzle-orm/d1';
-import { eq, desc, count, and } from 'drizzle-orm';
+import { eq, desc, count, and, lt, inArray, or, isNull } from 'drizzle-orm';
 import { books, processJobs, qualityReviews } from '../db/schema';
 import { adminAuth } from '../middleware/auth';
 import type { Env } from '../index';
@@ -144,6 +144,146 @@ adminRoutes.post('/books/:id/reject', async (c) => {
   });
 
   return c.json({ message: 'Book rejected' });
+});
+
+// POST /books/reprocess - Queue stale books for reprocessing
+//
+// Body: {
+//   minVersion?: number     // reprocess books where pipelineVersion < this
+//   gutenbergIds?: number[] // or explicit list of Gutenberg IDs
+//   status?: string         // optional status filter (e.g. 'ready', 'rejected')
+//   limit?: number          // cap (default 500, max 5000)
+//   dryRun?: boolean        // if true, report candidates without enqueuing
+// }
+//
+// Creates one `queued` row in `process_jobs` per matching book, which the
+// PM2-hosted pg-batch script on the Droplet picks up on its next poll.
+// Books that already have a queued/in-progress job are skipped so repeated
+// calls are idempotent.
+adminRoutes.post('/books/reprocess', async (c) => {
+  const db = drizzle(c.env.DB);
+  type ReprocessBody = {
+    minVersion?: number;
+    gutenbergIds?: number[];
+    status?: string;
+    limit?: number;
+    dryRun?: boolean;
+  };
+  const body: ReprocessBody = await c.req
+    .json<ReprocessBody>()
+    .catch(() => ({} as ReprocessBody));
+
+  const limit = Math.min(5000, Math.max(1, body.limit ?? 500));
+  const dryRun = body.dryRun === true;
+
+  const conditions = [];
+  if (Array.isArray(body.gutenbergIds) && body.gutenbergIds.length > 0) {
+    const ids = body.gutenbergIds.filter((n: number) => Number.isInteger(n));
+    if (ids.length === 0) {
+      return c.json({ error: 'gutenbergIds must contain integers' }, 400);
+    }
+    conditions.push(inArray(books.gutenbergId, ids));
+  }
+  if (typeof body.minVersion === 'number') {
+    // Treat NULL pipeline_version as 0 so pre-versioning records are included.
+    conditions.push(
+      or(lt(books.pipelineVersion, body.minVersion), isNull(books.pipelineVersion))!,
+    );
+  }
+  if (typeof body.status === 'string' && body.status.length > 0) {
+    conditions.push(eq(books.status, body.status));
+  }
+
+  if (conditions.length === 0) {
+    return c.json(
+      { error: 'Provide at least one of: minVersion, gutenbergIds, status' },
+      400,
+    );
+  }
+
+  const candidates = await db
+    .select({
+      id: books.id,
+      gutenbergId: books.gutenbergId,
+      title: books.title,
+      pipelineVersion: books.pipelineVersion,
+      status: books.status,
+    })
+    .from(books)
+    .where(and(...conditions))
+    .limit(limit);
+
+  // Filter out books without a gutenbergId and those that already have an
+  // active job. Doing this in JS keeps the SQL simple and D1-friendly.
+  const withGid = candidates.filter(
+    (b): b is typeof b & { gutenbergId: number } => b.gutenbergId !== null,
+  );
+  const gids = withGid.map((b) => b.gutenbergId);
+
+  let alreadyActive = new Set<number>();
+  if (gids.length > 0) {
+    const activeJobs = await db
+      .select({ gutenbergId: processJobs.gutenbergId, status: processJobs.status })
+      .from(processJobs)
+      .where(
+        and(
+          inArray(processJobs.gutenbergId, gids),
+          inArray(processJobs.status, [
+            'queued',
+            'downloading',
+            'parsing',
+            'cleaning',
+            'uploading',
+          ]),
+        ),
+      );
+    alreadyActive = new Set(activeJobs.map((j) => j.gutenbergId));
+  }
+
+  const toQueue = withGid.filter((b) => !alreadyActive.has(b.gutenbergId));
+
+  const sample = toQueue.slice(0, 20).map((b) => ({
+    gutenbergId: b.gutenbergId,
+    title: b.title,
+    pipelineVersion: b.pipelineVersion ?? 0,
+    status: b.status,
+  }));
+
+  if (dryRun) {
+    return c.json({
+      dryRun: true,
+      matched: candidates.length,
+      withoutGutenbergId: candidates.length - withGid.length,
+      alreadyActive: alreadyActive.size,
+      wouldQueue: toQueue.length,
+      sample,
+    });
+  }
+
+  // Insert jobs in small batches to respect D1's SQL variable limit.
+  let queued = 0;
+  const BATCH_SIZE = 20;
+  for (let i = 0; i < toQueue.length; i += BATCH_SIZE) {
+    const slice = toQueue.slice(i, i + BATCH_SIZE);
+    await db.insert(processJobs).values(
+      slice.map((b) => ({
+        id: crypto.randomUUID(),
+        gutenbergId: b.gutenbergId,
+        status: 'queued',
+        // High priority so reprocess jobs jump ahead of discovery backlog.
+        priority: 1_000_000,
+      })),
+    );
+    queued += slice.length;
+  }
+
+  return c.json({
+    dryRun: false,
+    matched: candidates.length,
+    alreadyActive: alreadyActive.size,
+    queued,
+    sample,
+  });
 });
 
 // POST /books/:id/sync - Sync approved book to Readmigo API

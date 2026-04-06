@@ -23,6 +23,19 @@ import {
   getImageFilename,
 } from './image-processor';
 
+// Pipeline version. Bump this whenever the end-to-end processing output
+// changes in a way that makes previously stored records stale (e.g. parser
+// fix, cleaner fix, new quality check that affects scoring). Books in D1
+// whose `pipeline_version` is lower than this constant are candidates for
+// reprocessing via POST /admin/books/reprocess.
+//
+// History:
+//   0 — pre-versioning; broken multi-chapter-per-file parser
+//   1 — P0 fixes: flow-based fallback, section-wrapped boilerplate removal,
+//       duplication/word-ceiling quality checks
+//   2 — B1.2: anchor-based chapter splitting, word-boundary skip filter
+export const PIPELINE_VERSION = 2;
+
 // Strip HTML for word count (after cleaning)
 function stripHtml(html: string): string {
   return html
@@ -313,6 +326,7 @@ export async function processBook(gutenbergId: number, jobId?: string, jobAttemp
       difficultyScore: difficulty.difficultyScore,
       estimatedReadingMinutes: difficulty.estimatedReadingMinutes,
       coverSource: coverSource,
+      pipelineVersion: PIPELINE_VERSION,
     });
 
     // Use the actual DB id (may differ from uuid() if book already existed)

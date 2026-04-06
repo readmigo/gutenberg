@@ -26,6 +26,7 @@ export const books = sqliteTable('books', {
   aiDescription: text('ai_description'),
   aiTags: text('ai_tags'),                   // JSON array
   coverSource: text('cover_source').default('epub'), // epub/openlibrary/generated
+  pipelineVersion: integer('pipeline_version').default(0),
   approvedAt: text('approved_at'),
   syncedAt: text('synced_at'),
   readmigoBookId: text('readmigo_book_id'),
@@ -34,6 +35,7 @@ export const books = sqliteTable('books', {
 }, (table) => [
   index('books_status_idx').on(table.status),
   index('books_gutenberg_id_idx').on(table.gutenbergId),
+  index('books_pipeline_version_idx').on(table.pipelineVersion),
 ]);
 
 // Chapters table

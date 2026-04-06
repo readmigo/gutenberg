@@ -49,6 +49,7 @@ internalRoutes.post('/books', async (c) => {
       aiDescription: body.aiDescription,
       aiTags: body.aiTags,
       coverSource: body.coverSource,
+      pipelineVersion: body.pipelineVersion,
       updatedAt: now,
     }).where(eq(books.id, existing.id));
 
@@ -81,6 +82,7 @@ internalRoutes.post('/books', async (c) => {
     aiDescription: body.aiDescription,
     aiTags: body.aiTags,
     coverSource: body.coverSource,
+    pipelineVersion: body.pipelineVersion,
   });
 
   const created = await db.select().from(books).where(eq(books.id, body.id)).get();
