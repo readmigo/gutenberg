@@ -98,7 +98,10 @@ const WORD_DIFF_TOLERANCE = 0.15;
 const QUALITY_THRESHOLD = 80;
 
 const http = axios.create({
-  timeout: 120_000,
+  // Some PG illustrated editions (e.g. Count of Monte Cristo PG #1184) are
+  // ~85 MB. At typical proxy speeds this takes 3-4 minutes; 5 minutes gives
+  // headroom without waiting forever on a genuinely dead connection.
+  timeout: 300_000,
   maxRedirects: 5,
   headers: { 'User-Agent': 'readmigo-gutenberg-calibration/1 (research)' },
 });
@@ -138,15 +141,58 @@ interface R2IndexEntry {
   title: string;
 }
 
+/**
+ * Normalize SE slug separators. The Readmigo database stores sourceId using
+ * inconsistent separators — some entries look like "jane-austen/pride-and-
+ * prejudice" (URL-style) and others like "jane-austen_pride-and-prejudice"
+ * (GitHub repo style). Our se-pg-index.json always uses the URL-style form,
+ * so we normalize R2 keys to the same shape before matching.
+ */
+function normalizeSeSlug(slug: string): string {
+  return slug.replace(/_/g, '/');
+}
+
 function loadR2Index(): Map<string, R2IndexEntry> {
   if (!fs.existsSync(R2_INDEX_FILE)) return new Map();
   const raw = JSON.parse(fs.readFileSync(R2_INDEX_FILE, 'utf8')) as {
     entries: R2IndexEntry[];
   };
   const m = new Map<string, R2IndexEntry>();
-  for (const e of raw.entries) m.set(e.seSlug, e);
+  for (const e of raw.entries) {
+    m.set(normalizeSeSlug(e.seSlug), e);
+  }
   return m;
 }
+
+/**
+ * Check whether a book's PG and SE EPUBs are already in the local cache.
+ * Used as a fallback when the entry is NOT in Readmigo R2 but has been
+ * pre-downloaded by calibrate/prefetch-cache.ts.
+ */
+function isLocallyCached(entry: IndexEntry): boolean {
+  const pgId = entry.pgIds[0];
+  if (!pgId) return false;
+
+  const pgUrl = `https://aleph.pglaf.org/cache/epub/${pgId}/pg${pgId}-images.epub`;
+  const pgKey = pgUrl.replace(/[^a-zA-Z0-9]/g, '_');
+  const pgFile = path.join(CACHE_DIR, `pg-${pgId}-${pgKey}.epub`);
+
+  const seUrl = `https://standardebooks.org/ebooks/${entry.seSlug}/downloads/${entry.seRepo.toLowerCase()}.epub?source=download`;
+  const seKey = seUrl.replace(/[^a-zA-Z0-9]/g, '_');
+  const seFile = path.join(CACHE_DIR, `se-${pgId}-${seKey}.epub`);
+
+  return fs.existsSync(pgFile) && fs.existsSync(seFile);
+}
+
+// Hardcoded skip list for books whose PG illustrated EPUB is too large
+// (>15 MB) to download reliably over the calibration network. Each one was
+// observed to stall the run for 10+ minutes. Most were already validated in
+// earlier rounds via different routes; the rest are documented edition cases.
+const PG_SKIP_LIST = new Set<number>([
+  883,    // Charles Dickens — Our Mutual Friend (illustrated, 20MB+)
+  1184,   // Alexandre Dumas — Count of Monte Cristo (illustrated, 85MB)
+  1342,   // Pride and Prejudice illustrated (different edition than SE uses)
+]);
 
 function loadIndex(r2Index: Map<string, R2IndexEntry>): IndexEntry[] {
   if (!fs.existsSync(INDEX_FILE)) {
@@ -154,14 +200,15 @@ function loadIndex(r2Index: Map<string, R2IndexEntry>): IndexEntry[] {
   }
   const raw = JSON.parse(fs.readFileSync(INDEX_FILE, 'utf8')) as IndexFile;
   // Keep only single-source SE editions (see earlier note on Vicomte / Bierce
-  // / Budrys multi-source merges) and — when standardebooks.org is rate
-  // limiting us — further require that each entry has an SE EPUB mirror
-  // available in the Readmigo R2 index. Readmigo already ingested ~400 SE
-  // books and stores each under https://cdn.readmigo.app/books/{id}/book.epub
-  // which has no rate limit.
+  // / Budrys multi-source merges). Require each entry to be reachable without
+  // hitting standardebooks.org's rate limit, which means one of:
+  //   - Readmigo R2 mirror present (cdn.readmigo.app), or
+  //   - Both PG and SE EPUBs already pre-downloaded to the local cache dir
+  //     by calibrate/prefetch-cache.ts.
   return raw.entries
     .filter((e) => e.pgIds.length === 1)
-    .filter((e) => r2Index.has(e.seSlug));
+    .filter((e) => !PG_SKIP_LIST.has(e.pgIds[0]))
+    .filter((e) => r2Index.has(e.seSlug) || isLocallyCached(e));
 }
 
 function loadResults(): ResultsFile {
@@ -183,6 +230,14 @@ function testedPgIds(results: ResultsFile): Set<number> {
   return ids;
 }
 
+// Skip downloads larger than this. PG illustrated editions of long Victorian
+// novels can be 20-90 MB; over a slow network proxy these become 10-15 minute
+// downloads that block the calibration loop without adding signal we don't
+// already have from smaller books. Cached files are still served regardless
+// of size. 15 MB is empirically the largest book that finishes downloading
+// reliably in under 5 minutes on the calibration network.
+const MAX_DOWNLOAD_BYTES = 15 * 1024 * 1024;
+
 async function downloadToTemp(url: string, prefix: string): Promise<string> {
   // Cache by stable key derived from URL so repeated runs / retries do not
   // hammer Gutenberg. If the cached file exists and is a valid ZIP, reuse it.
@@ -195,6 +250,22 @@ async function downloadToTemp(url: string, prefix: string): Promise<string> {
       return cachedFile;
     }
     fs.unlinkSync(cachedFile);
+  }
+
+  // HEAD-check the size before committing to a long download. PG mirrors
+  // (aleph.pglaf.org) honor HEAD; SE on cdn.readmigo.app is small enough
+  // that the check is fast either way. Skipping a too-large book costs us
+  // one extra HTTP roundtrip but saves up to 15 minutes on stalls.
+  try {
+    const head = await http.head(url);
+    const len = Number(head.headers['content-length'] || 0);
+    if (len > 0 && len > MAX_DOWNLOAD_BYTES) {
+      throw new Error(`oversized: ${(len / 1024 / 1024).toFixed(1)}MB > 30MB`);
+    }
+  } catch (err: any) {
+    // If HEAD itself fails (some servers reject HEAD), proceed with the GET
+    // — the timeout still bounds the worst case. Re-throw oversized errors.
+    if (err?.message?.startsWith('oversized:')) throw err;
   }
 
   // Retry transient network failures (502s, 429 rate limits, aborts, timeouts).
