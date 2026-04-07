@@ -2,11 +2,28 @@ name: Daily Discover
 
 on:
   workflow_dispatch:
+    inputs:
+      discover_limit:
+        description: 'How many books to queue'
+        required: false
+        default: '200'
+      min_downloads:
+        description: 'Minimum PG download count to consider a book'
+        required: false
+        default: '10'
+      exclude_se:
+        description: 'Skip books that exist in Standard Ebooks (true/false)'
+        required: false
+        default: 'false'
 
 jobs:
   discover:
     name: Discover New Books
     runs-on: ubuntu-latest
+    env:
+      DISCOVER_LIMIT: ${{ github.event.inputs.discover_limit || '200' }}
+      MIN_DOWNLOADS: ${{ github.event.inputs.min_downloads || '10' }}
+      EXCLUDE_SE: ${{ github.event.inputs.exclude_se || 'false' }}
     steps:
       - name: Trigger discover on Droplet
         uses: appleboy/ssh-action@v1
@@ -14,7 +31,15 @@ jobs:
           host: ${{ secrets.DROPLET_HOST }}
           username: readmigo
           key: ${{ secrets.DROPLET_SSH_KEY }}
+          envs: DISCOVER_LIMIT,MIN_DOWNLOADS,EXCLUDE_SE
           script: |
+            set -euo pipefail
             cd /home/readmigo/projects/gutenberg && git checkout -- . && git pull --ff-only
             cd scripts && pnpm install --no-frozen-lockfile 2>/dev/null || true
-            npx ts-node pg-discover.ts --discover-limit=200 --min-downloads=10 2>&1 | tee -a /tmp/pg-discover-$(date +%Y%m%d).log
+            EXTRA_FLAGS=""
+            if [ "$EXCLUDE_SE" = "true" ]; then EXTRA_FLAGS="--exclude-se"; fi
+            npx ts-node pg-discover.ts \
+              --discover-limit="$DISCOVER_LIMIT" \
+              --min-downloads="$MIN_DOWNLOADS" \
+              $EXTRA_FLAGS \
+              2>&1 | tee -a /tmp/pg-discover-$(date +%Y%m%d).log

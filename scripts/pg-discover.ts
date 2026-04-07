@@ -1,4 +1,6 @@
 import 'dotenv/config';
+import * as fs from 'fs';
+import * as path from 'path';
 import { fetchPage, fetchBookById, getEpubUrl, GutendexBook } from './lib/gutendex-client';
 import { workerClient } from './lib/worker-client';
 import { buildCuratedPriorityMap, getCuratedIds } from './lib/curated-lists';
@@ -16,12 +18,36 @@ const DISCOVER_LIMIT = parseInt(getArg('discover-limit', '200'));
 const MIN_DOWNLOADS = parseInt(getArg('min-downloads', '10'));
 const DRY_RUN = args.includes('--dry-run');
 const CURATED_ONLY = args.includes('--curated-only');
+const EXCLUDE_SE = args.includes('--exclude-se');
+
+/**
+ * Build the set of PG IDs that Standard Ebooks already curates. When the
+ * --exclude-se flag is set we skip these books at queue time so the small
+ * batch trial focuses on books outside the SE catalog.
+ */
+function loadSePgIds(): Set<number> {
+  const indexPath = path.resolve(__dirname, 'calibrate', 'se-pg-index.json');
+  if (!fs.existsSync(indexPath)) {
+    console.warn(`  [exclude-se] se-pg-index.json not found at ${indexPath}, skipping filter`);
+    return new Set();
+  }
+  const raw = JSON.parse(fs.readFileSync(indexPath, 'utf8')) as {
+    entries: Array<{ pgIds: number[] }>;
+  };
+  const ids = new Set<number>();
+  for (const entry of raw.entries) {
+    for (const id of entry.pgIds) ids.add(id);
+  }
+  return ids;
+}
+
+const SE_PG_IDS = EXCLUDE_SE ? loadSePgIds() : new Set<number>();
 
 async function main() {
   console.log('='.repeat(60));
   console.log('PG Discover - Smart Priority Strategy');
   console.log(`  Limit: ${DISCOVER_LIMIT} | Min downloads: ${MIN_DOWNLOADS} | Dry run: ${DRY_RUN}`);
-  console.log(`  Curated only: ${CURATED_ONLY}`);
+  console.log(`  Curated only: ${CURATED_ONLY} | Exclude SE: ${EXCLUDE_SE} (${SE_PG_IDS.size} ids)`);
   console.log('='.repeat(60));
 
   // Phase 1: Discover curated books first (highest priority)
@@ -52,6 +78,11 @@ async function main() {
   // are skipped per docs/plans/2026-04-07-readmigo-curation-rules.md.
   for (const gutenbergId of newCuratedIds) {
     if (discovered >= DISCOVER_LIMIT) break;
+
+    if (EXCLUDE_SE && SE_PG_IDS.has(gutenbergId)) {
+      excluded++;
+      continue;
+    }
 
     let book: GutendexBook | null = null;
     try {
@@ -166,6 +197,14 @@ async function main() {
     // Calculate composite priority and create jobs
     for (const book of newBooks) {
       if (discovered >= DISCOVER_LIMIT) break;
+
+      // SE-exclusion gate: when --exclude-se is set, skip books whose PG ID
+      // appears in scripts/calibrate/se-pg-index.json. Used by the Stage 1
+      // small batch trial to focus on books that SE has not curated.
+      if (EXCLUDE_SE && SE_PG_IDS.has(book.id)) {
+        excluded++;
+        continue;
+      }
 
       // Curation gate: skip categories the Readmigo reader does not yet
       // render well. See docs/plans/2026-04-07-readmigo-curation-rules.md.
