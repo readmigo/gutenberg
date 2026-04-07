@@ -114,14 +114,17 @@ export function checkBookQuality(book: BookData, chapters: ChapterData[]): Quali
     score -= 10;
   }
 
-  // Upper bound sanity check. War and Peace is ~587k words; anything beyond
-  // 1M is almost certainly the result of parser-level content duplication.
-  if (book.wordCount > 1_000_000) {
+  // Upper bound sanity check. War and Peace is genuinely ~587k words and
+  // shouldn't be penalized; the parser-duplication failure mode (the original
+  // Pride and Prejudice disaster that motivated this rule) was an order of
+  // magnitude beyond that. Hard rejection only at 1.5M+ words; soft warning
+  // at 800k+ which is still bigger than nearly every legitimate single book.
+  if (book.wordCount > 1_500_000) {
     issues.push(`Impossible word count: ${book.wordCount} (parser duplication?)`);
     score = 0;
-  } else if (book.wordCount > 500_000) {
-    issues.push(`Implausibly high word count: ${book.wordCount}`);
-    score -= 50;
+  } else if (book.wordCount > 800_000) {
+    issues.push(`Very long book: ${book.wordCount} words`);
+    score -= 10;
   }
 
   // Empty chapters

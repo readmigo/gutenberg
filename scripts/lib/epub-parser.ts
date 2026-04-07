@@ -398,11 +398,29 @@ export async function extractChapters(epub: any): Promise<ParsedChapter[]> {
   }
 
   if (useAnchorSplit) {
+    // Filter TOC down to chapter-level entries when the TOC includes many
+    // sub-section labels. PG editions of Leviathan, Wealth of Nations, etc.
+    // list every marginal heading in the TOC alongside the real chapter
+    // labels — 720 entries for a 47-chapter book. If >= 5 entries match a
+    // /chapter\s+(N|roman)/ pattern, use only those as anchor boundaries
+    // and let sub-sections be merged into the parent chapter's segment.
+    const chapterStyleRe = /\b(?:chapter|book|part|canto|act|scene|prologue|epilogue|introduction|preface|foreword)\s+(?:\d+|[ivxlcdm]+)\b/i;
+    const chapterStyleEntries = toc.filter((t: any) =>
+      chapterStyleRe.test(t.title || ''),
+    );
+    let workingToc = toc;
+    if (chapterStyleEntries.length >= 5 && chapterStyleEntries.length < toc.length / 2) {
+      console.log(
+        `  [epub-parser] TOC has ${toc.length} entries but ${chapterStyleEntries.length} look like chapter headings — using only those`,
+      );
+      workingToc = chapterStyleEntries;
+    }
+
     // Group TOC entries by physical file while preserving TOC order.
     type TocEntry = { title: string; href: string; baseHref: string; anchor: string };
     const byFile = new Map<string, TocEntry[]>();
     const fileOrder: string[] = [];
-    for (const t of toc) {
+    for (const t of workingToc) {
       const href = t.href || '';
       const [baseHref, anchor] = href.split('#');
       if (!baseHref || !anchor) continue;
@@ -456,6 +474,50 @@ export async function extractChapters(epub: any): Promise<ParsedChapter[]> {
           wordCount,
         });
       }
+    }
+
+    // Pick up flow items that no TOC entry references. Some PG editions
+    // (e.g. A Modest Proposal #1080) have the actual essay text in a
+    // separate xhtml file with no TOC pointer — only the title page is
+    // in the TOC. Without this fallback the body content disappears.
+    const referencedFlowIds = new Set<string>();
+    for (const baseHref of fileOrder) {
+      const f = flow.find(
+        (it: any) => it.href === baseHref || it.href?.endsWith(baseHref),
+      );
+      if (f) referencedFlowIds.add(f.id);
+    }
+    for (const flowItem of flow) {
+      if (referencedFlowIds.has(flowItem.id)) continue;
+      // Skip cover wrappers and PG header/footer files explicitly.
+      const lowerHref = (flowItem.href || '').toLowerCase();
+      if (lowerHref.includes('cover') || lowerHref.includes('wrap')) continue;
+      if (
+        flowItem.id === 'pg-header' ||
+        flowItem.id === 'pg-footer' ||
+        lowerHref.endsWith('-h-0.htm.html') ||
+        lowerHref.endsWith('-h-0.htm.xhtml')
+      ) {
+        continue;
+      }
+      const html = await getChapterContent(epub, flowItem.id);
+      if (!html || html.length < 100) continue;
+      const wordCount = countWords(stripHtml(html));
+      if (wordCount < 50) continue;
+      const headingTitle = extractTitleFromSegment(html);
+      const title = headingTitle || `Chapter ${chapters.length + 1}`;
+      if (isSkippableChapter(title, flowItem.href)) continue;
+      if (isFrontMatterFragment(title, wordCount, html)) continue;
+      console.log(
+        `  [epub-parser] adding orphaned flow item ${flowItem.id} -> ${flowItem.href} (${wordCount} words)`,
+      );
+      chapters.push({
+        order: chapters.length + 1,
+        title,
+        href: flowItem.href || '',
+        htmlContent: html,
+        wordCount,
+      });
     }
 
     return dropEdgeFrontMatter(dedupeByContentHash(chapters));
