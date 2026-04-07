@@ -99,6 +99,40 @@ const MULTI_TRANSLATOR_PATTERNS = [
   /\bvarious hands\b/i,
 ];
 
+// Reference works (dictionaries, thesauruses, encyclopedias, glossaries)
+// are not narrative content and should not appear in the Readmigo reader.
+// Detected by either subjects or title hints.
+const REFERENCE_SUBJECTS = [
+  /\bdictionar/i,
+  /\bthesaur/i,
+  /\bencyclop[ae]di/i,
+  /\bglossar/i,
+  /\breference works?\b/i,
+  /\bconcordance/i,
+];
+
+const REFERENCE_TITLE_HINTS = [
+  /\bdictionary\b/i,
+  /\bthesaurus\b/i,
+  /\bencyclop[ae]dia\b/i,
+  /\bcyclop[ae]dia\b/i,
+  /\bglossary\b/i,
+  /\bconcordance\b/i,
+  /\bword[\s-]?book\b/i,
+];
+
+// Multi-volume cherry-picks: PG often splits long works into volumes and a
+// reader landing on volume 1 alone gets a fragmentary experience. Detect
+// titles with explicit volume markers and skip them — when the reader gains
+// proper multi-volume support these can be reintroduced.
+const MULTI_VOLUME_TITLE_PATTERNS = [
+  /\bvol(?:ume|\.)?\s*(?:[ivxlcdm]+|\d+)\b/i, // "Volume 2", "Vol. III", "Vol. 1"
+  /\bbook\s+(?:[ivxlcdm]+|\d+)\s+of\b/i,        // "Book II of", "Book 3 of"
+  /\bpart\s+(?:[ivxlcdm]+|\d+)\s+of\b/i,        // "Part 1 of"
+  /\bvolume\s+(?:[ivxlcdm]+|\d+)\s+of\b/i,
+  /—\s*volume\s+(?:[ivxlcdm]+|\d+)\b/i,         // "My Life — Volume 1"
+];
+
 function isEpicAllowlisted(title: string): boolean {
   return EPIC_POETRY_ALLOWLIST.some((re) => re.test(title));
 }
@@ -123,6 +157,26 @@ export function isExcludedFromReadmigo(input: CurationCheckInput): CurationCheck
   const blob = `${title} ${description} ${subjects.join(' ')}`;
   if (matchesAny(blob, MULTI_TRANSLATOR_PATTERNS)) {
     return { excluded: true, reason: 'multi-translator compilation' };
+  }
+
+  // Reference works: dictionaries, thesauruses, encyclopedias, glossaries.
+  // Checked here (not after the drama / poetry checks) because reference
+  // titles like "Roget's Thesaurus" should be flagged before any other
+  // category match.
+  for (const subject of subjects) {
+    if (matchesAny(subject, REFERENCE_SUBJECTS)) {
+      return { excluded: true, reason: `reference work (subject: ${subject})` };
+    }
+  }
+  if (matchesAny(title, REFERENCE_TITLE_HINTS)) {
+    return { excluded: true, reason: 'reference work (title)' };
+  }
+
+  // Multi-volume cherry-picks: a single PG volume of a multi-volume work
+  // would land in Readmigo without its companion volumes. Skip until the
+  // reader gains proper multi-volume series support.
+  if (matchesAny(title, MULTI_VOLUME_TITLE_PATTERNS)) {
+    return { excluded: true, reason: 'multi-volume single-volume cherry-pick' };
   }
 
   // Drama: any subject that looks dramatic. Plays do not get an allowlist

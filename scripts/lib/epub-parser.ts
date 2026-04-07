@@ -252,42 +252,56 @@ function countWords(text: string): number {
 /**
  * Extract a chapter title from the first heading found inside a segment of
  * HTML. Looks at h1..h3 in document order, returns the text content of the
- * first match with whitespace collapsed. Returns null if no heading is found.
+ * first qualifying match with whitespace collapsed. Returns null if no
+ * usable heading is found.
  *
  * Used to replace the TOC-derived title (which on PG illustrated editions
  * is often polluted with illustration captions) with the heading actually
  * printed in the chapter body.
  *
- * PG illustrated editions routinely wrap the chapter h2 around BOTH an
- * illustration caption span AND the chapter label, e.g.
+ * Two pollution patterns we filter:
  *
- *   <h2 id="..."><img .../><span class="caption">I hope Mr. Bingley will
- *   like it.</span><br/><br/>CHAPTER II.</h2>
+ *   1. Illustration caption inside the heading (PG illustrated editions
+ *      wrap a `<span class="caption">…</span>` next to the chapter label):
  *
- * A naive `.text()` would concatenate the two into the same polluted string
- * we saw in the TOC label. To get just the chapter label we clone the
- * heading, drop any caption children, and only then serialize text.
+ *        <h2 id="..."><img .../><span class="caption">I hope Mr. Bingley
+ *        will like it.</span><br/><br/>CHAPTER II.</h2>
+ *
+ *      We drop caption / illustration children before reading text.
+ *
+ *   2. PG header / front-matter headings whose text begins with
+ *      "The Project Gutenberg eBook of …" — these come from the
+ *      pg-boilerplate `<section>` that the content cleaner will strip
+ *      later. If we use them as the chapter title we get every book's
+ *      first chapter named after the boilerplate. Skip such headings
+ *      and try the next h1/h2/h3 in document order.
  */
 export function extractTitleFromSegment(html: string): string | null {
   if (!html) return null;
   const $ = cheerio.load(html);
-  const heading = $('h1, h2, h3').first();
-  if (heading.length === 0) return null;
+  const headings = $('h1, h2, h3');
+  if (headings.length === 0) return null;
 
-  // Work on a clone so we don't mutate the caller's parse tree. Drop image
-  // children and any span/div carrying a class that suggests a caption or
-  // illustration label; what remains should be the real chapter heading.
-  const clone = heading.clone();
-  clone.find('img').remove();
-  clone.find('[class*="caption" i]').remove();
-  clone.find('[class*="illustration" i]').remove();
+  for (let i = 0; i < headings.length; i++) {
+    // Work on a clone so we don't mutate the caller's parse tree. Drop image
+    // children and any span/div carrying a class that suggests a caption or
+    // illustration label; what remains should be the real chapter heading.
+    const clone = $(headings[i]).clone();
+    clone.find('img').remove();
+    clone.find('[class*="caption" i]').remove();
+    clone.find('[class*="illustration" i]').remove();
 
-  const text = clone.text().replace(/\s+/g, ' ').trim();
-  if (!text) return null;
-  // Guard against titles that are themselves junk (e.g. just numbers or
-  // a single punctuation mark). Require at least 2 alphanumeric characters.
-  if (!/[A-Za-z0-9]{2,}/.test(text)) return null;
-  return text;
+    const text = clone.text().replace(/\s+/g, ' ').trim();
+    if (!text) continue;
+    // Guard against titles that are themselves junk (numbers or punctuation).
+    if (!/[A-Za-z0-9]{2,}/.test(text)) continue;
+    // Skip PG boilerplate headings — try the next heading in document order.
+    if (/project gutenberg|ebook of|gutenberg ebook|gutenberg license/i.test(text)) {
+      continue;
+    }
+    return text;
+  }
+  return null;
 }
 
 /**
