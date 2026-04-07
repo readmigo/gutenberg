@@ -107,24 +107,42 @@ export async function processBook(gutenbergId: number, jobId?: string, jobAttemp
     console.log(`  Author: ${gutBook.authors.map(a => a.name).join(', ') || 'Unknown'}`);
     console.log(`  EPUB: ${epubUrl}`);
 
-    // Step 2: Download EPUB (with retry)
+    // Step 2: Download EPUB with mirror fallback.
+    // Primary: aleph.pglaf.org (no rate limit, no overload)
+    // Fallback: www.gutenberg.org (the Gutendex-reported URL)
+    //
+    // The droplet's connection to www.gutenberg.org is intermittently
+    // ETIMEDOUT during batch processing, while the pglaf mirror has been
+    // consistently reachable for hundreds of downloads during calibration.
+    // Always try pglaf first, then fall through to the original URL.
     console.log(`  [2/9] Downloading EPUB...`);
     let epubBuffer!: Buffer;
-    for (let attempt = 1; attempt <= 3; attempt++) {
-      try {
-        const resp = await axios.get<Buffer>(epubUrl, {
-          responseType: 'arraybuffer',
-          timeout: 120000,
-          maxRedirects: 5,
-        });
-        epubBuffer = resp.data;
-        break;
-      } catch (dlErr: any) {
-        const msg = dlErr?.message || dlErr?.code || JSON.stringify(dlErr);
-        console.error(`  Download attempt ${attempt}/3 failed: ${msg}`);
-        if (attempt === 3) throw new Error(`EPUB download failed after 3 attempts: ${msg}`);
-        await new Promise(r => setTimeout(r, 3000 * attempt));
+    const pglafUrl = `https://aleph.pglaf.org/cache/epub/${gutenbergId}/pg${gutenbergId}-images.epub`;
+    const downloadUrls: string[] = [pglafUrl, epubUrl];
+    let dlOk = false;
+    for (const url of downloadUrls) {
+      for (let attempt = 1; attempt <= 3; attempt++) {
+        try {
+          const resp = await axios.get<Buffer>(url, {
+            responseType: 'arraybuffer',
+            timeout: 180_000,
+            maxRedirects: 5,
+          });
+          epubBuffer = resp.data;
+          dlOk = true;
+          break;
+        } catch (dlErr: any) {
+          const msg = dlErr?.message || dlErr?.code || JSON.stringify(dlErr);
+          console.error(`  Download attempt ${attempt}/3 from ${url} failed: ${msg}`);
+          if (attempt < 3) {
+            await new Promise((r) => setTimeout(r, 3000 * attempt));
+          }
+        }
       }
+      if (dlOk) break;
+    }
+    if (!dlOk) {
+      throw new Error(`EPUB download failed after 3 attempts on both pglaf and gutenberg.org`);
     }
 
     tempFile = path.join(os.tmpdir(), `pg-${gutenbergId}-${Date.now()}.epub`);
