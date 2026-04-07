@@ -1,4 +1,5 @@
 import { createHash } from 'crypto';
+import { isPrefaceDominant, isExcludedFromReadmigo } from './curation-rules';
 
 export interface QualityResult {
   score: number; // 0-100
@@ -12,6 +13,11 @@ interface BookData {
   chapterCount: number;
   wordCount: number;
   hasCover: boolean;
+  // Optional metadata for second-line curation check. When present and the
+  // book matches an excluded category, the result is downgraded to
+  // needs_review even if the structural quality score is high.
+  subjects?: string[];
+  description?: string;
 }
 
 interface ChapterData {
@@ -282,6 +288,28 @@ export function checkBookQuality(book: BookData, chapters: ChapterData[]): Quali
     }
   }
 
+  // 9. Curation rule fallback. pg-discover should normally filter excluded
+  // categories before they reach the pipeline, but we re-check here as a
+  // second line of defence so that anything that slips past discovery is
+  // marked needs_review and cannot accidentally reach the ready state.
+  // See docs/plans/2026-04-07-readmigo-curation-rules.md for the rationale.
+  const curationCheck = isExcludedFromReadmigo({
+    title: book.title,
+    subjects: book.subjects,
+    description: book.description,
+  });
+  let curationDowngrade = false;
+  if (curationCheck.excluded) {
+    issues.push(`Excluded by Readmigo curation rules: ${curationCheck.reason}`);
+    curationDowngrade = true;
+  }
+  if (isPrefaceDominant(chapters)) {
+    issues.push(
+      `Translator's preface dominates the book (first chapter > 30% of total words)`,
+    );
+    curationDowngrade = true;
+  }
+
   score = Math.max(0, Math.min(100, score));
 
   // Determine tier based on score
@@ -292,6 +320,12 @@ export function checkBookQuality(book: BookData, chapters: ChapterData[]): Quali
     tier = 'needs_review';
   } else {
     tier = 'rejected';
+  }
+
+  // Apply curation downgrade after the structural tier is set so that an
+  // otherwise-perfect poetry collection still ends up in needs_review.
+  if (curationDowngrade && tier === 'auto_approved') {
+    tier = 'needs_review';
   }
 
   return { score, issues, pass: score >= 60, tier };

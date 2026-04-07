@@ -3,6 +3,7 @@ import { fetchPage, fetchBookById, getEpubUrl, GutendexBook } from './lib/gutend
 import { workerClient } from './lib/worker-client';
 import { buildCuratedPriorityMap, getCuratedIds } from './lib/curated-lists';
 import { fetchCategoryBonuses, getBookCategoryBonus } from './lib/category-balancer';
+import { isExcludedFromReadmigo } from './lib/curation-rules';
 
 // Parse CLI args
 const args = process.argv.slice(2);
@@ -42,10 +43,37 @@ async function main() {
 
   let discovered = 0;
   let skipped = 0;
+  let excluded = 0;
 
-  // Create jobs for new curated books
+  // Create jobs for new curated books. Each curated id is checked against
+  // the Readmigo curation rules — fetch metadata from Gutendex so we can
+  // see subjects/title/description before queueing. Curated books that
+  // happen to be poetry collections, plays, or multi-translator anthologies
+  // are skipped per docs/plans/2026-04-07-readmigo-curation-rules.md.
   for (const gutenbergId of newCuratedIds) {
     if (discovered >= DISCOVER_LIMIT) break;
+
+    let book: GutendexBook | null = null;
+    try {
+      book = await fetchBookById(gutenbergId);
+    } catch (err) {
+      console.error(`  Failed to fetch metadata for PG#${gutenbergId}:`, err instanceof Error ? err.message : err);
+      continue;
+    }
+    if (!book) {
+      console.warn(`  PG#${gutenbergId} not found on Gutendex, skipping`);
+      continue;
+    }
+
+    const curationCheck = isExcludedFromReadmigo({
+      title: book.title,
+      subjects: book.subjects,
+    });
+    if (curationCheck.excluded) {
+      console.log(`  [skip] PG#${gutenbergId} ${book.title} — ${curationCheck.reason}`);
+      excluded++;
+      continue;
+    }
 
     const priority = (curatedMap.get(gutenbergId) || 0) + 1000; // curated books always high priority
 
@@ -54,7 +82,7 @@ async function main() {
     } else {
       try {
         await workerClient.createJob(gutenbergId, priority);
-        console.log(`  Created curated job: PG#${gutenbergId} (priority: ${priority})`);
+        console.log(`  Created curated job: PG#${gutenbergId} ${book.title} (priority: ${priority})`);
       } catch (err) {
         console.error(`  Failed to create job for PG#${gutenbergId}:`, err instanceof Error ? err.message : err);
         continue;
@@ -63,10 +91,10 @@ async function main() {
     discovered++;
   }
 
-  console.log(`  Phase 1 done: ${discovered} curated books queued`);
+  console.log(`  Phase 1 done: ${discovered} curated books queued, ${excluded} excluded by curation rules`);
 
   if (CURATED_ONLY) {
-    printSummary(discovered, skipped);
+    printSummary(discovered, skipped, excluded);
     return;
   }
 
@@ -139,6 +167,18 @@ async function main() {
     for (const book of newBooks) {
       if (discovered >= DISCOVER_LIMIT) break;
 
+      // Curation gate: skip categories the Readmigo reader does not yet
+      // render well. See docs/plans/2026-04-07-readmigo-curation-rules.md.
+      const curationCheck = isExcludedFromReadmigo({
+        title: book.title,
+        subjects: book.subjects,
+      });
+      if (curationCheck.excluded) {
+        console.log(`  [skip] PG#${book.id} ${book.title} — ${curationCheck.reason}`);
+        excluded++;
+        continue;
+      }
+
       // Composite priority = download_count + curated bonus + category bonus
       const curatedBonus = curatedMap.get(book.id) || 0;
       const categoryBonus = getBookCategoryBonus(book, categoryBonuses);
@@ -169,12 +209,12 @@ async function main() {
     await new Promise((r) => setTimeout(r, 1000));
   }
 
-  printSummary(discovered, skipped);
+  printSummary(discovered, skipped, excluded);
 }
 
-function printSummary(discovered: number, skipped: number) {
+function printSummary(discovered: number, skipped: number, excluded: number) {
   console.log('\n' + '='.repeat(60));
-  console.log(`Summary: ${discovered} discovered, ${skipped} skipped`);
+  console.log(`Summary: ${discovered} discovered, ${skipped} already exist, ${excluded} excluded by curation rules`);
   console.log('='.repeat(60));
 }
 

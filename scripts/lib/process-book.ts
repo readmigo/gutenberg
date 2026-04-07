@@ -183,6 +183,11 @@ export async function processBook(gutenbergId: number, jobId?: string, jobAttemp
         chapterCount: cleanedChapters.length,
         wordCount: totalWordCount,
         hasCover: !!coverData,
+        // Pass Gutendex subjects and the EPUB description so quality-checker
+        // can apply the Readmigo curation rules as a second-line filter
+        // (poetry / drama / multi-translator / preface-dominant).
+        subjects: gutBook.subjects,
+        description: metadata.description,
       },
       cleanedChapters.map(ch => ({
         title: ch.title,

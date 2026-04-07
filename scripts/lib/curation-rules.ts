@@ -1,0 +1,172 @@
+/**
+ * Readmigo curation rules.
+ *
+ * The Gutenberg pipeline can technically extract any PG book, but a few text
+ * categories do not currently render well in the Readmigo reader and are
+ * therefore excluded from import. The exclusion happens in two places:
+ *
+ *   1. `pg-discover.ts` skips excluded books before queueing a process job,
+ *      so they never enter the pipeline at all.
+ *   2. `quality-checker.ts` re-checks at process time and downgrades any
+ *      excluded book that slipped past discovery to `needs_review` so it
+ *      cannot reach the `ready` state without a manual override.
+ *
+ * The four excluded categories and their detection signals:
+ *
+ *   - Lyric poetry collections (subjects "Poetry", "Poems", title contains
+ *     "Poems"/"Sonnets"/"Songs"/"Verses"). Epic narrative poems are exempted
+ *     by an explicit allowlist (Iliad, Odyssey, Beowulf, etc.).
+ *
+ *   - Drama / plays (subjects "Drama", "Plays", "Tragedy", "Comedy"). The
+ *     reader does not yet typeset stage directions and speech prefixes
+ *     correctly so even Shakespeare and Wilde are out for now.
+ *
+ *   - Multi-translator compilations (title or description mentions
+ *     "various translators" / "translated by various"). These are short
+ *     story collections that splice prose from several translators and
+ *     typically misalign on chapter boundaries.
+ *
+ *   - Translator's-preface-dominant books (detected after extraction:
+ *     first chapter exceeds 30% of total words AND its title contains
+ *     "Introduction"/"Preface"/"Translator"). These are PG editions where
+ *     the apparatus crowds out the actual text.
+ *
+ * The doc page is at docs/plans/2026-04-07-readmigo-curation-rules.md.
+ */
+
+export interface CurationCheckInput {
+  title?: string;
+  description?: string;
+  subjects?: string[];
+}
+
+export interface CurationCheckResult {
+  excluded: boolean;
+  reason?: string;
+}
+
+// Epic narrative poems that ARE good for Readmigo even though they show up
+// as "poetry" by subject — they read as continuous narratives.
+const EPIC_POETRY_ALLOWLIST = [
+  /\biliad\b/i,
+  /\bodyssey\b/i,
+  /\baeneid\b/i,
+  /\bparadise lost\b/i,
+  /\bdivine comedy\b/i,
+  /\binferno\b/i,
+  /\bpurgatorio\b/i,
+  /\bparadiso\b/i,
+  /\bbeowulf\b/i,
+  /\bgilgamesh\b/i,
+  /\bfaerie queene\b/i,
+  /\bcanterbury tales\b/i,
+  /\bnibelungenlied\b/i,
+  /\bsong of roland\b/i,
+  /\bmahabharata\b/i,
+  /\bramayana\b/i,
+];
+
+const POETRY_SUBJECTS = [
+  /\bpoetry\b/i,
+  /\bpoems\b/i,
+  /\bverses?\b/i,
+  /\blyric poetry\b/i,
+  /\bsonnets?\b/i,
+];
+
+const POETRY_TITLE_HINTS = [
+  /\bpoems\b/i,
+  /\bsonnets?\b/i,
+  /\bsongs?\b/i,
+  /\bballads?\b/i,
+  /\bverses?\b/i,
+  /\blyrics?\b/i,
+];
+
+const DRAMA_SUBJECTS = [
+  /\bdrama\b/i,
+  /\bplays\b/i,
+  /\btragedy\b/i,
+  /\btragedies\b/i,
+  /\bcomedy\b/i,
+  /\bcomedies\b/i,
+  /\bone-act plays\b/i,
+];
+
+const MULTI_TRANSLATOR_PATTERNS = [
+  /\bvarious translators?\b/i,
+  /\btranslated by various\b/i,
+  /\bvarious hands\b/i,
+];
+
+function isEpicAllowlisted(title: string): boolean {
+  return EPIC_POETRY_ALLOWLIST.some((re) => re.test(title));
+}
+
+function matchesAny(text: string, patterns: RegExp[]): boolean {
+  return patterns.some((re) => re.test(text));
+}
+
+/**
+ * Discovery-time check. Returns excluded=true if a book matches any of the
+ * curation rules detectable from Gutendex metadata alone (no body content
+ * needed). Used by pg-discover.ts before creating a process job.
+ */
+export function isExcludedFromReadmigo(input: CurationCheckInput): CurationCheckResult {
+  const title = (input.title || '').trim();
+  const description = (input.description || '').trim();
+  const subjects = input.subjects || [];
+
+  // Multi-translator compilations are checked first because they can also
+  // carry Drama/Poetry subjects that would otherwise grant a vague exclusion
+  // reason — the multi-translator label is more specific.
+  const blob = `${title} ${description} ${subjects.join(' ')}`;
+  if (matchesAny(blob, MULTI_TRANSLATOR_PATTERNS)) {
+    return { excluded: true, reason: 'multi-translator compilation' };
+  }
+
+  // Drama: any subject that looks dramatic. Plays do not get an allowlist
+  // (yet) because the reader cannot render stage directions correctly.
+  for (const subject of subjects) {
+    if (matchesAny(subject, DRAMA_SUBJECTS)) {
+      return { excluded: true, reason: `drama (subject: ${subject})` };
+    }
+  }
+
+  // Poetry: subjects OR title hints, with an epic-narrative allowlist.
+  const subjectIsPoetry = subjects.some((s) => matchesAny(s, POETRY_SUBJECTS));
+  const titleIsPoetry = matchesAny(title, POETRY_TITLE_HINTS);
+  if (subjectIsPoetry || titleIsPoetry) {
+    if (isEpicAllowlisted(title)) {
+      return { excluded: false };
+    }
+    return {
+      excluded: true,
+      reason: subjectIsPoetry ? 'lyric poetry (subject)' : 'lyric poetry (title)',
+    };
+  }
+
+  return { excluded: false };
+}
+
+/**
+ * Process-time check. Detects translator's-preface-dominant books — those
+ * where the first extracted "chapter" overwhelms the rest of the book and
+ * is labelled like front matter. Cannot be detected from metadata alone
+ * because we need the actual chapter structure.
+ *
+ * Returns true if the book should be downgraded to needs_review.
+ */
+export function isPrefaceDominant(chapters: Array<{ title: string; wordCount: number }>): boolean {
+  if (chapters.length < 2) return false;
+
+  const totalWords = chapters.reduce((s, c) => s + c.wordCount, 0);
+  if (totalWords === 0) return false;
+
+  const first = chapters[0];
+  const firstFraction = first.wordCount / totalWords;
+  if (firstFraction < 0.3) return false;
+
+  const lowerTitle = (first.title || '').toLowerCase();
+  return /\b(introduction|preface|translator|foreword|prologue)\b/.test(lowerTitle);
+}
