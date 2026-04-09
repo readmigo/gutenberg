@@ -154,7 +154,19 @@ async function fetchChapters(bookId: string): Promise<ChapterRow[]> {
   return data as ChapterRow[];
 }
 
-async function fetchChapterHtml(url: string): Promise<string> {
+/**
+ * `contentUrl` is stored as a bare R2 key (e.g. `books/84/chapters/foo.html`),
+ * not a full URL. The worker exposes the bucket publicly under `/content/*`,
+ * so prefix with the worker base URL when the value looks like a key.
+ */
+function resolveChapterUrl(contentUrl: string): string {
+  if (/^https?:\/\//i.test(contentUrl)) return contentUrl;
+  const cleaned = contentUrl.replace(/^\/+/, '');
+  return `${WORKER_BASE_URL}/content/${cleaned}`;
+}
+
+async function fetchChapterHtml(contentUrl: string): Promise<string> {
+  const url = resolveChapterUrl(contentUrl);
   const { data } = await axios.get<string>(url, {
     responseType: 'text',
     timeout: 60_000,
