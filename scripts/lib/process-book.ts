@@ -358,17 +358,27 @@ export async function processBook(gutenbergId: number, jobId?: string, jobAttemp
     const bookId = bookRecord.id;
     console.log(`  Book record saved: id=${bookId}, inserting ${chapterEntries.length} chapters...`);
 
-    await workerClient.createChapters(
-      bookId,
-      chapterEntries.map(ch => ({
-        id: ch.id,
-        orderNum: ch.orderNum,
-        title: ch.title,
-        contentUrl: ch.contentUrl,
-        wordCount: ch.wordCount,
-        qualityOk: ch.qualityOk,
-      })),
-    );
+    // Skip the chapter insert when the parser produced zero usable chapters.
+    // The worker's createChapters route rejects empty arrays with 400, which
+    // otherwise surfaces as a pipeline failure even though the book is just
+    // an extraction edge case that should be marked rejected. The book
+    // record itself is already persisted above with chapterCount=0 and the
+    // quality-checker has pushed the score below the rejected threshold.
+    if (chapterEntries.length > 0) {
+      await workerClient.createChapters(
+        bookId,
+        chapterEntries.map(ch => ({
+          id: ch.id,
+          orderNum: ch.orderNum,
+          title: ch.title,
+          contentUrl: ch.contentUrl,
+          wordCount: ch.wordCount,
+          qualityOk: ch.qualityOk,
+        })),
+      );
+    } else {
+      console.log(`  [warn] 0 chapters extracted - skipping chapter insert, book marked ${bookStatus}`);
+    }
 
     // Step 9: Mark job done
     console.log(`  [9/9] Done!`);
