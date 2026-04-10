@@ -370,6 +370,92 @@ export function splitFileByAnchors(html: string, anchorIds: string[]): string[] 
   return segments;
 }
 
+/**
+ * Merge orphaned flow items (spine entries without TOC references) into the
+ * preceding chapter. PG illustrated editions and long-chapter books split
+ * chapters across multiple XHTML files — the TOC points to the first file
+ * only, and continuation files (including illustration wrappers) appear in
+ * the spine without any TOC entry. These must be appended to the preceding
+ * chapter rather than dropped.
+ *
+ * When an orphaned item appears before the first chapter (front matter), it
+ * is added as an independent chapter only if it has substantial content
+ * (>= 200 words) — this preserves the "A Modest Proposal" recovery where
+ * the main essay has no TOC pointer.
+ */
+async function mergeOrphanedFlowItems(
+  chapters: ParsedChapter[],
+  epub: any,
+  flow: any[],
+  referencedFlowIds: Set<string>,
+  flowIdToLastChapterIndex: Map<string, number>,
+): Promise<void> {
+  let currentChapterIndex = -1;
+
+  for (const flowItem of flow) {
+    if (referencedFlowIds.has(flowItem.id)) {
+      const idx = flowIdToLastChapterIndex.get(flowItem.id);
+      if (idx !== undefined) currentChapterIndex = idx;
+      continue;
+    }
+
+    // Skip cover / titlepage / license / colophon files
+    const lowerHref = (flowItem.href || '').toLowerCase();
+    if (
+      lowerHref.includes('cover') ||
+      lowerHref.includes('titlepage') ||
+      lowerHref.includes('uncopyright') ||
+      lowerHref.includes('colophon') ||
+      lowerHref.includes('endnotes') ||
+      lowerHref.includes('loi') // list of illustrations
+    ) continue;
+    if (
+      flowItem.id === 'pg-header' ||
+      flowItem.id === 'pg-footer' ||
+      lowerHref.endsWith('-h-0.htm.html') ||
+      lowerHref.endsWith('-h-0.htm.xhtml')
+    ) {
+      continue;
+    }
+
+    const html = await getChapterContent(epub, flowItem.id);
+    if (!html || html.length < 50) continue;
+
+    const text = stripHtml(html);
+    const wordCount = countWords(text);
+    if (wordCount < 5) continue;
+
+    // Skip PG boilerplate / license
+    if (/project gutenberg|gutenberg ebook|gutenberg license/i.test(text.slice(0, 300))) continue;
+
+    if (currentChapterIndex >= 0 && currentChapterIndex < chapters.length) {
+      // Merge into the preceding chapter (continuation file)
+      const target = chapters[currentChapterIndex];
+      target.htmlContent += '\n' + html;
+      target.wordCount += wordCount;
+      console.log(
+        `  [epub-parser] merging orphaned flow item ${flowItem.id} (${wordCount} words) into "${target.title}"`,
+      );
+    } else if (wordCount >= 200) {
+      // No preceding chapter — add as independent chapter
+      const headingTitle = extractTitleFromSegment(html);
+      const title = headingTitle || `Chapter ${chapters.length + 1}`;
+      if (isSkippableChapter(title, flowItem.href)) continue;
+      if (isFrontMatterFragment(title, wordCount, html)) continue;
+      console.log(
+        `  [epub-parser] adding orphaned flow item ${flowItem.id} -> ${flowItem.href} (${wordCount} words)`,
+      );
+      chapters.push({
+        order: chapters.length + 1,
+        title,
+        href: flowItem.href || '',
+        htmlContent: html,
+        wordCount,
+      });
+    }
+  }
+}
+
 // Extract chapters from EPUB
 export async function extractChapters(epub: any): Promise<ParsedChapter[]> {
   const chapters: ParsedChapter[] = [];
@@ -438,6 +524,7 @@ export async function extractChapters(epub: any): Promise<ParsedChapter[]> {
 
     // Iterate files in their TOC appearance order. For each, load content
     // once and split by anchors.
+    const flowIdToLastChapterIndex = new Map<string, number>();
     for (const baseHref of fileOrder) {
       const entries = byFile.get(baseHref)!;
       const flowItem = flow.find(
@@ -446,6 +533,7 @@ export async function extractChapters(epub: any): Promise<ParsedChapter[]> {
       if (!flowItem) continue;
       const fileHtml = await getChapterContent(epub, flowItem.id);
       if (!fileHtml || fileHtml.length < 100) continue;
+      const chapCountBefore = chapters.length;
 
       const anchorIds = entries.map((e) => e.anchor);
       const segments = splitFileByAnchors(fileHtml, anchorIds);
@@ -474,12 +562,14 @@ export async function extractChapters(epub: any): Promise<ParsedChapter[]> {
           wordCount,
         });
       }
+      if (chapters.length > chapCountBefore) {
+        flowIdToLastChapterIndex.set(flowItem.id, chapters.length - 1);
+      }
     }
 
-    // Pick up flow items that no TOC entry references. Some PG editions
-    // (e.g. A Modest Proposal #1080) have the actual essay text in a
-    // separate xhtml file with no TOC pointer — only the title page is
-    // in the TOC. Without this fallback the body content disappears.
+    // Merge orphaned flow items (continuation files, illustration wrappers)
+    // into the preceding chapter. Catches PG editions that split chapters
+    // across multiple XHTML files.
     const referencedFlowIds = new Set<string>();
     for (const baseHref of fileOrder) {
       const f = flow.find(
@@ -487,44 +577,17 @@ export async function extractChapters(epub: any): Promise<ParsedChapter[]> {
       );
       if (f) referencedFlowIds.add(f.id);
     }
-    for (const flowItem of flow) {
-      if (referencedFlowIds.has(flowItem.id)) continue;
-      // Skip cover wrappers and PG header/footer files explicitly.
-      const lowerHref = (flowItem.href || '').toLowerCase();
-      if (lowerHref.includes('cover') || lowerHref.includes('wrap')) continue;
-      if (
-        flowItem.id === 'pg-header' ||
-        flowItem.id === 'pg-footer' ||
-        lowerHref.endsWith('-h-0.htm.html') ||
-        lowerHref.endsWith('-h-0.htm.xhtml')
-      ) {
-        continue;
-      }
-      const html = await getChapterContent(epub, flowItem.id);
-      if (!html || html.length < 100) continue;
-      const wordCount = countWords(stripHtml(html));
-      if (wordCount < 50) continue;
-      const headingTitle = extractTitleFromSegment(html);
-      const title = headingTitle || `Chapter ${chapters.length + 1}`;
-      if (isSkippableChapter(title, flowItem.href)) continue;
-      if (isFrontMatterFragment(title, wordCount, html)) continue;
-      console.log(
-        `  [epub-parser] adding orphaned flow item ${flowItem.id} -> ${flowItem.href} (${wordCount} words)`,
-      );
-      chapters.push({
-        order: chapters.length + 1,
-        title,
-        href: flowItem.href || '',
-        htmlContent: html,
-        wordCount,
-      });
-    }
+
+    await mergeOrphanedFlowItems(chapters, epub, flow, referencedFlowIds, flowIdToLastChapterIndex);
 
     return dropEdgeFrontMatter(dedupeByContentHash(chapters));
   }
 
   // Normal path: one chapter per TOC entry (or per flow item if no TOC).
   const items = toc.length > 0 ? toc : flow;
+  const referencedFlowIds = new Set<string>();
+  const flowIdToLastChapterIndex = new Map<string, number>();
+
   for (let i = 0; i < items.length; i++) {
     const item = items[i];
     const tocTitle = item.title?.trim() || `Chapter ${i + 1}`;
@@ -536,6 +599,7 @@ export async function extractChapters(epub: any): Promise<ParsedChapter[]> {
     let content = '';
 
     if (flowItem) {
+      referencedFlowIds.add(flowItem.id);
       content = await getChapterContent(epub, flowItem.id);
     }
 
@@ -555,7 +619,14 @@ export async function extractChapters(epub: any): Promise<ParsedChapter[]> {
       htmlContent: content,
       wordCount,
     });
+    if (flowItem) {
+      flowIdToLastChapterIndex.set(flowItem.id, chapters.length - 1);
+    }
   }
+
+  // Merge orphaned flow items (continuation files, illustration wrappers)
+  // into the preceding chapter.
+  await mergeOrphanedFlowItems(chapters, epub, flow, referencedFlowIds, flowIdToLastChapterIndex);
 
   return dropEdgeFrontMatter(dedupeByContentHash(chapters));
 }
