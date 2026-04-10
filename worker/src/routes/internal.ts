@@ -1,7 +1,7 @@
 import { Hono } from 'hono';
 import { drizzle } from 'drizzle-orm/d1';
 import { eq, desc, inArray, sql } from 'drizzle-orm';
-import { books, chapters, processJobs } from '../db/schema';
+import { books, chapters, processJobs, readmigoSyncedIds } from '../db/schema';
 import { internalAuth } from '../middleware/auth';
 import type { Env } from '../index';
 
@@ -331,6 +331,99 @@ internalRoutes.get('/stats/cefr', async (c) => {
   }
 
   return c.json({ distribution });
+});
+
+// POST /books/batch-status - Batch update book status
+internalRoutes.post('/books/batch-status', async (c) => {
+  const db = drizzle(c.env.DB);
+  const body = await c.req.json<{ bookIds: string[]; status: string }>();
+
+  if (!body.bookIds?.length || !body.status) {
+    return c.json({ error: 'bookIds and status are required' }, 400);
+  }
+
+  const now = new Date().toISOString();
+  const BATCH = 20;
+  let updated = 0;
+  for (let i = 0; i < body.bookIds.length; i += BATCH) {
+    const batch = body.bookIds.slice(i, i + BATCH);
+    await db.update(books).set({ status: body.status, updatedAt: now }).where(inArray(books.id, batch));
+    updated += batch.length;
+  }
+
+  return c.json({ updated });
+});
+
+// DELETE /r2/* - Delete file from R2
+internalRoutes.delete('/r2/*', async (c) => {
+  const rawKey = c.req.path.replace('/internal/r2/', '');
+  const key = rawKey.replace(/\.\.\//g, '').replace(/^\/+/, '');
+  if (!key) return c.json({ error: 'Key is required' }, 400);
+
+  await c.env.R2.delete(key);
+  return c.json({ deleted: key });
+});
+
+// POST /r2/delete-prefix - Delete all R2 objects under a prefix
+internalRoutes.post('/r2/delete-prefix', async (c) => {
+  const body = await c.req.json<{ prefix: string }>();
+  if (!body.prefix) return c.json({ error: 'prefix is required' }, 400);
+
+  let deleted = 0;
+  let cursor: string | undefined;
+  do {
+    const list = await c.env.R2.list({ prefix: body.prefix, cursor, limit: 500 });
+    if (list.objects.length > 0) {
+      await c.env.R2.delete(list.objects.map((o) => o.key));
+      deleted += list.objects.length;
+    }
+    cursor = list.truncated ? list.cursor : undefined;
+  } while (cursor);
+
+  return c.json({ deleted, prefix: body.prefix });
+});
+
+// GET /synced-ids - List all synced gutenberg IDs
+internalRoutes.get('/synced-ids', async (c) => {
+  const db = drizzle(c.env.DB);
+  const rows = await db.select({ gutenbergId: readmigoSyncedIds.gutenbergId }).from(readmigoSyncedIds);
+  return c.json({ ids: rows.map((r) => r.gutenbergId) });
+});
+
+// POST /synced-ids - Batch insert synced gutenberg IDs
+internalRoutes.post('/synced-ids', async (c) => {
+  const db = drizzle(c.env.DB);
+  const body = await c.req.json<{ gutenbergIds: number[] }>();
+
+  if (!body.gutenbergIds?.length) return c.json({ error: 'gutenbergIds required' }, 400);
+
+  const BATCH = 20;
+  let inserted = 0;
+  for (let i = 0; i < body.gutenbergIds.length; i += BATCH) {
+    const batch = body.gutenbergIds.slice(i, i + BATCH);
+    const values = batch.map((id) => ({ gutenbergId: id }));
+    await db.insert(readmigoSyncedIds).values(values).onConflictDoNothing();
+    inserted += batch.length;
+  }
+
+  return c.json({ inserted });
+});
+
+// GET /synced-ids/check - Check which gutenberg IDs are already synced
+internalRoutes.get('/synced-ids/check', async (c) => {
+  const db = drizzle(c.env.DB);
+  const idsParam = c.req.query('gutenberg_ids');
+  if (!idsParam) return c.json({ syncedIds: [] });
+
+  const gutenbergIds = idsParam.split(',').map(Number).filter((n) => !isNaN(n));
+  if (gutenbergIds.length === 0) return c.json({ syncedIds: [] });
+
+  const rows = await db
+    .select({ gutenbergId: readmigoSyncedIds.gutenbergId })
+    .from(readmigoSyncedIds)
+    .where(inArray(readmigoSyncedIds.gutenbergId, gutenbergIds));
+
+  return c.json({ syncedIds: rows.map((r) => r.gutenbergId) });
 });
 
 // Normalize Gutenberg subject strings to broad categories

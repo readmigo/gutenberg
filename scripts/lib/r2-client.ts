@@ -36,3 +36,13 @@ export async function uploadChapter(gutenbergId: number, chapterId: string, html
 export async function uploadImage(gutenbergId: number, filename: string, buffer: Buffer, mimeType: string): Promise<string> {
   return uploadToR2(`books/${gutenbergId}/images/${filename}`, buffer, mimeType);
 }
+
+export async function deleteBookFiles(gutenbergId: number): Promise<number> {
+  const { data } = await axios.post(`${BASE_URL}/internal/r2/delete-prefix`, {
+    prefix: `books/${gutenbergId}/`,
+  }, {
+    headers: { 'X-Internal-Key': INTERNAL_KEY, 'Content-Type': 'application/json' },
+    timeout: 60000,
+  });
+  return data.deleted || 0;
+}

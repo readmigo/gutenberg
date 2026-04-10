@@ -132,6 +132,9 @@ async function main() {
         synced_at: new Date().toISOString(),
       });
 
+      // Record in synced_ids table for discovery dedup
+      await workerClient.addSyncedIds([book.gutenberg_id]);
+
       synced++;
     } catch (err) {
       failed++;

@@ -57,6 +57,23 @@ class WorkerClient {
     });
     return data.existingIds || [];
   }
+
+  // Synced IDs
+  async getSyncedIds(): Promise<number[]> {
+    const { data } = await this.http.get('/internal/synced-ids');
+    return data.ids || [];
+  }
+
+  async addSyncedIds(gutenbergIds: number[]) {
+    return (await this.http.post('/internal/synced-ids', { gutenbergIds })).data;
+  }
+
+  async checkSyncedIds(gutenbergIds: number[]): Promise<number[]> {
+    const { data } = await this.http.get('/internal/synced-ids/check', {
+      params: { gutenberg_ids: gutenbergIds.join(',') },
+    });
+    return data.syncedIds || [];
+  }
 }
 
 export const workerClient = new WorkerClient();

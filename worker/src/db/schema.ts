@@ -88,6 +88,12 @@ export const processJobs = sqliteTable('process_jobs', {
   index('jobs_status_priority_idx').on(table.status, table.priority),
 ]);
 
+// Readmigo synced IDs - tracks gutenberg_ids already imported into Readmigo production
+export const readmigoSyncedIds = sqliteTable('readmigo_synced_ids', {
+  gutenbergId: integer('gutenberg_id').primaryKey(),
+  syncedAt: text('synced_at').default(sql`(datetime('now'))`),
+});
+
 // Quality Reviews table
 export const qualityReviews = sqliteTable('quality_reviews', {
   id: text('id').primaryKey(),

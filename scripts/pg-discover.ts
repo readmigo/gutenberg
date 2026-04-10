@@ -63,8 +63,18 @@ async function main() {
     console.error('  Failed to check existing curated books:', err instanceof Error ? err.message : err);
   }
 
+  // Load Readmigo synced IDs for dedup
+  let syncedIdSet = new Set<number>();
+  try {
+    const syncedIds = await workerClient.getSyncedIds();
+    syncedIdSet = new Set(syncedIds);
+    console.log(`  Loaded ${syncedIdSet.size} Readmigo synced IDs for dedup`);
+  } catch (err) {
+    console.warn('  Failed to load synced IDs, skipping Readmigo dedup:', err instanceof Error ? err.message : err);
+  }
+
   const existingCuratedSet = new Set(existingCurated);
-  const newCuratedIds = curatedIds.filter(id => !existingCuratedSet.has(id));
+  const newCuratedIds = curatedIds.filter(id => !existingCuratedSet.has(id) && !syncedIdSet.has(id));
   console.log(`  ${newCuratedIds.length} curated books not yet in DB (${existingCurated.length} already exist)`);
 
   let discovered = 0;
@@ -180,7 +190,7 @@ async function main() {
     }
 
     const existingSet = new Set(existingIds);
-    const newBooks = candidates.filter((b) => !existingSet.has(b.id));
+    const newBooks = candidates.filter((b) => !existingSet.has(b.id) && !syncedIdSet.has(b.id));
 
     console.log(`  Found ${candidates.length} candidates, ${newBooks.length} new, ${existingSet.size} existing`);
 
