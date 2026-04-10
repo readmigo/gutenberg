@@ -21,7 +21,7 @@ export type Env = {
 const app = new Hono<Env>();
 
 app.use('*', cors({
-  origin: ['https://gutenberg-web.pages.dev', 'https://readmigo.app', 'https://web.readmigo.app'],
+  origin: ['https://gutenberg-web.pages.dev', 'https://gutenberg.readmigo.app', 'https://readmigo.app', 'https://web.readmigo.app'],
   allowMethods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowHeaders: ['Content-Type', 'Authorization', 'X-Internal-Key'],
 }));
