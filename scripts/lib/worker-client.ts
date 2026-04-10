@@ -58,6 +58,11 @@ class WorkerClient {
     return data.existingIds || [];
   }
 
+  async getBookByGutenbergId(gutenbergId: number) {
+    const { data } = await this.http.get(`/internal/books/by-gutenberg/${gutenbergId}`);
+    return data;
+  }
+
   // Synced IDs
   async getSyncedIds(): Promise<number[]> {
     const { data } = await this.http.get('/internal/synced-ids');

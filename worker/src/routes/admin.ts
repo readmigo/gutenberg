@@ -146,6 +146,28 @@ adminRoutes.post('/books/:id/reject', async (c) => {
   return c.json({ message: 'Book rejected' });
 });
 
+// PUT /books/:id/status - Set book status directly
+adminRoutes.put('/books/:id/status', async (c) => {
+  const db = drizzle(c.env.DB);
+  const id = c.req.param('id');
+  const body = await c.req.json<{ status: string }>();
+
+  const allowed = ['pending', 'ready', 'approved', 'rejected', 'excluded'];
+  if (!body.status || !allowed.includes(body.status)) {
+    return c.json({ error: 'Invalid status. Allowed: ' + allowed.join(', ') }, 400);
+  }
+
+  const book = await db.select().from(books).where(eq(books.id, id)).get();
+  if (!book) return c.json({ error: 'Book not found' }, 404);
+
+  const now = new Date().toISOString();
+  const updates: Record<string, unknown> = { status: body.status, updatedAt: now };
+  if (body.status === 'approved') updates.approvedAt = now;
+
+  await db.update(books).set(updates).where(eq(books.id, id));
+  return c.json({ message: 'Status updated to ' + body.status });
+});
+
 // POST /books/reprocess - Queue stale books for reprocessing
 //
 // Body: {

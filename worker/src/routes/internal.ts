@@ -259,6 +259,17 @@ internalRoutes.post('/jobs', async (c) => {
   return c.json({ jobId }, 201);
 });
 
+// GET /books/by-gutenberg/:gutenbergId - Get book by gutenberg ID
+internalRoutes.get('/books/by-gutenberg/:gutenbergId', async (c) => {
+  const db = drizzle(c.env.DB);
+  const gutenbergId = Number(c.req.param('gutenbergId'));
+  if (isNaN(gutenbergId)) return c.json({ error: 'Invalid gutenbergId' }, 400);
+
+  const book = await db.select().from(books).where(eq(books.gutenbergId, gutenbergId)).get();
+  if (!book) return c.json({ error: 'Not found' }, 404);
+  return c.json(book);
+});
+
 // GET /books/exists - Check existing books by gutenberg IDs
 internalRoutes.get('/books/exists', async (c) => {
   const db = drizzle(c.env.DB);

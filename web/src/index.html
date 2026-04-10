@@ -250,6 +250,32 @@
       color: var(--text-secondary);
     }
 
+    /* Filter Tabs */
+    .filter-tabs {
+      max-width: var(--max-w);
+      margin: 1rem auto 0;
+      padding: 0 1.5rem;
+      display: flex;
+      gap: 0.5rem;
+    }
+    .filter-tab {
+      padding: 0.4rem 1rem;
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      border-radius: var(--radius);
+      cursor: pointer;
+      font-family: var(--font);
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      transition: all 0.2s;
+    }
+    .filter-tab:hover { border-color: var(--brand-primary); color: var(--brand-primary); }
+    .filter-tab.active {
+      background: var(--brand-primary);
+      border-color: var(--brand-primary);
+      color: #fff;
+    }
+
     /* Loading & Empty */
     .loading, .empty {
       text-align: center;
@@ -281,6 +307,7 @@
       .search-box { max-width: 100%; order: 3; flex-basis: 100%; }
       .grid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1rem 0.75rem; }
       .stats-bar { padding: 0 1rem; gap: 1rem; }
+      .filter-tabs { padding: 0 1rem; overflow-x: auto; }
       main { padding: 1rem; }
     }
   </style>
@@ -299,6 +326,14 @@
 
   <div class="stats-bar" id="statsBar"></div>
 
+  <div class="filter-tabs" id="filterTabs">
+    <button class="filter-tab active" data-status="">All</button>
+    <button class="filter-tab" data-status="ready">Ready</button>
+    <button class="filter-tab" data-status="pending">Pending</button>
+    <button class="filter-tab" data-status="approved">Approved</button>
+    <button class="filter-tab" data-status="rejected">Rejected</button>
+  </div>
+
   <main>
     <div class="grid" id="bookGrid"></div>
     <div class="pagination" id="pagination"></div>
@@ -313,6 +348,7 @@
     var LIMIT = 48;
     var currentPage = 1;
     var currentSearch = '';
+    var currentStatus = '';
 
     function formatNumber(n) {
       if (n >= 1000000) return (n / 1000000).toFixed(1) + 'M';
@@ -333,20 +369,27 @@
         var res = await fetch(API + '/stats');
         var stats = await res.json();
         var bar = document.getElementById('statsBar');
-        // Stats data is from our own trusted API, values are numbers/strings
-        var s1 = document.createElement('div');
-        s1.className = 'stat';
-        var readyCount = (stats.byStatus.ready || 0) + (stats.byStatus.approved || 0);
-        var n1 = document.createElement('span');
-        n1.className = 'stat-num';
-        n1.textContent = readyCount;
-        var l1 = document.createElement('span');
-        l1.className = 'stat-label';
-        l1.textContent = 'books';
-        s1.appendChild(n1);
-        s1.appendChild(l1);
+        bar.textContent = '';
 
-        bar.appendChild(s1);
+        var pairs = [
+          ['ready', stats.byStatus.ready || 0],
+          ['pending', stats.byStatus.pending || 0],
+          ['approved', stats.byStatus.approved || 0],
+          ['rejected', stats.byStatus.rejected || 0],
+        ];
+        for (var i = 0; i < pairs.length; i++) {
+          var s = document.createElement('div');
+          s.className = 'stat';
+          var n = document.createElement('span');
+          n.className = 'stat-num';
+          n.textContent = pairs[i][1];
+          var l = document.createElement('span');
+          l.className = 'stat-label';
+          l.textContent = pairs[i][0];
+          s.appendChild(n);
+          s.appendChild(l);
+          bar.appendChild(s);
+        }
       } catch (e) {
         console.error('Failed to load stats:', e);
       }
@@ -408,6 +451,7 @@
       try {
         var url = API + '/books?page=' + page + '&limit=' + LIMIT;
         if (search) url += '&search=' + encodeURIComponent(search);
+        if (currentStatus) url += '&status=' + currentStatus;
 
         var res = await fetch(url);
         var data = await res.json();
@@ -478,6 +522,17 @@
 
     document.getElementById('searchInput').addEventListener('keydown', function(e) {
       if (e.key === 'Enter') doSearch();
+    });
+
+    // Filter tabs
+    document.getElementById('filterTabs').addEventListener('click', function(e) {
+      var btn = e.target.closest('.filter-tab');
+      if (!btn) return;
+      document.querySelectorAll('.filter-tab').forEach(function(t) { t.classList.remove('active'); });
+      btn.classList.add('active');
+      currentStatus = btn.getAttribute('data-status') || '';
+      currentPage = 1;
+      loadBooks(currentPage, currentSearch);
     });
 
     loadStats();

@@ -175,6 +175,43 @@
     }
     .book-links a:hover { text-decoration: underline; color: var(--brand-primary-hover); }
 
+    /* Status & Actions */
+    .book-status {
+      display: inline-block;
+      padding: 0.2rem 0.6rem;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+    .book-status.ready { background: #e0f7e9; color: #1b7a3d; }
+    .book-status.approved { background: #d4eaff; color: #1a5fb4; }
+    .book-status.pending { background: #fff3cd; color: #856404; }
+    .book-status.rejected { background: #fde2e2; color: #b91c1c; }
+    .book-status.excluded { background: var(--gray-100); color: var(--gray-500); }
+    .book-actions {
+      margin-top: 1rem;
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+    .book-actions button {
+      padding: 0.5rem 1.25rem;
+      border: none;
+      border-radius: var(--radius);
+      font-family: var(--font);
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+    .book-actions button:hover { opacity: 0.85; }
+    .book-actions button:disabled { opacity: 0.4; cursor: default; }
+    .btn-approve { background: #22c55e; color: #fff; }
+    .btn-reject { background: #ef4444; color: #fff; }
+    .btn-pending { background: #f59e0b; color: #fff; }
+
     /* Chapter List */
     .section-title {
       font-size: 1.15rem;
@@ -393,6 +430,37 @@
           info.appendChild(linksDiv);
         }
 
+        // Status badge
+        var statusSpan = document.createElement('span');
+        statusSpan.className = 'book-status ' + (book.status || 'pending');
+        statusSpan.textContent = book.status || 'pending';
+        statusSpan.id = 'bookStatus';
+        metaDiv.insertBefore(statusSpan, metaDiv.firstChild);
+
+        // Action buttons
+        var actionsDiv = document.createElement('div');
+        actionsDiv.className = 'book-actions';
+
+        var approveBtn = document.createElement('button');
+        approveBtn.className = 'btn-approve';
+        approveBtn.textContent = 'Approve';
+        approveBtn.onclick = function() { updateBookStatus(book.id, 'approved'); };
+
+        var rejectBtn = document.createElement('button');
+        rejectBtn.className = 'btn-reject';
+        rejectBtn.textContent = 'Reject';
+        rejectBtn.onclick = function() { updateBookStatus(book.id, 'rejected'); };
+
+        var pendingBtn = document.createElement('button');
+        pendingBtn.className = 'btn-pending';
+        pendingBtn.textContent = 'Set Pending';
+        pendingBtn.onclick = function() { updateBookStatus(book.id, 'pending'); };
+
+        actionsDiv.appendChild(approveBtn);
+        actionsDiv.appendChild(rejectBtn);
+        actionsDiv.appendChild(pendingBtn);
+        info.appendChild(actionsDiv);
+
         hero.appendChild(info);
         content.appendChild(hero);
 
@@ -438,6 +506,47 @@
       } catch (e) {
         showError(content, 'Failed to load book.');
         console.error(e);
+      }
+    }
+
+    function getAdminToken() {
+      var token = sessionStorage.getItem('adminToken');
+      if (!token) {
+        token = prompt('Enter admin token:');
+        if (token) sessionStorage.setItem('adminToken', token);
+      }
+      return token;
+    }
+
+    async function updateBookStatus(bookId, status) {
+      var token = getAdminToken();
+      if (!token) return;
+
+      try {
+        var res = await fetch(API + '/admin/books/' + bookId + '/status', {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token,
+          },
+          body: JSON.stringify({ status: status }),
+        });
+
+        if (!res.ok) {
+          var err = await res.json();
+          alert('Failed: ' + (err.error || res.status));
+          if (res.status === 401) sessionStorage.removeItem('adminToken');
+          return;
+        }
+
+        // Update badge
+        var badge = document.getElementById('bookStatus');
+        if (badge) {
+          badge.className = 'book-status ' + status;
+          badge.textContent = status;
+        }
+      } catch (e) {
+        alert('Error: ' + e.message);
       }
     }
 
