@@ -336,28 +336,17 @@
         // Stats data is from our own trusted API, values are numbers/strings
         var s1 = document.createElement('div');
         s1.className = 'stat';
+        var readyCount = (stats.byStatus.ready || 0) + (stats.byStatus.approved || 0);
         var n1 = document.createElement('span');
         n1.className = 'stat-num';
-        n1.textContent = stats.totalBooks;
+        n1.textContent = readyCount;
         var l1 = document.createElement('span');
         l1.className = 'stat-label';
         l1.textContent = 'books';
         s1.appendChild(n1);
         s1.appendChild(l1);
 
-        var s2 = document.createElement('div');
-        s2.className = 'stat';
-        var n2 = document.createElement('span');
-        n2.className = 'stat-num';
-        n2.textContent = stats.byStatus.ready || 0;
-        var l2 = document.createElement('span');
-        l2.className = 'stat-label';
-        l2.textContent = 'ready';
-        s2.appendChild(n2);
-        s2.appendChild(l2);
-
         bar.appendChild(s1);
-        bar.appendChild(s2);
       } catch (e) {
         console.error('Failed to load stats:', e);
       }
