@@ -11,7 +11,7 @@
  *      excluded book that slipped past discovery to `needs_review` so it
  *      cannot reach the `ready` state without a manual override.
  *
- * The four excluded categories and their detection signals:
+ * The excluded categories and their detection signals:
  *
  *   - Lyric poetry collections (subjects "Poetry", "Poems", title contains
  *     "Poems"/"Sonnets"/"Songs"/"Verses"). Epic narrative poems are exempted
@@ -30,6 +30,16 @@
  *     first chapter exceeds 30% of total words AND its title contains
  *     "Introduction"/"Preface"/"Translator"). These are PG editions where
  *     the apparatus crowds out the actual text.
+ *
+ *   - Academic / non-popular subjects (subjects contain "Philosophy",
+ *     "Ethics", "Political science", "Literary criticism", "Theology",
+ *     "Economics", etc.). Readmigo targets casual readers; scholarly
+ *     texts with heavy annotation lose too much when footnotes are stripped.
+ *
+ *   - Classical scholarly texts ("Early works to 1800" subject without any
+ *     popular-reading subject like Fiction/Adventure/Romance). Catches
+ *     classical academic works (Plutarch, Suetonius) while preserving
+ *     classic novels that also carry the "Early works" tag.
  *
  * The doc page is at docs/plans/2026-04-07-readmigo-curation-rules.md.
  */
@@ -121,6 +131,58 @@ const REFERENCE_TITLE_HINTS = [
   /\bword[\s-]?book\b/i,
 ];
 
+// Academic / non-popular subjects: Readmigo targets casual readers with
+// accessible, easy-to-read content. Works that require specialist background
+// knowledge — philosophy, political theory, literary criticism, academic
+// history, theology — are excluded. Their heavy annotation and scholarly
+// apparatus also causes content-fidelity issues when footnotes are stripped.
+const ACADEMIC_SUBJECTS = [
+  // Philosophy & ethics
+  /\bphilosophy\b/i,
+  /\bethics\b/i,
+  /\bmetaphysics\b/i,
+  /\bnihilism\b/i,
+  /\bvalues\b/i,
+  /\bmaxims\b/i,
+  /\blogic\b/i,
+  // Political theory & economics
+  /\bpolitical science\b/i,
+  /\bpolitical theory\b/i,
+  /\beconomics\b/i,
+  // Literary criticism & academic studies
+  /\bliterary criticism\b/i,
+  /\bcriticism\b/i,
+  /\bwomen and literature\b/i,
+  // Niche academic
+  /\bprinting\b/i,
+  /\bbibliography\b/i,
+  /\bhistoriography\b/i,
+  // Theology & apologetics
+  /\btheology\b/i,
+  /\bapologetics\b/i,
+];
+
+// "Early works to 1800" is a PG tag for pre-modern scholarly texts. Many
+// classical novels also carry it, so we only exclude when the book does NOT
+// also have a popular-reading subject.
+const EARLY_WORKS_PATTERN = /\bearly works to \d+\b/i;
+const POPULAR_SUBJECTS = [
+  /\bfiction\b/i,
+  /\badventure\b/i,
+  /\bromance\b/i,
+  /\bhorror\b/i,
+  /\bmystery\b/i,
+  /\bdetective\b/i,
+  /\bhumor\b/i,
+  /\bsatire\b/i,
+  /\bchildren\b/i,
+  /\bscience fiction\b/i,
+  /\bfantasy\b/i,
+  /\bgothic\b/i,
+  /\btravel\b/i,
+  /\bwar\b/i,
+];
+
 // Multi-volume cherry-picks: PG often splits long works into volumes and a
 // reader landing on volume 1 alone gets a fragmentary experience. Detect
 // titles with explicit volume markers and skip them — when the reader gains
@@ -177,6 +239,25 @@ export function isExcludedFromReadmigo(input: CurationCheckInput): CurationCheck
   // reader gains proper multi-volume series support.
   if (matchesAny(title, MULTI_VOLUME_TITLE_PATTERNS)) {
     return { excluded: true, reason: 'multi-volume single-volume cherry-pick' };
+  }
+
+  // Academic / non-popular subjects: philosophy, political theory, literary
+  // criticism, theology, niche academic topics.
+  for (const subject of subjects) {
+    if (matchesAny(subject, ACADEMIC_SUBJECTS)) {
+      return { excluded: true, reason: `academic/non-popular (subject: ${subject})` };
+    }
+  }
+
+  // "Early works to 1800" without any popular-reading subject — these are
+  // classical scholarly texts (Plutarch, Suetonius, etc.) that don't suit
+  // casual readers.
+  const hasEarlyWorks = subjects.some((s) => EARLY_WORKS_PATTERN.test(s));
+  if (hasEarlyWorks) {
+    const hasPopularSubject = subjects.some((s) => matchesAny(s, POPULAR_SUBJECTS));
+    if (!hasPopularSubject) {
+      return { excluded: true, reason: 'classical scholarly text (Early works, no popular subject)' };
+    }
   }
 
   // Drama: any subject that looks dramatic. Plays do not get an allowlist
