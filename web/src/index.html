@@ -152,7 +152,7 @@
     }
     .grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      grid-template-columns: repeat(8, 1fr);
       gap: 1.25rem 1rem;
       margin-top: 1rem;
     }
@@ -276,7 +276,7 @@
     @media (max-width: 600px) {
       .header-inner { padding: 1rem; }
       .search-box { max-width: 100%; order: 3; flex-basis: 100%; }
-      .grid { grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); gap: 1rem 0.75rem; }
+      .grid { grid-template-columns: repeat(4, 1fr); gap: 1rem 0.75rem; }
       .stats-bar { padding: 0 1rem; gap: 1rem; }
       main { padding: 1rem; }
     }
@@ -307,7 +307,7 @@
 
   <script>
     var API = 'https://gutenberg-api.logan676395.workers.dev';
-    var LIMIT = 60;
+    var LIMIT = 48;
     var currentPage = 1;
     var currentSearch = '';
 
