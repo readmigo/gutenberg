@@ -456,6 +456,45 @@ async function mergeOrphanedFlowItems(
   }
 }
 
+/**
+ * Return the HTML content before the first located anchor in a file.
+ * Used by the anchor-split path to recover text that precedes the first
+ * TOC-referenced heading — typically a chapter continuation from the
+ * previous file, or a preamble before the first chapter in that file.
+ *
+ * Returns null if there's nothing meaningful (< 50 words or PG boilerplate).
+ */
+function getPreAnchorContent(html: string, anchorIds: string[]): string | null {
+  if (!html || anchorIds.length === 0) return null;
+
+  // Find the earliest anchor's offset in the document
+  let earliestOffset = html.length;
+  for (const id of anchorIds) {
+    const escaped = id.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const m = new RegExp(`id=["']?${escaped}["']?`).exec(html);
+    if (!m) continue;
+    const tagStart = html.lastIndexOf('<', m.index);
+    if (tagStart >= 0 && tagStart < earliestOffset) {
+      earliestOffset = tagStart;
+    }
+  }
+  if (earliestOffset === 0 || earliestOffset === html.length) return null;
+
+  const preHtml = html.slice(0, earliestOffset);
+  const preText = stripHtml(preHtml);
+  const preWords = countWords(preText);
+  if (preWords < 50) return null;
+
+  // Skip PG boilerplate (license headers/footers)
+  if (/project gutenberg|gutenberg ebook|gutenberg license|\*\*\* (?:START|END) OF/i.test(
+    preText.slice(0, 500),
+  )) {
+    return null;
+  }
+
+  return preHtml;
+}
+
 // Extract chapters from EPUB
 export async function extractChapters(epub: any): Promise<ParsedChapter[]> {
   const chapters: ParsedChapter[] = [];
@@ -537,6 +576,31 @@ export async function extractChapters(epub: any): Promise<ParsedChapter[]> {
 
       const anchorIds = entries.map((e) => e.anchor);
       const segments = splitFileByAnchors(fileHtml, anchorIds);
+
+      // Recover content before the first anchor in this file. This is
+      // typically either (a) the continuation of the last chapter from the
+      // previous file, or (b) a preamble in the first content file.
+      // If there's a previous chapter, append to it (case a); otherwise
+      // prepend to the first segment of this file (case b).
+      const preAnchor = getPreAnchorContent(fileHtml, anchorIds);
+      if (preAnchor) {
+        const preWords = countWords(stripHtml(preAnchor));
+        if (chapCountBefore > 0) {
+          // Append to the last chapter from the previous file
+          const prev = chapters[chapCountBefore - 1];
+          prev.htmlContent += '\n' + preAnchor;
+          prev.wordCount += preWords;
+          console.log(
+            `  [epub-parser] appending ${preWords} pre-anchor words to previous chapter "${prev.title}"`,
+          );
+        } else if (segments[0]) {
+          // First file — prepend to first segment
+          segments[0] = preAnchor + segments[0];
+          console.log(
+            `  [epub-parser] prepending ${preWords} pre-anchor words to first segment`,
+          );
+        }
+      }
 
       for (let i = 0; i < entries.length; i++) {
         const entry = entries[i];
