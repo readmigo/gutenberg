@@ -377,7 +377,7 @@
       if (book.coverUrl) {
         var img = document.createElement('img');
         img.className = 'card-cover';
-        img.src = book.coverUrl;
+        img.src = API + '/content/' + book.coverUrl;
         img.alt = book.title;
         img.loading = 'lazy';
         img.onerror = function() {

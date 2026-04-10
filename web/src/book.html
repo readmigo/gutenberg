@@ -324,7 +324,7 @@
         coverDiv.className = 'book-cover';
         if (book.coverUrl) {
           var img = document.createElement('img');
-          img.src = book.coverUrl;
+          img.src = API + '/content/' + book.coverUrl;
           img.alt = book.title;
           img.onerror = function() {
             var ph = document.createElement('div');
