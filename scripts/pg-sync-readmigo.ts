@@ -115,6 +115,7 @@ async function main() {
         estimatedReadingMinutes: book.estimated_reading_minutes,
         aiDescription: book.ai_description,
         aiTags: book.ai_tags ? JSON.parse(book.ai_tags) : [],
+        visibility: 'WEB_ONLY',
         chapters: chapters.map((ch: any) => ({
           order: ch.order_num,
           title: ch.title,
