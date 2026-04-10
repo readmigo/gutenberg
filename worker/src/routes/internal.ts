@@ -96,6 +96,7 @@ internalRoutes.get('/books', async (c) => {
   const unsynced = c.req.query('unsynced') === 'true';
   const needsEnrichment = c.req.query('needs_enrichment') === 'true';
   const limit = Math.min(200, Math.max(1, Number(c.req.query('limit')) || 20));
+  const offset = Math.max(0, Number(c.req.query('offset')) || 0);
 
   let query = db.select().from(books).$dynamic();
 
@@ -108,7 +109,7 @@ internalRoutes.get('/books', async (c) => {
     query = query.where(sql`${sql.join(conditions, sql` AND `)}`);
   }
 
-  const data = await query.orderBy(desc(books.qualityScore)).limit(limit);
+  const data = await query.orderBy(desc(books.qualityScore)).limit(limit).offset(offset);
   return c.json(data);
 });
 

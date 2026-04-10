@@ -17,7 +17,7 @@ const OUTPUT_FILE = getArg('output', 'cleanup-review.json');
 
 interface BookRow {
   id: string;
-  gutenberg_id: number;
+  gutenbergId: number;
   title: string;
   author: string;
   subjects: string | null;
@@ -58,11 +58,18 @@ async function scanAndOutput() {
   const allBooks: BookRow[] = [];
 
   for (const status of statuses) {
-    const { data } = await (workerClient as any).http.get('/internal/books', {
-      params: { status, limit: 200 },
-    });
-    const books = Array.isArray(data) ? data : [];
-    allBooks.push(...books);
+    // Internal API has max limit 200, paginate to get all
+    let offset = 0;
+    const PAGE = 200;
+    while (true) {
+      const { data } = await (workerClient as any).http.get('/internal/books', {
+        params: { status, limit: PAGE, offset },
+      });
+      const books = Array.isArray(data) ? data : [];
+      allBooks.push(...books);
+      if (books.length < PAGE) break;
+      offset += PAGE;
+    }
   }
 
   console.log(`\nScanned ${allBooks.length} books.\n`);
@@ -76,7 +83,7 @@ async function scanAndOutput() {
     if (check.excluded) {
       candidates.push({
         bookId: book.id,
-        gutenbergId: book.gutenberg_id,
+        gutenbergId: book.gutenbergId,
         title: book.title,
         author: book.author,
         reason: check.reason || 'unknown',
