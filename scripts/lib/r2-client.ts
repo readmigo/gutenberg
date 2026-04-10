@@ -26,7 +26,8 @@ export async function uploadEpub(gutenbergId: number, buffer: Buffer): Promise<s
 
 export async function uploadCover(gutenbergId: number, buffer: Buffer, mimeType: string): Promise<string> {
   const ext = mimeType.includes('png') ? 'png' : 'jpg';
-  return uploadToR2(`books/${gutenbergId}/cover.${ext}`, buffer, mimeType);
+  const ts = Date.now();
+  return uploadToR2(`books/${gutenbergId}/cover-${ts}.${ext}`, buffer, mimeType);
 }
 
 export async function uploadChapter(gutenbergId: number, chapterId: string, html: string): Promise<string> {
