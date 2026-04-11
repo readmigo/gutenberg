@@ -13,7 +13,8 @@ const getArg = (name: string, def: string) => {
 };
 
 const DRY_RUN = args.includes('--dry-run');
-const LIMIT = parseInt(getArg('limit', '10'));
+const LIMIT = parseInt(getArg('limit', '50'));
+const COVER_SOURCE = getArg('cover-source', ''); // e.g. 'manual' to only sync polished
 
 const readmigoApi = axios.create({
   baseURL: READMIGO_API_URL,
@@ -26,23 +27,24 @@ const readmigoApi = axios.create({
 
 interface SyncableBook {
   id: string;
-  gutenberg_id: number;
+  gutenbergId: number;
   title: string;
   author: string;
   language: string;
-  subjects: string[];
+  subjects: string | string[] | null;
   description: string | null;
-  cover_url: string | null;
-  epub_url: string | null;
-  source_url: string;
-  chapter_count: number;
-  word_count: number;
-  flesch_score: number | null;
-  cefr_level: string | null;
-  difficulty_score: number | null;
-  estimated_reading_minutes: number | null;
-  ai_description: string | null;
-  ai_tags: string | null;
+  coverUrl: string | null;
+  epubUrl: string | null;
+  sourceUrl: string;
+  chapterCount: number;
+  wordCount: number;
+  fleschScore: number | null;
+  cefrLevel: string | null;
+  difficultyScore: number | null;
+  estimatedReadingMinutes: number | null;
+  aiDescription: string | null;
+  aiTags: string | null;
+  coverSource: string | null;
 }
 
 async function main() {
@@ -57,16 +59,29 @@ async function main() {
     process.exit(1);
   }
 
-  // Fetch approved books that haven't been synced yet
-  // Uses internal endpoint that returns books with status='ready' and synced_at IS NULL
-  console.log('\nFetching approved, unsynced books...');
+  // Fetch ready + unsynced books (paginated, optionally filtered by coverSource)
+  console.log(`\nFetching ready, unsynced books${COVER_SOURCE ? ' (coverSource=' + COVER_SOURCE + ')' : ''}...`);
 
-  let books: SyncableBook[];
+  let books: SyncableBook[] = [];
   try {
-    const { data } = await (workerClient as any).http.get('/internal/books', {
-      params: { status: 'ready', unsynced: 'true', limit: LIMIT },
-    });
-    books = Array.isArray(data) ? data : data.books || [];
+    const PAGE = 200;
+    let offset = 0;
+    while (true) {
+      const { data } = await (workerClient as any).http.get('/internal/books', {
+        params: { status: 'ready', unsynced: 'true', limit: PAGE, offset },
+      });
+      const rows = Array.isArray(data) ? data : data.books || [];
+      books.push(...rows);
+      if (rows.length < PAGE) break;
+      offset += PAGE;
+      if (books.length >= LIMIT * 10) break; // safety
+    }
+    // Filter by cover source if requested
+    if (COVER_SOURCE) {
+      books = books.filter((b) => b.coverSource === COVER_SOURCE);
+    }
+    // Apply LIMIT after filtering
+    books = books.slice(0, LIMIT);
   } catch (err) {
     console.error('Failed to fetch books:', err instanceof Error ? err.message : err);
     process.exit(1);
@@ -83,7 +98,7 @@ async function main() {
   let failed = 0;
 
   for (const book of books) {
-    console.log(`Syncing: ${book.title} (Gutenberg #${book.gutenberg_id})`);
+    console.log(`Syncing: ${book.title} (Gutenberg #${book.gutenbergId})`);
 
     if (DRY_RUN) {
       console.log(`  [DRY RUN] Would POST to ${READMIGO_API_URL}/books/gutenberg-import`);
@@ -98,29 +113,46 @@ async function main() {
       );
       const chapters = Array.isArray(chaptersData) ? chaptersData : chaptersData.chapters || [];
 
+      // Subjects may come back as a JSON-encoded string or an array
+      let subjectsArr: string[] = [];
+      if (Array.isArray(book.subjects)) {
+        subjectsArr = book.subjects;
+      } else if (typeof book.subjects === 'string' && book.subjects) {
+        try { subjectsArr = JSON.parse(book.subjects); } catch { subjectsArr = []; }
+      }
+
+      // Build absolute public cover URL (prefer R2_PUBLIC_URL, fallback to worker content endpoint)
+      const coverBase = process.env.R2_PUBLIC_URL || 'https://gutenberg-api.logan676395.workers.dev/content';
+      const coverUrl = book.coverUrl
+        ? (book.coverUrl.startsWith('http') ? book.coverUrl : `${coverBase}/${book.coverUrl}`)
+        : null;
+      const epubUrl = book.epubUrl
+        ? (book.epubUrl.startsWith('http') ? book.epubUrl : `${coverBase}/${book.epubUrl}`)
+        : null;
+
       // POST to Readmigo Gutenberg import endpoint
       const { data: importResult } = await readmigoApi.post('/books/gutenberg-import', {
         title: book.title,
         author: book.author,
-        gutenbergId: book.gutenberg_id,
+        gutenbergId: book.gutenbergId,
         language: book.language,
-        subjects: book.subjects,
-        wordCount: book.word_count,
-        chapterCount: book.chapter_count,
-        coverUrl: book.cover_url,
-        epubUrl: book.epub_url,
-        fleschScore: book.flesch_score,
-        cefrLevel: book.cefr_level,
-        difficultyScore: book.difficulty_score,
-        estimatedReadingMinutes: book.estimated_reading_minutes,
-        aiDescription: book.ai_description,
-        aiTags: book.ai_tags ? JSON.parse(book.ai_tags) : [],
+        subjects: subjectsArr,
+        wordCount: book.wordCount,
+        chapterCount: book.chapterCount,
+        coverUrl,
+        epubUrl,
+        fleschScore: book.fleschScore,
+        cefrLevel: book.cefrLevel,
+        difficultyScore: book.difficultyScore,
+        estimatedReadingMinutes: book.estimatedReadingMinutes,
+        aiDescription: book.aiDescription,
+        aiTags: book.aiTags ? JSON.parse(book.aiTags) : [],
         visibility: 'WEB_ONLY',
         chapters: chapters.map((ch: any) => ({
-          order: ch.order_num,
+          order: ch.orderNum ?? ch.order_num,
           title: ch.title,
-          contentUrl: ch.content_url,
-          wordCount: ch.word_count,
+          contentUrl: ch.contentUrl ?? ch.content_url,
+          wordCount: ch.wordCount ?? ch.word_count,
         })),
       });
 
@@ -129,12 +161,12 @@ async function main() {
 
       // Update book in D1 with sync info
       await workerClient.updateBook(book.id, {
-        readmigo_book_id: readmigoBookId,
-        synced_at: new Date().toISOString(),
+        readmigoBookId: readmigoBookId,
+        syncedAt: new Date().toISOString(),
       });
 
       // Record in synced_ids table for discovery dedup
-      await workerClient.addSyncedIds([book.gutenberg_id]);
+      await workerClient.addSyncedIds([book.gutenbergId]);
 
       synced++;
     } catch (err) {
