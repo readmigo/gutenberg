@@ -14,6 +14,7 @@ publicRoutes.get('/books', async (c) => {
   const search = c.req.query('search');
   const language = c.req.query('language');
   const status = c.req.query('status');
+  const coverSource = c.req.query('coverSource'); // 'manual' or 'not_manual'
   const offset = (page - 1) * limit;
 
   const conditions = [];
@@ -38,6 +39,12 @@ publicRoutes.get('/books', async (c) => {
         like(books.author, `%${search}%`)
       )!
     );
+  }
+
+  if (coverSource === 'manual') {
+    conditions.push(eq(books.coverSource, 'manual'));
+  } else if (coverSource === 'not_manual') {
+    conditions.push(sql`${books.coverSource} != 'manual' OR ${books.coverSource} IS NULL`);
   }
 
   const where = conditions.length > 0 ? and(...conditions) : undefined;

@@ -185,6 +185,30 @@
       transition: transform 0.2s, box-shadow 0.2s;
       background: var(--bg-subtle);
     }
+    /* Unpolished covers: dim + grayscale to visually distinguish */
+    .card.unpolished .card-cover,
+    .card.unpolished .card-cover-placeholder {
+      opacity: 0.7;
+      filter: saturate(0.6);
+    }
+    .card.unpolished:hover .card-cover,
+    .card.unpolished:hover .card-cover-placeholder {
+      opacity: 1;
+      filter: none;
+    }
+    /* Polished badge (green dot, top-right) */
+    .card-badge {
+      position: absolute;
+      top: 4px;
+      right: 4px;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: #22c55e;
+      border: 2px solid #fff;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+      z-index: 2;
+    }
     .card:hover .card-cover-wrap {
       transform: scale(1.03);
       box-shadow: 0 6px 16px rgba(0,0,0,0.15);
@@ -338,11 +362,13 @@
   <div class="stats-bar" id="statsBar"></div>
 
   <div class="filter-tabs" id="filterTabs">
-    <button class="filter-tab active" data-status="">All</button>
-    <button class="filter-tab" data-status="ready">Ready</button>
-    <button class="filter-tab" data-status="pending">Pending</button>
-    <button class="filter-tab" data-status="approved">Approved</button>
-    <button class="filter-tab" data-status="rejected">Rejected</button>
+    <button class="filter-tab active" data-filter="all">All</button>
+    <button class="filter-tab" data-filter="polished">Polished</button>
+    <button class="filter-tab" data-filter="unpolished">Unpolished</button>
+    <button class="filter-tab" data-filter="ready">Ready</button>
+    <button class="filter-tab" data-filter="pending">Pending</button>
+    <button class="filter-tab" data-filter="approved">Approved</button>
+    <button class="filter-tab" data-filter="rejected">Rejected</button>
     <div class="pagination" id="pagination"></div>
   </div>
 
@@ -360,6 +386,7 @@
     var currentPage = 1;
     var currentSearch = '';
     var currentStatus = '';
+    var currentCoverSource = '';
 
     function formatNumber(n) {
       if (n >= 1000000) return (n / 1000000).toFixed(1) + 'M';
@@ -408,11 +435,18 @@
 
     function createCard(book) {
       var a = document.createElement('a');
-      a.className = 'card';
+      var polished = book.coverSource === 'manual';
+      a.className = 'card' + (polished ? '' : ' unpolished');
       a.href = 'book.html?id=' + encodeURIComponent(book.id);
 
       var wrap = document.createElement('div');
       wrap.className = 'card-cover-wrap';
+      if (polished) {
+        var badge = document.createElement('div');
+        badge.className = 'card-badge';
+        badge.title = 'Polished';
+        wrap.appendChild(badge);
+      }
       if (book.coverUrl) {
         var img = document.createElement('img');
         img.className = 'card-cover';
@@ -463,6 +497,7 @@
         var url = API + '/books?page=' + page + '&limit=' + LIMIT;
         if (search) url += '&search=' + encodeURIComponent(search);
         if (currentStatus) url += '&status=' + currentStatus;
+        if (currentCoverSource) url += '&coverSource=' + currentCoverSource;
 
         var res = await fetch(url);
         var data = await res.json();
@@ -541,7 +576,12 @@
       if (!btn) return;
       document.querySelectorAll('.filter-tab').forEach(function(t) { t.classList.remove('active'); });
       btn.classList.add('active');
-      currentStatus = btn.getAttribute('data-status') || '';
+      var f = btn.getAttribute('data-filter') || 'all';
+      currentStatus = '';
+      currentCoverSource = '';
+      if (f === 'polished') currentCoverSource = 'manual';
+      else if (f === 'unpolished') currentCoverSource = 'not_manual';
+      else if (f !== 'all') currentStatus = f;
       currentPage = 1;
       loadBooks(currentPage, currentSearch);
     });
