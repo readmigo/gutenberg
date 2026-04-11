@@ -23,6 +23,7 @@ const getArg = (name: string, def: string) => {
 };
 const COVER_DIR = getArg('dir', '');
 const DRY_RUN = args.includes('--dry-run');
+const OVERRIDES_FILE = getArg('overrides', '');
 
 if (!COVER_DIR) {
   console.error('Usage: --dir=<path> [--dry-run]');
@@ -108,6 +109,14 @@ async function main() {
   const books = await fetchAllBooks();
   console.log(`Loaded ${books.length} book(s) from DB\n`);
 
+  // Load filename → gutenbergId overrides
+  let overrides: Record<string, number> = {};
+  if (OVERRIDES_FILE && fs.existsSync(OVERRIDES_FILE)) {
+    overrides = JSON.parse(fs.readFileSync(OVERRIDES_FILE, 'utf8'));
+    console.log(`Loaded ${Object.keys(overrides).length} override(s)\n`);
+  }
+  const bookById = new Map(books.map((b) => [b.gutenbergId, b]));
+
   interface Match {
     file: string;
     fileTitle: string;
@@ -123,6 +132,17 @@ async function main() {
     // Split on "—" or "-" to get title
     const parts = nameNoExt.split(/\s*—\s*|\s+-\s+/);
     const fileTitle = parts[0].trim();
+
+    // Check overrides first
+    if (overrides[file] && bookById.has(overrides[file])) {
+      matches.push({
+        file,
+        fileTitle,
+        book: bookById.get(overrides[file])!,
+        score: 1.0,
+      });
+      continue;
+    }
 
     let best: { book: Book; score: number } | null = null;
     let runnerUp: { book: Book; score: number } | null = null;
