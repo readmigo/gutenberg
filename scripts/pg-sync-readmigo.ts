@@ -145,7 +145,7 @@ async function main() {
         visibility: 'WEB_ONLY',
         chapters: chapters.map((ch: any) => ({
           order: ch.orderNum ?? ch.order_num,
-          title: ch.title,
+          title: (ch.title || '').slice(0, 255),
           contentUrl: ch.contentUrl ?? ch.content_url,
           wordCount: ch.wordCount ?? ch.word_count,
         })),
