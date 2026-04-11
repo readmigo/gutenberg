@@ -131,6 +131,7 @@ async function main() {
         : null;
 
       // POST to Readmigo Gutenberg import endpoint
+      // Only send fields defined in the API's ImportGutenbergBookDto
       const { data: importResult } = await readmigoApi.post('/books/gutenberg-import', {
         title: book.title,
         author: book.author,
@@ -141,12 +142,6 @@ async function main() {
         chapterCount: book.chapterCount,
         coverUrl,
         epubUrl,
-        fleschScore: book.fleschScore,
-        cefrLevel: book.cefrLevel,
-        difficultyScore: book.difficultyScore,
-        estimatedReadingMinutes: book.estimatedReadingMinutes,
-        aiDescription: book.aiDescription,
-        aiTags: book.aiTags ? JSON.parse(book.aiTags) : [],
         visibility: 'WEB_ONLY',
         chapters: chapters.map((ch: any) => ({
           order: ch.orderNum ?? ch.order_num,
