@@ -123,7 +123,7 @@
     /* Stats */
     .stats-bar {
       max-width: var(--max-w);
-      margin: 1.5rem auto 0;
+      margin: 0.75rem auto 0;
       padding: 0 1.5rem;
       display: flex;
       gap: 1.5rem;
@@ -148,19 +148,28 @@
     main {
       max-width: var(--max-w);
       margin: 0 auto;
-      padding: 1.5rem;
+      padding: 0.75rem 1.5rem 1rem;
+      display: flex;
+      flex-direction: column;
+      min-height: calc(100vh - 210px);
     }
     .grid {
       display: grid;
       grid-template-columns: repeat(8, minmax(0, 1fr));
-      gap: 1.25rem 1rem;
-      margin-top: 1rem;
+      grid-template-rows: repeat(4, 1fr);
+      gap: 0.75rem 0.75rem;
+      margin-top: 0.5rem;
+      flex: 1;
+      min-height: 0;
     }
     .card {
       text-decoration: none;
       color: inherit;
-      display: block;
+      display: flex;
+      flex-direction: column;
       cursor: pointer;
+      min-height: 0;
+      min-width: 0;
     }
     .card:hover .card-cover {
       transform: scale(1.03);
@@ -169,7 +178,8 @@
     .card-cover-wrap {
       position: relative;
       width: 100%;
-      aspect-ratio: 2/3;
+      flex: 1;
+      min-height: 0;
       border-radius: var(--radius);
       overflow: hidden;
       box-shadow: 0 2px 8px rgba(0,0,0,0.1);
@@ -198,19 +208,20 @@
       opacity: 0.7;
     }
     .card-body {
-      padding: 0.4rem 0.1rem 0;
+      padding: 0.3rem 0.1rem 0;
+      flex-shrink: 0;
     }
     .card-title {
-      font-size: 0.8rem;
+      font-size: 0.75rem;
       font-weight: 600;
-      line-height: 1.3;
+      line-height: 1.25;
       display: -webkit-box;
-      -webkit-line-clamp: 2;
+      -webkit-line-clamp: 1;
       -webkit-box-orient: vertical;
       overflow: hidden;
     }
     .card-author {
-      font-size: 0.72rem;
+      font-size: 0.68rem;
       color: var(--text-hint);
       white-space: nowrap;
       overflow: hidden;
@@ -223,8 +234,9 @@
       justify-content: center;
       align-items: center;
       gap: 0.75rem;
-      margin-top: 2rem;
-      padding: 1rem 0;
+      margin: 0.5rem 0 0.25rem;
+      padding: 0.25rem 0;
+      flex-shrink: 0;
     }
     .pagination button {
       padding: 0.4rem 1rem;
@@ -253,7 +265,7 @@
     /* Filter Tabs */
     .filter-tabs {
       max-width: var(--max-w);
-      margin: 1rem auto 0;
+      margin: 0.5rem auto 0;
       padding: 0 1.5rem;
       display: flex;
       gap: 0.5rem;
@@ -287,11 +299,11 @@
     /* Footer */
     footer {
       text-align: center;
-      padding: 2rem 1rem;
+      padding: 0.5rem 1rem;
       color: var(--text-hint);
-      font-size: 0.8rem;
+      font-size: 0.75rem;
       border-top: 1px solid var(--border);
-      margin-top: 2rem;
+      margin-top: 0.5rem;
     }
 
     .nav-link {
@@ -305,10 +317,10 @@
     @media (max-width: 600px) {
       .header-inner { padding: 1rem; }
       .search-box { max-width: 100%; order: 3; flex-basis: 100%; }
-      .grid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1rem 0.75rem; }
-      .stats-bar { padding: 0 1rem; gap: 1rem; }
+      .grid { grid-template-columns: repeat(4, minmax(0, 1fr)); grid-template-rows: repeat(4, 1fr); gap: 0.6rem 0.6rem; }
+      .stats-bar { padding: 0 1rem; gap: 1rem; margin-top: 0.75rem; }
       .filter-tabs { padding: 0 1rem; overflow-x: auto; }
-      main { padding: 1rem; }
+      main { padding: 0.5rem 1rem 0.75rem; min-height: calc(100vh - 260px); }
     }
   </style>
 </head>
@@ -335,8 +347,8 @@
   </div>
 
   <main>
-    <div class="grid" id="bookGrid"></div>
     <div class="pagination" id="pagination"></div>
+    <div class="grid" id="bookGrid"></div>
   </main>
 
   <footer>
@@ -345,7 +357,7 @@
 
   <script>
     var API = 'https://gutenberg-api.logan676395.workers.dev';
-    var LIMIT = 48;
+    var LIMIT = 32;
     var currentPage = 1;
     var currentSearch = '';
     var currentStatus = '';
