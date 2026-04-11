@@ -109,8 +109,9 @@
       margin-bottom: 2.5rem;
     }
     .book-cover {
-      width: 100px;
+      width: 240px;
       flex-shrink: 0;
+      align-self: flex-start;
       border-radius: var(--radius-lg);
       overflow: hidden;
       box-shadow: var(--shadow-md);
@@ -273,7 +274,7 @@
 
     @media (max-width: 600px) {
       .book-hero { flex-direction: column; gap: 1.25rem; }
-      .book-cover { width: 70px; }
+      .book-cover { width: 160px; }
       .book-title { font-size: 1.35rem; }
       main { padding: 1.25rem 1rem; }
     }
