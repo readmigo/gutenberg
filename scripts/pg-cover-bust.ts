@@ -29,9 +29,18 @@ interface Book {
 
 async function fetchAllBooks(): Promise<Book[]> {
   const all: Book[] = [];
+  const PAGE = 200;
   for (const status of ['ready', 'approved']) {
-    const { data } = await api.get('/internal/books', { params: { status, limit: 200 } });
-    all.push(...data);
+    let offset = 0;
+    while (true) {
+      const { data } = await api.get('/internal/books', {
+        params: { status, limit: PAGE, offset },
+      });
+      const books = Array.isArray(data) ? data : [];
+      all.push(...books);
+      if (books.length < PAGE) break;
+      offset += PAGE;
+    }
   }
   return all;
 }
