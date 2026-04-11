@@ -151,14 +151,13 @@
       padding: 0.75rem 1.5rem 1rem;
       display: flex;
       flex-direction: column;
-      min-height: calc(100vh - 210px);
+      min-height: calc(100vh - 180px);
     }
     .grid {
       display: grid;
       grid-template-columns: repeat(8, minmax(0, 1fr));
       grid-template-rows: repeat(4, 1fr);
       gap: 0.75rem 0.75rem;
-      margin-top: 0.5rem;
       flex: 1;
       min-height: 0;
     }
@@ -231,13 +230,12 @@
     /* Pagination */
     .pagination {
       display: flex;
-      justify-content: center;
       align-items: center;
-      gap: 0.75rem;
-      margin: 0.5rem 0 0.25rem;
-      padding: 0.25rem 0;
+      gap: 0.5rem;
+      margin-left: auto;
       flex-shrink: 0;
     }
+    .pagination:empty { display: none; }
     .pagination button {
       padding: 0.4rem 1rem;
       border: 1px solid var(--border);
@@ -268,6 +266,7 @@
       margin: 0.5rem auto 0;
       padding: 0 1.5rem;
       display: flex;
+      align-items: center;
       gap: 0.5rem;
     }
     .filter-tab {
@@ -344,10 +343,10 @@
     <button class="filter-tab" data-status="pending">Pending</button>
     <button class="filter-tab" data-status="approved">Approved</button>
     <button class="filter-tab" data-status="rejected">Rejected</button>
+    <div class="pagination" id="pagination"></div>
   </div>
 
   <main>
-    <div class="pagination" id="pagination"></div>
     <div class="grid" id="bookGrid"></div>
   </main>
 
