@@ -74,7 +74,6 @@ async function main() {
       books.push(...rows);
       if (rows.length < PAGE) break;
       offset += PAGE;
-      if (books.length >= LIMIT * 10) break; // safety
     }
     // Filter by cover source if requested
     if (COVER_SOURCE) {
