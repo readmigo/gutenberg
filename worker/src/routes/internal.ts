@@ -50,6 +50,14 @@ internalRoutes.post('/books', async (c) => {
       aiTags: body.aiTags,
       coverSource: body.coverSource,
       pipelineVersion: body.pipelineVersion,
+      sourceType: body.sourceType ?? existing.sourceType,
+      originalScript: body.originalScript ?? existing.originalScript,
+      dynasty: body.dynasty ?? existing.dynasty,
+      hskLevel: body.hskLevel ?? existing.hskLevel,
+      needsCorrection: body.needsCorrection ?? existing.needsCorrection,
+      punctuationAdded: body.punctuationAdded ?? existing.punctuationAdded,
+      coverPrompt: body.coverPrompt ?? existing.coverPrompt,
+      zhSourceId: body.zhSourceId ?? existing.zhSourceId,
       updatedAt: now,
     }).where(eq(books.id, existing.id));
 
@@ -83,6 +91,14 @@ internalRoutes.post('/books', async (c) => {
     aiTags: body.aiTags,
     coverSource: body.coverSource,
     pipelineVersion: body.pipelineVersion,
+    sourceType: body.sourceType,
+    originalScript: body.originalScript,
+    dynasty: body.dynasty,
+    hskLevel: body.hskLevel,
+    needsCorrection: body.needsCorrection,
+    punctuationAdded: body.punctuationAdded,
+    coverPrompt: body.coverPrompt,
+    zhSourceId: body.zhSourceId,
   });
 
   const created = await db.select().from(books).where(eq(books.id, body.id)).get();
