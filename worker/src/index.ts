@@ -4,6 +4,7 @@ import { drizzle } from 'drizzle-orm/d1';
 import { publicRoutes } from './routes/public';
 import { adminRoutes } from './routes/admin';
 import { internalRoutes } from './routes/internal';
+import { zhRoutes } from './routes/zh';
 import { discoverNewBooks } from './services/discover';
 
 export type Env = {
@@ -32,6 +33,7 @@ app.get('/', (c) => c.json({ service: 'gutenberg-api', status: 'ok' }));
 app.route('/', publicRoutes);
 app.route('/admin', adminRoutes);
 app.route('/internal', internalRoutes);
+app.route('/api/zh', zhRoutes);
 
 export default {
   fetch: app.fetch,
