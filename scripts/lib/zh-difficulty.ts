@@ -88,9 +88,7 @@ function splitSentences(text: string): string[] {
  */
 export async function initJieba(): Promise<void> {
   if (jiebaModule) return;
-  const jieba = await import('jieba-wasm');
-  await jieba.default();
-  jiebaModule = jieba;
+  jiebaModule = require('jieba-wasm');
 }
 
 /**
