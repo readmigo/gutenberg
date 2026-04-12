@@ -7,10 +7,10 @@ import { workerClient } from './lib/worker-client';
  *
  * Performs deeper quality checks on processed Chinese books:
  *   - CJK character ratio (< 50% of non-whitespace chars → flagged)
- *   - Average chapter length (word_count / chapter_count < 200 → flagged)
+ *   - Average chapter length (wordCount / chapterCount < 200 → flagged)
  *   - Content fetch errors → flagged
  *
- * Books with any issue get PATCH needs_correction=1, qualityIssues=JSON.stringify(issues)
+ * Books with any issue get PATCH needsCorrection=1, qualityIssues=JSON.stringify(issues)
  *
  * CLI args:
  *   --limit=N   Max books to process (default: 200)
@@ -40,8 +40,8 @@ interface ZhBook {
   id: string;
   title: string;
   author: string;
-  chapter_count?: number | null;
-  word_count?: number | null;
+  chapterCount?: number | null;
+  wordCount?: number | null;
   status: string;
 }
 
@@ -139,8 +139,8 @@ async function checkBook(book: ZhBook): Promise<string[]> {
   }
 
   // c. Average chapter length check
-  const wordCount = book.word_count ?? 0;
-  const chapterCount = book.chapter_count ?? 0;
+  const wordCount = book.wordCount ?? 0;
+  const chapterCount = book.chapterCount ?? 0;
   if (chapterCount > 0) {
     const avgChapterLength = wordCount / chapterCount;
     if (avgChapterLength < 200) {
@@ -192,7 +192,7 @@ async function main() {
     try {
       if (issues.length > 0) {
         await (workerClient as any).http.patch(`/api/zh/books/${book.id}`, {
-          needs_correction: 1,
+          needsCorrection: 1,
           qualityIssues: JSON.stringify(issues),
         });
         console.log(`  -> FLAGGED: issues=[${issues.join(', ')}]`);

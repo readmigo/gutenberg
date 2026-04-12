@@ -34,10 +34,10 @@ interface ZhBook {
   id: string;
   title: string;
   author: string;
-  cover_url?: string | null;
-  cover_prompt?: string | null;
-  chapter_count?: number | null;
-  word_count?: number | null;
+  coverUrl?: string | null;
+  coverPrompt?: string | null;
+  chapterCount?: number | null;
+  wordCount?: number | null;
   status: string;
 }
 
@@ -56,17 +56,17 @@ function validateBook(book: ZhBook): string[] {
     issues.push('missing_author');
   }
 
-  const chapterCount = book.chapter_count ?? 0;
+  const chapterCount = book.chapterCount ?? 0;
   if (chapterCount < 1) {
     issues.push('no_chapters');
   }
 
-  const wordCount = book.word_count ?? 0;
+  const wordCount = book.wordCount ?? 0;
   if (wordCount < 1000) {
     issues.push('insufficient_word_count');
   }
 
-  if (!book.cover_url && !book.cover_prompt) {
+  if (!book.coverUrl && !book.coverPrompt) {
     issues.push('missing_cover');
   }
 
