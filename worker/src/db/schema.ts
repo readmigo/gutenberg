@@ -31,11 +31,21 @@ export const books = sqliteTable('books', {
   syncedAt: text('synced_at'),
   readmigoBookId: text('readmigo_book_id'),
   createdAt: text('created_at').default(sql`(datetime('now'))`),
+  sourceType: text('source_type').default('gutenberg'),
+  originalScript: text('original_script'),
+  dynasty: text('dynasty'),
+  hskLevel: integer('hsk_level'),
+  needsCorrection: integer('needs_correction').default(0),
+  punctuationAdded: integer('punctuation_added').default(0),
+  coverPrompt: text('cover_prompt'),
+  zhSourceId: integer('zh_source_id'),
   updatedAt: text('updated_at').default(sql`(datetime('now'))`),
 }, (table) => [
   index('books_status_idx').on(table.status),
   index('books_gutenberg_id_idx').on(table.gutenbergId),
   index('books_pipeline_version_idx').on(table.pipelineVersion),
+  index('books_source_type_idx').on(table.sourceType),
+  index('books_needs_correction_idx').on(table.needsCorrection),
 ]);
 
 // Chapters table
@@ -104,3 +114,35 @@ export const qualityReviews = sqliteTable('quality_reviews', {
   notes: text('notes'),
   createdAt: text('created_at').default(sql`(datetime('now'))`),
 });
+
+// Chinese book sources tracking table
+export const zhSources = sqliteTable('zh_sources', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
+  sourceType: text('source_type').notNull(),
+  sourceUrl: text('source_url'),
+  sourceBookId: text('source_book_id').notNull(),
+  title: text('title'),
+  author: text('author'),
+  status: text('status').default('discovered'),
+  epubFormat: text('epub_format'),
+  downloadUrl: text('download_url'),
+  error: text('error'),
+  createdAt: text('created_at').default(sql`(datetime('now'))`),
+  updatedAt: text('updated_at').default(sql`(datetime('now'))`),
+}, (table) => [
+  uniqueIndex('zh_sources_type_id_idx').on(table.sourceType, table.sourceBookId),
+  index('zh_sources_status_idx').on(table.status),
+]);
+
+// Chinese book correction history
+export const zhCorrections = sqliteTable('zh_corrections', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
+  bookId: text('book_id').notNull().references(() => books.id, { onDelete: 'cascade' }),
+  chapterIndex: integer('chapter_index'),
+  field: text('field').notNull(),
+  oldValue: text('old_value'),
+  newValue: text('new_value'),
+  correctedAt: text('corrected_at').default(sql`(datetime('now'))`),
+}, (table) => [
+  index('zh_corrections_book_idx').on(table.bookId),
+]);
