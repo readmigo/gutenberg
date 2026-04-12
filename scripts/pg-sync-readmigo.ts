@@ -142,12 +142,16 @@ async function main() {
         coverUrl,
         epubUrl,
         visibility: 'WEB_ONLY',
-        chapters: chapters.map((ch: any) => ({
-          order: ch.orderNum ?? ch.order_num,
-          title: (ch.title || '').slice(0, 255),
-          contentUrl: ch.contentUrl ?? ch.content_url,
-          wordCount: ch.wordCount ?? ch.word_count,
-        })),
+        chapters: chapters.map((ch: any) => {
+          const rawUrl = ch.contentUrl ?? ch.content_url;
+          const absUrl = rawUrl && !rawUrl.startsWith('http') ? `${coverBase}/${rawUrl}` : rawUrl;
+          return {
+            order: ch.orderNum ?? ch.order_num,
+            title: (ch.title || '').slice(0, 255),
+            contentUrl: absUrl,
+            wordCount: ch.wordCount ?? ch.word_count,
+          };
+        }),
       });
 
       const readmigoBookId = importResult.id || importResult.bookId;
