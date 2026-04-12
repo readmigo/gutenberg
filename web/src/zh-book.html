@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>书籍详情 - 中文书库</title>
+  <style>
+    :root {
+      --bg: #F7F8FD;
+      --bg-card: #FFFFFF;
+      --bg-subtle: #EEF0FA;
+      --brand-primary: #7C8DF5;
+      --brand-primary-hover: #6B7CE4;
+      --brand-gradient: linear-gradient(135deg, #8BB9FF 0%, #B9B3F5 50%, #F6B6E8 100%);
+      --brand-blue: #8BB9FF;
+      --brand-purple: #B9B3F5;
+      --brand-pink: #F6B6E8;
+      --text-primary: #2D2E4A;
+      --text-secondary: #6B6F9C;
+      --text-hint: #A3A6C8;
+      --success: #6ED6A8;
+      --warning: #FFC26A;
+      --error: #FF6B6B;
+      --info: #7BAAFF;
+      --gray-50: #FAFAFA;
+      --gray-100: #F4F4F5;
+      --gray-200: #E4E4E7;
+      --gray-300: #D4D4D8;
+      --gray-400: #A1A1AA;
+      --gray-500: #71717A;
+      --border: #E4E4E7;
+      --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+      --shadow: 0 1px 3px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.06);
+      --shadow-md: 0 4px 6px rgba(0,0,0,0.1), 0 2px 4px rgba(0,0,0,0.06);
+      --radius-sm: 4px;
+      --radius: 8px;
+      --radius-lg: 12px;
+      --radius-xl: 16px;
+      --font: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text-primary);
+      min-height: 100vh;
+    }
+
+    /* Navigation */
+    .nav {
+      background: var(--bg-card);
+      border-bottom: 1px solid var(--border);
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      height: 56px;
+      gap: 24px;
+    }
+    .nav-brand {
+      font-size: 1.25rem;
+      font-weight: 700;
+      background: var(--brand-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-decoration: none;
+      margin-right: 16px;
+    }
+    .nav a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      padding: 6px 12px;
+      border-radius: var(--radius);
+      transition: color 0.2s, background 0.2s;
+    }
+    .nav a:hover { color: var(--brand-primary); background: var(--bg-subtle); }
+    .nav a.active { color: var(--brand-primary); background: var(--bg-subtle); }
+
+    /* Main layout */
+    .main {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+
+    /* Page header */
+    .page-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+    .page-header h1 {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      flex: 1;
+    }
+    .btn-group { display: flex; gap: 8px; flex-wrap: wrap; }
+
+    /* Panel */
+    .panel {
+      background: var(--bg-card);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 24px;
+      overflow: hidden;
+    }
+    .panel-header {
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .panel-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    .panel-body { padding: 20px; }
+
+    /* Metadata grid */
+    .meta-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+    }
+    .meta-field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .meta-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .meta-value-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .meta-value {
+      font-size: 0.92rem;
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+    .meta-input {
+      flex: 1;
+      padding: 6px 10px;
+      border: 1px solid var(--brand-primary);
+      border-radius: var(--radius);
+      font-size: 0.9rem;
+      font-family: var(--font);
+      color: var(--text-primary);
+      background: var(--bg-card);
+      box-shadow: 0 0 0 3px rgba(124,141,245,0.15);
+      display: none;
+    }
+    .meta-input:focus { outline: none; }
+    .edit-icon {
+      cursor: pointer;
+      font-size: 0.85rem;
+      color: var(--text-hint);
+      padding: 2px 6px;
+      border-radius: var(--radius-sm);
+      transition: color 0.2s, background 0.2s;
+      user-select: none;
+      flex-shrink: 0;
+    }
+    .edit-icon:hover { color: var(--brand-primary); background: var(--bg-subtle); }
+    .save-icon {
+      cursor: pointer;
+      font-size: 0.75rem;
+      color: #fff;
+      background: var(--brand-primary);
+      padding: 3px 8px;
+      border-radius: var(--radius-sm);
+      border: none;
+      font-family: var(--font);
+      font-weight: 600;
+      transition: opacity 0.2s;
+      display: none;
+    }
+    .save-icon:hover { opacity: 0.85; }
+    .cancel-icon {
+      cursor: pointer;
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      background: var(--bg-subtle);
+      padding: 3px 8px;
+      border-radius: var(--radius-sm);
+      border: none;
+      font-family: var(--font);
+      font-weight: 600;
+      transition: opacity 0.2s;
+      display: none;
+    }
+
+    /* Cover section */
+    .cover-wrap {
+      display: flex;
+      gap: 20px;
+      align-items: flex-start;
+      flex-wrap: wrap;
+    }
+    .cover-image {
+      width: 120px;
+      height: 180px;
+      object-fit: cover;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      flex-shrink: 0;
+    }
+    .cover-placeholder {
+      width: 120px;
+      height: 180px;
+      border-radius: var(--radius);
+      background: var(--bg-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-hint);
+      font-size: 0.8rem;
+      text-align: center;
+      padding: 8px;
+      flex-shrink: 0;
+    }
+    .cover-details { flex: 1; min-width: 200px; }
+    .cover-prompt {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      font-size: 0.82rem;
+      font-family: monospace;
+      color: var(--text-secondary);
+      background: var(--gray-50);
+      resize: vertical;
+      min-height: 80px;
+      margin-bottom: 10px;
+    }
+
+    /* Chapters */
+    .chapter-row {
+      border-bottom: 1px solid var(--gray-100);
+    }
+    .chapter-row:last-child { border-bottom: none; }
+    .chapter-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      cursor: pointer;
+      user-select: none;
+      transition: background 0.15s;
+    }
+    .chapter-header:hover { background: var(--gray-50); }
+    .chapter-toggle {
+      font-size: 0.75rem;
+      color: var(--text-hint);
+      width: 16px;
+      text-align: center;
+      flex-shrink: 0;
+      transition: transform 0.2s;
+    }
+    .chapter-toggle.open { transform: rotate(90deg); }
+    .chapter-title { flex: 1; font-size: 0.88rem; font-weight: 500; }
+    .chapter-words {
+      font-size: 0.78rem;
+      color: var(--text-hint);
+    }
+    .chapter-content {
+      display: none;
+      padding: 16px 20px 16px 44px;
+      background: var(--gray-50);
+      font-size: 0.88rem;
+      line-height: 1.8;
+      color: var(--text-primary);
+      border-top: 1px solid var(--gray-100);
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    .chapter-content.open { display: block; }
+    .chapter-content-loading { color: var(--text-hint); font-style: italic; }
+
+    /* Status badges */
+    .badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 12px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+    .badge-discovered  { background: rgba(163,166,200,0.2); color: #4a4e7a; }
+    .badge-downloaded  { background: rgba(123,170,255,0.2); color: #2a4365; }
+    .badge-cleaned     { background: rgba(185,179,245,0.25); color: #553c9a; }
+    .badge-enriched    { background: rgba(255,194,106,0.25); color: #8a6d20; }
+    .badge-processed   { background: rgba(139,185,255,0.2); color: #1e4080; }
+    .badge-ready       { background: rgba(110,214,168,0.2); color: #1a7a4c; }
+    .badge-synced      { background: rgba(110,214,168,0.35); color: #0e5c38; }
+    .badge-correction-pending  { background: rgba(255,194,106,0.25); color: #8a6d20; }
+    .badge-correction-done     { background: rgba(110,214,168,0.2); color: #1a7a4c; }
+    .badge-correction-skip     { background: rgba(163,166,200,0.2); color: #4a4e7a; }
+
+    /* Buttons */
+    .btn {
+      padding: 6px 14px;
+      border-radius: var(--radius);
+      font-size: 0.85rem;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.1s;
+      font-family: var(--font);
+      text-decoration: none;
+      display: inline-block;
+    }
+    .btn:hover { opacity: 0.85; }
+    .btn:active { transform: scale(0.97); }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .btn-primary   { background: var(--brand-primary); color: #fff; }
+    .btn-secondary { background: var(--bg-subtle); color: var(--text-secondary); }
+    .btn-success   { background: var(--success); color: #0e5c38; }
+    .btn-danger    { background: var(--error); color: #fff; }
+    .btn-sm { padding: 4px 10px; font-size: 0.78rem; }
+
+    /* Data table */
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+    }
+    .data-table th {
+      text-align: left;
+      padding: 10px 16px;
+      background: var(--bg-subtle);
+      color: var(--text-secondary);
+      font-weight: 600;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 1px solid var(--border);
+    }
+    .data-table td {
+      padding: 10px 16px;
+      border-bottom: 1px solid var(--gray-100);
+      vertical-align: top;
+    }
+    .data-table tr:last-child td { border-bottom: none; }
+    .data-table tr:hover { background: var(--gray-50); }
+
+    /* Empty / loading */
+    .empty-state {
+      text-align: center;
+      padding: 32px 20px;
+      color: var(--text-hint);
+      font-size: 0.9rem;
+    }
+    .loading { text-align: center; padding: 32px; color: var(--text-hint); }
+    .spinner {
+      display: inline-block;
+      width: 24px; height: 24px;
+      border: 3px solid var(--border);
+      border-top-color: var(--brand-primary);
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 24px; right: 24px;
+      padding: 12px 20px;
+      border-radius: var(--radius);
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #fff;
+      box-shadow: var(--shadow-md);
+      z-index: 1000;
+      transform: translateY(100px);
+      opacity: 0;
+      transition: all 0.3s ease;
+    }
+    .toast.show { transform: translateY(0); opacity: 1; }
+    .toast.success { background: var(--success); color: #0e5c38; }
+    .toast.error { background: var(--error); }
+
+    /* File input */
+    .file-upload-wrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .file-upload-wrap input[type=file] { display: none; }
+    .upload-progress { font-size: 0.8rem; color: var(--text-hint); }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .main { padding: 16px; }
+      .meta-grid { grid-template-columns: 1fr; }
+      .nav { padding: 0 16px; gap: 12px; }
+      .panel-body { padding: 14px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav class="nav">
+    <a href="/" class="nav-brand">Readmigo Classics</a>
+    <a href="/">Home</a>
+    <a href="/dashboard.html">Dashboard</a>
+    <a href="/zh.html">中文书库</a>
+  </nav>
+
+  <div class="main" id="main-content">
+    <div class="loading"><div class="spinner"></div></div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <script>
+    var bookId = new URLSearchParams(location.search).get('id');
+    var bookData = null;
+
+    // -- Auth --
+
+    function getApiKey() {
+      var key = localStorage.getItem('zh-api-key');
+      if (!key) {
+        key = prompt('Enter API Key (X-Internal-Key):');
+        if (key) localStorage.setItem('zh-api-key', key);
+      }
+      return key || '';
+    }
+
+    function apiHeaders() {
+      return { 'X-Internal-Key': getApiKey(), 'Content-Type': 'application/json' };
+    }
+
+    function apiHeadersNoJson() {
+      return { 'X-Internal-Key': getApiKey() };
+    }
+
+    // -- Helpers --
+
+    function showToast(msg, type) {
+      var t = document.getElementById('toast');
+      t.textContent = msg;
+      t.className = 'toast ' + (type || 'success');
+      void t.offsetWidth;
+      t.classList.add('show');
+      setTimeout(function() { t.classList.remove('show'); }, 3500);
+    }
+
+    function el(tag, attrs, children) {
+      var node = document.createElement(tag);
+      if (attrs) {
+        for (var k in attrs) {
+          if (k === 'className') node.className = attrs[k];
+          else if (k === 'style' && typeof attrs[k] === 'object') {
+            for (var s in attrs[k]) node.style[s] = attrs[k][s];
+          } else if (k.indexOf('on') === 0) {
+            node.addEventListener(k.slice(2).toLowerCase(), attrs[k]);
+          } else {
+            node.setAttribute(k, attrs[k]);
+          }
+        }
+      }
+      if (children !== undefined) {
+        if (typeof children === 'string') node.textContent = children;
+        else if (Array.isArray(children)) {
+          children.forEach(function(c) { if (c) node.appendChild(c); });
+        } else if (children instanceof Node) {
+          node.appendChild(children);
+        }
+      }
+      return node;
+    }
+
+    function clearNode(node) {
+      while (node.firstChild) node.removeChild(node.firstChild);
+    }
+
+    function formatDate(d) {
+      if (!d) return '--';
+      return new Date(d).toLocaleString('zh-CN', { dateStyle: 'short', timeStyle: 'short' });
+    }
+
+    function statusBadgeClass(s) {
+      var m = {
+        discovered: 'badge-discovered', downloaded: 'badge-downloaded', cleaned: 'badge-cleaned',
+        enriched: 'badge-enriched', processed: 'badge-processed', ready: 'badge-ready', synced: 'badge-synced'
+      };
+      return m[s] || 'badge-discovered';
+    }
+
+    // -- API --
+
+    function apiFetch(url, opts) {
+      opts = opts || {};
+      return fetch(url, {
+        method: opts.method || 'GET',
+        headers: opts.headers || apiHeaders(),
+        body: opts.body
+      }).then(function(res) {
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        return res.json();
+      });
+    }
+
+    // -- Editable Field --
+
+    function makeEditableField(fieldKey, currentValue, onSave) {
+      var wrap = el('div', { className: 'meta-value-wrap' });
+      var valueSpan = el('span', { className: 'meta-value' }, currentValue || '--');
+      var input = el('input', { className: 'meta-input', type: 'text', value: currentValue || '' });
+      input.style.display = 'none';
+      var editBtn = el('span', { className: 'edit-icon', title: '编辑' }, String.fromCharCode(9999));
+      var saveBtn = el('button', { className: 'save-icon' }, '保存');
+      saveBtn.style.display = 'none';
+      var cancelBtn = el('button', { className: 'cancel-icon' }, '取消');
+      cancelBtn.style.display = 'none';
+
+      editBtn.addEventListener('click', function() {
+        valueSpan.style.display = 'none';
+        editBtn.style.display = 'none';
+        input.style.display = 'block';
+        saveBtn.style.display = 'inline-block';
+        cancelBtn.style.display = 'inline-block';
+        input.focus();
+      });
+
+      cancelBtn.addEventListener('click', function() {
+        input.style.display = 'none';
+        saveBtn.style.display = 'none';
+        cancelBtn.style.display = 'none';
+        valueSpan.style.display = 'inline';
+        editBtn.style.display = 'inline-block';
+      });
+
+      saveBtn.addEventListener('click', function() {
+        var newVal = input.value.trim();
+        saveBtn.textContent = '保存中...';
+        saveBtn.disabled = true;
+        onSave(newVal, function(err) {
+          saveBtn.textContent = '保存';
+          saveBtn.disabled = false;
+          if (err) {
+            showToast('保存失败: ' + err, 'error');
+          } else {
+            valueSpan.textContent = newVal || '--';
+            input.style.display = 'none';
+            saveBtn.style.display = 'none';
+            cancelBtn.style.display = 'none';
+            valueSpan.style.display = 'inline';
+            editBtn.style.display = 'inline-block';
+            showToast('已保存', 'success');
+          }
+        });
+      });
+
+      wrap.appendChild(valueSpan);
+      wrap.appendChild(input);
+      wrap.appendChild(editBtn);
+      wrap.appendChild(saveBtn);
+      wrap.appendChild(cancelBtn);
+      return wrap;
+    }
+
+    function patchBook(field, value, cb) {
+      var body = {};
+      body[field] = value;
+      fetch('/api/zh/books/' + bookId, {
+        method: 'PATCH',
+        headers: apiHeaders(),
+        body: JSON.stringify(body)
+      }).then(function(res) {
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        cb(null);
+      }).catch(function(err) {
+        cb(err.message);
+      });
+    }
+
+    // -- Render Page --
+
+    function renderPage(book) {
+      bookData = book;
+      document.title = (book.title || '书籍') + ' - 中文书库';
+
+      var main = document.getElementById('main-content');
+      clearNode(main);
+
+      // Page header
+      var header = el('div', { className: 'page-header' });
+      header.appendChild(el('h1', null, book.title || book.zh_title || '书籍详情'));
+      var actionBtns = el('div', { className: 'btn-group' });
+      var backBtn = el('a', { href: '/zh.html', className: 'btn btn-secondary' }, '\u2190 返回列表');
+      var correctBtn = el('button', { className: 'btn btn-success', id: 'correct-btn' }, '标记已校正');
+      var syncBtn = el('button', { className: 'btn btn-primary', id: 'sync-btn' }, '同步到 Readmigo');
+      actionBtns.appendChild(backBtn);
+      actionBtns.appendChild(correctBtn);
+      actionBtns.appendChild(syncBtn);
+      header.appendChild(actionBtns);
+      main.appendChild(header);
+
+      // Correct action
+      correctBtn.addEventListener('click', function() {
+        if (!confirm('确认标记此书为已校正？')) return;
+        correctBtn.disabled = true;
+        correctBtn.textContent = '处理中...';
+        fetch('/api/zh/books/' + bookId + '/correct', {
+          method: 'POST', headers: apiHeaders()
+        }).then(function(res) {
+          if (!res.ok) throw new Error('HTTP ' + res.status);
+          showToast('已标记为校正完成', 'success');
+          loadBook();
+        }).catch(function(err) {
+          showToast('操作失败: ' + err.message, 'error');
+          correctBtn.disabled = false;
+          correctBtn.textContent = '标记已校正';
+        });
+      });
+
+      // Sync action
+      syncBtn.addEventListener('click', function() {
+        if (!confirm('确认同步此书到 Readmigo？')) return;
+        syncBtn.disabled = true;
+        syncBtn.textContent = '同步中...';
+        fetch('/api/zh/books/' + bookId + '/sync', {
+          method: 'POST', headers: apiHeaders()
+        }).then(function(res) {
+          if (!res.ok) throw new Error('HTTP ' + res.status);
+          showToast('同步成功', 'success');
+          loadBook();
+        }).catch(function(err) {
+          showToast('同步失败: ' + err.message, 'error');
+          syncBtn.disabled = false;
+          syncBtn.textContent = '同步到 Readmigo';
+        });
+      });
+
+      // Metadata panel
+      var metaPanel = el('div', { className: 'panel' });
+      var metaHeader = el('div', { className: 'panel-header' });
+      metaHeader.appendChild(el('span', { className: 'panel-title' }, '书籍信息'));
+      var statusBadge = el('span', { className: 'badge ' + statusBadgeClass(book.status) }, book.status || '--');
+      metaHeader.appendChild(statusBadge);
+      metaPanel.appendChild(metaHeader);
+
+      var metaBody = el('div', { className: 'panel-body' });
+      var metaGrid = el('div', { className: 'meta-grid' });
+
+      var fields = [
+        { key: 'title', label: '书名', value: book.title },
+        { key: 'author', label: '作者', value: book.author },
+        { key: 'dynasty', label: '朝代', value: book.dynasty },
+        { key: 'hsk_level', label: 'HSK等级', value: book.hsk_level != null ? String(book.hsk_level) : '' },
+        { key: 'difficulty_score', label: '难度分数', value: book.difficulty_score != null ? String(book.difficulty_score) : '' },
+        { key: 'status', label: '状态', value: book.status }
+      ];
+
+      fields.forEach(function(f) {
+        var fieldWrap = el('div', { className: 'meta-field' });
+        fieldWrap.appendChild(el('div', { className: 'meta-label' }, f.label));
+        fieldWrap.appendChild(makeEditableField(f.key, f.value, function(newVal, cb) {
+          patchBook(f.key, newVal, cb);
+        }));
+        metaGrid.appendChild(fieldWrap);
+      });
+
+      metaBody.appendChild(metaGrid);
+      metaPanel.appendChild(metaBody);
+      main.appendChild(metaPanel);
+
+      // Cover panel
+      var coverPanel = el('div', { className: 'panel' });
+      coverPanel.appendChild(el('div', { className: 'panel-header' },
+        el('span', { className: 'panel-title' }, '封面')));
+      var coverBody = el('div', { className: 'panel-body' });
+      var coverWrap = el('div', { className: 'cover-wrap' });
+
+      if (book.cover_url) {
+        var img = el('img', { src: book.cover_url, className: 'cover-image', alt: '封面' });
+        coverWrap.appendChild(img);
+      } else {
+        coverWrap.appendChild(el('div', { className: 'cover-placeholder' }, '暂无封面'));
+      }
+
+      var coverDetails = el('div', { className: 'cover-details' });
+      if (book.cover_prompt) {
+        coverDetails.appendChild(el('div', { className: 'meta-label' }, 'Cover Prompt'));
+        var promptArea = el('textarea', { className: 'cover-prompt', readonly: 'true' }, book.cover_prompt);
+        var copyBtn = el('button', { className: 'btn btn-secondary btn-sm' }, '复制 Prompt');
+        copyBtn.addEventListener('click', function() {
+          navigator.clipboard.writeText(book.cover_prompt).then(function() {
+            showToast('已复制', 'success');
+          });
+        });
+        coverDetails.appendChild(promptArea);
+        coverDetails.appendChild(copyBtn);
+      } else {
+        coverDetails.appendChild(el('p', { style: { color: 'var(--text-hint)', fontSize: '0.85rem' } }, '暂无封面提示词'));
+      }
+
+      // Upload section
+      var uploadWrap = el('div', { className: 'file-upload-wrap' });
+      var fileInput = el('input', { type: 'file', accept: 'image/*', id: 'cover-file-input' });
+      var uploadLabel = el('label', { 'for': 'cover-file-input', className: 'btn btn-secondary btn-sm' }, '上传封面图片');
+      uploadLabel.style.cursor = 'pointer';
+      var uploadStatus = el('span', { className: 'upload-progress', id: 'upload-status' }, '');
+      uploadWrap.appendChild(fileInput);
+      uploadWrap.appendChild(uploadLabel);
+      uploadWrap.appendChild(uploadStatus);
+      coverDetails.appendChild(uploadWrap);
+
+      fileInput.addEventListener('change', function() {
+        var file = fileInput.files[0];
+        if (!file) return;
+        var status = document.getElementById('upload-status');
+        status.textContent = '上传中...';
+        fetch('/internal/r2/covers/zh-' + bookId + '.jpg', {
+          method: 'PUT',
+          headers: { 'X-Internal-Key': getApiKey(), 'Content-Type': file.type },
+          body: file
+        }).then(function(res) {
+          if (!res.ok) throw new Error('HTTP ' + res.status);
+          status.textContent = '上传成功';
+          showToast('封面上传成功', 'success');
+        }).catch(function(err) {
+          status.textContent = '';
+          showToast('上传失败: ' + err.message, 'error');
+        });
+      });
+
+      coverWrap.appendChild(coverDetails);
+      coverBody.appendChild(coverWrap);
+      coverPanel.appendChild(coverBody);
+      main.appendChild(coverPanel);
+
+      // Chapters panel
+      var chapters = book.chapters || [];
+      var chapPanel = el('div', { className: 'panel' });
+      var chapHeader = el('div', { className: 'panel-header' });
+      chapHeader.appendChild(el('span', { className: 'panel-title' }, '章节列表'));
+      chapHeader.appendChild(el('span', { style: { color: 'var(--text-hint)', fontSize: '0.85rem' } }, chapters.length + ' 章'));
+      chapPanel.appendChild(chapHeader);
+
+      if (chapters.length === 0) {
+        chapPanel.appendChild(el('div', { className: 'empty-state' }, '暂无章节数据'));
+      } else {
+        chapters.forEach(function(ch, idx) {
+          var row = el('div', { className: 'chapter-row' });
+          var chHeader = el('div', { className: 'chapter-header' });
+          var toggle = el('span', { className: 'chapter-toggle' }, '\u25B6');
+          var title = el('span', { className: 'chapter-title' }, ch.title || ('第' + (idx + 1) + '章'));
+          var words = el('span', { className: 'chapter-words' },
+            ch.word_count != null ? ch.word_count.toLocaleString() + ' 字' : '');
+          chHeader.appendChild(toggle);
+          chHeader.appendChild(title);
+          chHeader.appendChild(words);
+          row.appendChild(chHeader);
+
+          var contentDiv = el('div', { className: 'chapter-content' });
+          var contentLoaded = false;
+
+          chHeader.addEventListener('click', function() {
+            var isOpen = contentDiv.classList.contains('open');
+            if (isOpen) {
+              contentDiv.classList.remove('open');
+              toggle.classList.remove('open');
+            } else {
+              contentDiv.classList.add('open');
+              toggle.classList.add('open');
+              if (!contentLoaded) {
+                contentLoaded = true;
+                var contentUrl = ch.contentUrl || ch.content_url;
+                if (contentUrl) {
+                  contentDiv.textContent = '加载中...';
+                  fetch(contentUrl, { headers: apiHeadersNoJson() })
+                    .then(function(res) {
+                      if (!res.ok) throw new Error('HTTP ' + res.status);
+                      return res.text();
+                    }).then(function(text) {
+                      contentDiv.textContent = text;
+                    }).catch(function(err) {
+                      contentDiv.textContent = '加载失败: ' + err.message;
+                    });
+                } else if (ch.content) {
+                  contentDiv.textContent = ch.content;
+                } else {
+                  contentDiv.textContent = '暂无内容';
+                }
+              }
+            }
+          });
+
+          row.appendChild(contentDiv);
+          chapPanel.appendChild(row);
+        });
+      }
+      main.appendChild(chapPanel);
+
+      // Correction history panel
+      var corrections = book.corrections || [];
+      var corrPanel = el('div', { className: 'panel' });
+      corrPanel.appendChild(el('div', { className: 'panel-header' },
+        el('span', { className: 'panel-title' }, '校正历史')));
+
+      if (corrections.length === 0) {
+        corrPanel.appendChild(el('div', { className: 'empty-state' }, '暂无校正记录'));
+      } else {
+        var corrTable = el('table', { className: 'data-table' });
+        var corrHead = el('thead', null, el('tr', null, [
+          el('th', null, '字段'),
+          el('th', null, '原始值'),
+          el('th', null, '修改值'),
+          el('th', null, '时间')
+        ]));
+        corrTable.appendChild(corrHead);
+        var corrBody = el('tbody', null);
+        corrections.forEach(function(c) {
+          corrBody.appendChild(el('tr', null, [
+            el('td', null, c.field || '--'),
+            el('td', null, c.old_value || c.oldValue || '--'),
+            el('td', null, c.new_value || c.newValue || '--'),
+            el('td', null, formatDate(c.created_at || c.createdAt))
+          ]));
+        });
+        corrTable.appendChild(corrBody);
+        corrPanel.appendChild(corrTable);
+      }
+      main.appendChild(corrPanel);
+    }
+
+    // -- Load --
+
+    function loadBook() {
+      if (!bookId) {
+        var main = document.getElementById('main-content');
+        clearNode(main);
+        main.appendChild(el('div', { className: 'empty-state' }, '缺少书籍 ID，请从书库列表进入'));
+        return;
+      }
+
+      apiFetch('/api/zh/books/' + bookId)
+        .then(function(data) {
+          renderPage(data.book || data);
+        })
+        .catch(function(err) {
+          var main = document.getElementById('main-content');
+          clearNode(main);
+          main.appendChild(el('div', { className: 'empty-state' }, '加载失败: ' + err.message));
+        });
+    }
+
+    loadBook();
+  </script>
+
+</body>
+</html>
