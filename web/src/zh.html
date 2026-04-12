@@ -352,6 +352,7 @@
   <div class="toast" id="toast"></div>
 
   <script>
+    var API_BASE = 'https://gutenberg-api.logan676395.workers.dev';
     var PAGE_SIZE = 50;
     var currentOffset = 0;
     var totalCount = 0;
@@ -467,7 +468,7 @@
       clearNode(body);
       body.appendChild(el('div', { className: 'loading' }, el('div', { className: 'spinner' })));
 
-      fetch('/api/zh/books?' + buildQuery(currentOffset), {
+      fetch(API_BASE + '/api/zh/books?' + buildQuery(currentOffset), {
         headers: apiHeaders()
       }).then(function(res) {
         if (!res.ok) throw new Error('HTTP ' + res.status);
@@ -604,7 +605,7 @@
         : '确认批量同步 ' + ids.length + ' 本书到 Readmigo？';
       if (!confirm(confirmMsg)) return;
 
-      fetch('/api/zh/books/batch', {
+      fetch(API_BASE + '/api/zh/books/batch', {
         method: 'POST',
         headers: apiHeaders(),
         body: JSON.stringify({ action: action, ids: ids })

@@ -434,6 +434,7 @@
   <div class="toast" id="toast"></div>
 
   <script>
+    var API_BASE = 'https://gutenberg-api.logan676395.workers.dev';
     var bookId = new URLSearchParams(location.search).get('id');
     var bookData = null;
 
@@ -585,7 +586,7 @@
     function patchBook(field, value, cb) {
       var body = {};
       body[field] = value;
-      fetch('/api/zh/books/' + bookId, {
+      fetch(API_BASE + '/api/zh/books/' + bookId, {
         method: 'PATCH',
         headers: apiHeaders(),
         body: JSON.stringify(body)
@@ -624,7 +625,7 @@
         if (!confirm('确认标记此书为已校正？')) return;
         correctBtn.disabled = true;
         correctBtn.textContent = '处理中...';
-        fetch('/api/zh/books/' + bookId + '/correct', {
+        fetch(API_BASE + '/api/zh/books/' + bookId + '/correct', {
           method: 'POST', headers: apiHeaders()
         }).then(function(res) {
           if (!res.ok) throw new Error('HTTP ' + res.status);
@@ -642,7 +643,7 @@
         if (!confirm('确认同步此书到 Readmigo？')) return;
         syncBtn.disabled = true;
         syncBtn.textContent = '同步中...';
-        fetch('/api/zh/books/' + bookId + '/sync', {
+        fetch(API_BASE + '/api/zh/books/' + bookId + '/sync', {
           method: 'POST', headers: apiHeaders()
         }).then(function(res) {
           if (!res.ok) throw new Error('HTTP ' + res.status);
@@ -734,7 +735,7 @@
         if (!file) return;
         var status = document.getElementById('upload-status');
         status.textContent = '上传中...';
-        fetch('/internal/r2/covers/zh-' + bookId + '.jpg', {
+        fetch(API_BASE + '/internal/r2/covers/zh-' + bookId + '.jpg', {
           method: 'PUT',
           headers: { 'X-Internal-Key': getApiKey(), 'Content-Type': file.type },
           body: file
