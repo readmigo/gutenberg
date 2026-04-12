@@ -1,4 +1,5 @@
-import * as OpenCC from 'opencc-js';
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const OpenCC = require('opencc-js');
 
 const converter = OpenCC.Converter({ from: 'tw', to: 'cn' });
 

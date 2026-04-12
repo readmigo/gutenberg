@@ -43,9 +43,9 @@ process.on('SIGTERM', () => {
 
 interface ZhSource {
   id: number;
-  source_type: string;
-  source_book_id: string;
-  download_url: string;
+  sourceType: string;
+  sourceBookId: string;
+  downloadUrl: string;
   status: string;
   title?: string;
   author?: string;
@@ -109,12 +109,11 @@ async function downloadEpubFromR2(sourceType: string, sourceBookId: string): Pro
     }
   }
 
-  // Fallback: Worker content endpoint
-  const resp = await axios.get(`${BASE_URL}/internal/r2/${key}`, {
+  // Fallback: Worker public content endpoint (/content/*)
+  const resp = await axios.get(`${BASE_URL}/content/${key}`, {
     responseType: 'arraybuffer',
     timeout: 60000,
     maxContentLength: 100 * 1024 * 1024,
-    headers: { 'X-Internal-Key': INTERNAL_KEY },
   });
   return Buffer.from(resp.data);
 }
@@ -179,7 +178,7 @@ function splitLargeChapter(html: string): SplitChapter[] | null {
 // ─── Process a single source book ────────────────────────────────────────────
 
 async function processSource(source: ZhSource, idx: number, total: number): Promise<void> {
-  const label = `[${idx + 1}/${total}] ${source.source_type}/${source.source_book_id}`;
+  const label = `[${idx + 1}/${total}] ${source.sourceType}/${source.sourceBookId}`;
   const titleStr = source.title ? ` "${source.title}"` : '';
   console.log(`\n${label}${titleStr}`);
 
@@ -188,7 +187,7 @@ async function processSource(source: ZhSource, idx: number, total: number): Prom
   try {
     // Step 1: Download EPUB from R2
     console.log(`  [1] Downloading EPUB from R2...`);
-    const epubBuffer = await downloadEpubFromR2(source.source_type, source.source_book_id);
+    const epubBuffer = await downloadEpubFromR2(source.sourceType, source.sourceBookId);
     console.log(`  [1] Downloaded ${(epubBuffer.length / 1024).toFixed(1)} KB`);
 
     // Step 2: Save to temp file and parse
@@ -316,7 +315,7 @@ async function processSource(source: ZhSource, idx: number, total: number): Prom
       status: 'pending',
       chapterCount: chapterEntries.length,
       wordCount: totalCharCount,
-      sourceType: source.source_type,
+      sourceType: source.sourceType,
       originalScript,
       punctuationAdded: punctuationAdded ? 1 : 0,
       zhSourceId: source.id,
