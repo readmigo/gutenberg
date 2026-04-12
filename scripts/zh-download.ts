@@ -44,9 +44,9 @@ function sleep(ms: number): Promise<void> {
 
 interface ZhSource {
   id: string;
-  source_type: string;
-  source_book_id: string;
-  download_url: string;
+  sourceType: string;
+  sourceBookId: string;
+  downloadUrl: string;
   status: string;
   title?: string;
 }
@@ -69,12 +69,12 @@ async function updateSourceStatus(id: string, status: string, error?: string): P
 }
 
 async function downloadAndUpload(source: ZhSource): Promise<void> {
-  const ext = getExtFromUrl(source.download_url);
-  const r2Key = `zh-raw/${source.source_type}/${source.source_book_id}.${ext}`;
+  const ext = getExtFromUrl(source.downloadUrl);
+  const r2Key = `zh-raw/${source.sourceType}/${source.sourceBookId}.${ext}`;
   const contentType = getContentType(ext);
 
   // Download EPUB/txt
-  const downloadResp = await axios.get(source.download_url, {
+  const downloadResp = await axios.get(source.downloadUrl, {
     responseType: 'arraybuffer',
     timeout: 60000,
     maxContentLength: 100 * 1024 * 1024,
@@ -132,10 +132,10 @@ async function main() {
     }
 
     const source = sources[i];
-    const label = `[${i + 1}/${sources.length}] ${source.source_type}/${source.source_book_id}`;
+    const label = `[${i + 1}/${sources.length}] ${source.sourceType}/${source.sourceBookId}`;
     const title = source.title ? ` "${source.title}"` : '';
     console.log(`${label}${title}`);
-    console.log(`  URL: ${source.download_url}`);
+    console.log(`  URL: ${source.downloadUrl}`);
 
     try {
       await downloadAndUpload(source);
