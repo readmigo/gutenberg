@@ -8,6 +8,13 @@
     "sync": "npx ts-node pg-sync-readmigo.ts",
     "report": "npx ts-node pg-quality-report.ts",
     "enrich": "npx ts-node pg-enrich.ts",
+    "zh:discover": "npx ts-node zh-discover.ts",
+    "zh:download": "npx ts-node zh-download.ts",
+    "zh:clean": "npx ts-node zh-clean.ts",
+    "zh:enrich": "npx ts-node zh-enrich.ts",
+    "zh:process": "npx ts-node zh-process.ts",
+    "zh:quality": "npx ts-node zh-quality.ts",
+    "zh:sync": "npx ts-node zh-sync-readmigo.ts",
     "test": "vitest run",
     "test:fixtures": "bash tests/download-fixtures.sh",
     "test:update": "vitest run -u"
@@ -18,6 +25,8 @@
     "cheerio": "^1",
     "dotenv": "^16",
     "epub2": "^3",
+    "jieba-wasm": "^2.4.0",
+    "opencc-js": "^1.0.5",
     "uuid": "^11"
   },
   "devDependencies": {
