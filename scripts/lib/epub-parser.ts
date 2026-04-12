@@ -122,7 +122,6 @@ export async function extractImages(epub: any): Promise<EpubImage[]> {
 // the era but the phrase rarely appears in narrative prose. The other
 // markers catch bibliographic and copyright notices.
 const TITLE_PAGE_MARKERS = [
-  /\bAUTHOR OF\b/,
   /\bBY THE AUTHOR OF\b/,
   /\bPRINTED FOR\b/,
   /\bCOPYRIGHT\s+(?:BY|\d{4})/,
@@ -171,10 +170,15 @@ function dropEdgeFrontMatter(chapters: ParsedChapter[]): ParsedChapter[] {
   const SHORT = 300;
   const EDGE_WINDOW = 3;
   const keywordRe =
-    /\b(chapter|book|part|prologue|epilogue|introduction|preface|foreword|appendix|act|scene|canto|volume)\b/i;
+    /\b(chapter|book|part|prologue|epilogue|introduction|preface|foreword|appendix|act|scene|canto|volume|letter)\b/i;
+  // Roman numerals as standalone titles (I, II, III, IV, V, ..., XL, L) indicate
+  // numbered chapters/letters — not front matter.
+  const romanNumeralRe = /^[IVXLCDM]+$/i;
 
-  const hasNarrativeKeyword = (ch: ParsedChapter): boolean =>
-    keywordRe.test(ch.title || '');
+  const hasNarrativeKeyword = (ch: ParsedChapter): boolean => {
+    const title = (ch.title || '').trim();
+    return keywordRe.test(title) || romanNumeralRe.test(title);
+  };
 
   // Strip from the head as long as the first chapter is short-and-untitled
   // and sits inside the edge window.
