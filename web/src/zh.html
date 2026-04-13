@@ -360,17 +360,8 @@
 
     // ── Auth ──
 
-    function getApiKey() {
-      var key = localStorage.getItem('zh-api-key');
-      if (!key) {
-        key = prompt('Enter API Key (X-Internal-Key):');
-        if (key) localStorage.setItem('zh-api-key', key);
-      }
-      return key || '';
-    }
-
     function apiHeaders() {
-      return { 'X-Internal-Key': getApiKey(), 'Content-Type': 'application/json' };
+      return { 'Content-Type': 'application/json' };
     }
 
     // ── Helpers ──

@@ -7,13 +7,18 @@ import type { Env } from '../index';
 
 export const zhRoutes = new Hono<Env>();
 
-// Apply internalAuth to all routes in this group
-zhRoutes.use('*', internalAuth);
-
 // Global error handler
 zhRoutes.onError((err, c) => {
   console.error('ZH route error:', err.message, err.stack);
   return c.json({ error: err.message }, 500);
+});
+
+// Auth only on write operations (POST/PUT/PATCH/DELETE)
+zhRoutes.use('*', async (c, next) => {
+  if (['GET', 'HEAD', 'OPTIONS'].includes(c.req.method)) {
+    return next();
+  }
+  return internalAuth(c, next);
 });
 
 // POST /sources - Create zh_source record

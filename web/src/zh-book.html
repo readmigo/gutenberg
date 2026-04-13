@@ -440,21 +440,12 @@
 
     // -- Auth --
 
-    function getApiKey() {
-      var key = localStorage.getItem('zh-api-key');
-      if (!key) {
-        key = prompt('Enter API Key (X-Internal-Key):');
-        if (key) localStorage.setItem('zh-api-key', key);
-      }
-      return key || '';
-    }
-
     function apiHeaders() {
-      return { 'X-Internal-Key': getApiKey(), 'Content-Type': 'application/json' };
+      return { 'Content-Type': 'application/json' };
     }
 
     function apiHeadersNoJson() {
-      return { 'X-Internal-Key': getApiKey() };
+      return {};
     }
 
     // -- Helpers --
@@ -737,7 +728,7 @@
         status.textContent = '上传中...';
         fetch(API_BASE + '/internal/r2/covers/zh-' + bookId + '.jpg', {
           method: 'PUT',
-          headers: { 'X-Internal-Key': getApiKey(), 'Content-Type': file.type },
+          headers: { 'Content-Type': file.type },
           body: file
         }).then(function(res) {
           if (!res.ok) throw new Error('HTTP ' + res.status);
