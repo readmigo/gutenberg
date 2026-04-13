@@ -4,41 +4,22 @@ import * as path from 'path';
 import axios from 'axios';
 import { v4 as uuid } from 'uuid';
 import { workerClient } from './worker-client';
-import { uploadEpub, uploadCover, uploadChapter, uploadImage } from './r2-client';
+import { uploadEpub, uploadCover, uploadChapter } from './r2-client';
 import { fetchBookById, getEpubUrl, GutendexBook } from './gutendex-client';
-import { parseEpub, extractMetadata, extractChapters, extractCover, extractImages, ParsedChapter } from './epub-parser';
+import { parseEpub, extractMetadata, extractChapters, extractCover, ParsedChapter } from './epub-parser';
 import { cleanChapterHtml } from './content-cleaner';
-import { typographize } from './typographer';
-import { modernizeSpelling } from './spelling-modernizer';
-import { semanticize } from './semanticizer';
-import { tagForeignPhrases } from './foreign-tagger';
-import { checkBookQuality } from './quality-checker';
-import { analyzeDifficulty } from './difficulty-analyzer';
-import {
-  extractIllustrationCaptions,
-  buildImageMap,
-  rewriteImagePaths,
-  extractBase64Images,
-  replaceBase64Placeholders,
-  getImageFilename,
-} from './image-processor';
+import { detectChapters } from './zh-chapter-detector';
+import { checkZhBookQuality } from './quality-checker-zh';
+import { initJieba, analyzeZhDifficulty } from './zh-difficulty';
 
-// Pipeline version. Bump this whenever the end-to-end processing output
-// changes in a way that makes previously stored records stale (e.g. parser
-// fix, cleaner fix, new quality check that affects scoring). Books in D1
-// whose `pipeline_version` is lower than this constant are candidates for
-// reprocessing via POST /admin/books/reprocess.
+// Pipeline version for the Chinese processing pipeline.
+// Versioned independently from the English pipeline (process-book.ts).
 //
 // History:
-//   0 — pre-versioning; broken multi-chapter-per-file parser
-//   1 — P0 fixes: flow-based fallback, section-wrapped boilerplate removal,
-//       duplication/word-ceiling quality checks
-//   2 — B1.2: anchor-based chapter splitting, word-boundary skip filter
-//   3 — P3.2: chapter titles extracted from in-body headings instead of
-//       TOC labels (removes illustration-caption pollution)
-export const PIPELINE_VERSION = 3;
+//   1 — initial Chinese pipeline: jieba-based difficulty, HSK levels, zh-chapter-detector fallback
+export const PIPELINE_VERSION = 1;
 
-// Strip HTML for word count (after cleaning)
+// Strip HTML tags for text extraction
 function stripHtml(html: string): string {
   return html
     .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '')
@@ -48,17 +29,10 @@ function stripHtml(html: string): string {
     .trim();
 }
 
-function countWords(text: string): number {
-  return text.split(/\s+/).filter((w) => w.length > 0).length;
-}
-
-export interface JobData {
-  id: string;
-  gutenbergId: number;
-  status: string;
-  priority: number;
-  attempts: number;
-  errorMessage?: string;
+// Count CJK characters (Chinese/Japanese/Korean unified ideographs)
+function countChineseChars(text: string): number {
+  const matches = text.match(/[\u4e00-\u9fff\u3400-\u4dbf]/g);
+  return matches ? matches.length : 0;
 }
 
 export interface ProcessResult {
@@ -85,21 +59,7 @@ async function updateJobSafe(jobId: string | undefined, data: Record<string, unk
   }
 }
 
-export async function processBook(gutenbergId: number, jobId?: string, jobAttempts?: number): Promise<ProcessResult> {
-  // Language detection: check Gutendex metadata first. If Chinese, delegate
-  // to the dedicated Chinese pipeline (process-book-zh.ts) which is fully
-  // decoupled from the English processing logic.
-  try {
-    const gutBookCheck: GutendexBook | null = await fetchBookById(gutenbergId);
-    if (gutBookCheck && gutBookCheck.languages.includes('zh')) {
-      console.log(`  Detected Chinese book — delegating to Chinese pipeline`);
-      const { processChineseBook } = require('./process-book-zh');
-      return processChineseBook(gutenbergId, jobId, jobAttempts);
-    }
-  } catch {
-    // If language check fails, fall through to English pipeline
-  }
-
+export async function processChineseBook(gutenbergId: number, jobId?: string, jobAttempts?: number): Promise<ProcessResult> {
   let tempFile = '';
 
   try {
@@ -124,11 +84,6 @@ export async function processBook(gutenbergId: number, jobId?: string, jobAttemp
     // Step 2: Download EPUB with mirror fallback.
     // Primary: aleph.pglaf.org (no rate limit, no overload)
     // Fallback: www.gutenberg.org (the Gutendex-reported URL)
-    //
-    // The droplet's connection to www.gutenberg.org is intermittently
-    // ETIMEDOUT during batch processing, while the pglaf mirror has been
-    // consistently reachable for hundreds of downloads during calibration.
-    // Always try pglaf first, then fall through to the original URL.
     console.log(`  [2/9] Downloading EPUB...`);
     let epubBuffer!: Buffer;
     const pglafUrl = `https://aleph.pglaf.org/cache/epub/${gutenbergId}/pg${gutenbergId}-images.epub`;
@@ -159,7 +114,7 @@ export async function processBook(gutenbergId: number, jobId?: string, jobAttemp
       throw new Error(`EPUB download failed after 3 attempts on both pglaf and gutenberg.org`);
     }
 
-    tempFile = path.join(os.tmpdir(), `pg-${gutenbergId}-${Date.now()}.epub`);
+    tempFile = path.join(os.tmpdir(), `pg-zh-${gutenbergId}-${Date.now()}.epub`);
     fs.writeFileSync(tempFile, epubBuffer);
     console.log(`  Downloaded ${(epubBuffer.length / 1024).toFixed(1)} KB -> ${tempFile}`);
 
@@ -175,55 +130,75 @@ export async function processBook(gutenbergId: number, jobId?: string, jobAttemp
     console.log(`  Metadata: ${metadata.title} by ${metadata.author}`);
     console.log(`  Raw chapters: ${rawChapters.length}, Cover: ${coverData ? 'yes' : 'no'}`);
 
-    // Step 3b: Extract inline images from EPUB
-    const epubImages = await extractImages(epub);
-    console.log(`  Inline images: ${epubImages.length}`);
-
-    // Step 4: Clean chapters
+    // Step 4: Clean chapters (Chinese pipeline: only cleanChapterHtml, no typographize/modernizeSpelling/semanticize/tagForeignPhrases)
     console.log(`  [4/9] Cleaning chapter content...`);
     await updateJobSafe(jobId, { status: 'cleaning' });
 
-    const cleanedChapters: Array<ParsedChapter & { cleanedHtml: string; cleanedWordCount: number }> = [];
+    const cleanedChapters: Array<ParsedChapter & { cleanedHtml: string; cleanedCharCount: number }> = [];
     for (const ch of rawChapters) {
-      // Extract illustration captions BEFORE cleaning removes [Illustration:] markers
-      const captions = extractIllustrationCaptions(ch.htmlContent);
-
-      // Extract base64 images before cleaning
-      const { cleanedHtml: noBase64Html, images: base64Images } = extractBase64Images(ch.htmlContent);
-
-      const cleaned = cleanChapterHtml(noBase64Html);
-      const typographized = typographize(cleaned);
-      const spellingFixed = modernizeSpelling(typographized);
-      const semanticized = semanticize(spellingFixed);
-      let finalHtml = tagForeignPhrases(semanticized);
-
-      // Store base64 images and captions for later processing (after R2 upload)
-      (ch as any)._captions = captions;
-      (ch as any)._base64Images = base64Images;
-
-      const cleanedWordCount = countWords(stripHtml(finalHtml));
-      cleanedChapters.push({ ...ch, cleanedHtml: finalHtml, cleanedWordCount });
+      const cleaned = cleanChapterHtml(ch.htmlContent);
+      const plainText = stripHtml(cleaned);
+      const cleanedCharCount = countChineseChars(plainText);
+      cleanedChapters.push({ ...ch, cleanedHtml: cleaned, cleanedCharCount });
     }
 
-    // Step 5: Calculate totals and quality check
-    console.log(`  [5/9] Running quality check...`);
-    const totalWordCount = cleanedChapters.reduce((sum, ch) => sum + ch.cleanedWordCount, 0);
+    // Step 5: Chinese chapter splitting fallback
+    // If the EPUB TOC produced ≤ 2 chapters, attempt to detect chapters from body text
+    console.log(`  [5/9] Checking chapter structure...`);
+    let finalChapters = cleanedChapters;
 
-    const quality = checkBookQuality(
+    if (cleanedChapters.length <= 2) {
+      console.log(`  Only ${cleanedChapters.length} chapter(s) detected from EPUB TOC — attempting zh-chapter-detector fallback...`);
+      try {
+        // Combine all cleaned HTML into a single body for detection
+        const combinedHtml = cleanedChapters.map(ch => ch.cleanedHtml).join('\n');
+        const detectedChapters = detectChapters(combinedHtml);
+        if (detectedChapters.length > cleanedChapters.length) {
+          console.log(`  zh-chapter-detector found ${detectedChapters.length} chapters (was ${cleanedChapters.length})`);
+          finalChapters = detectedChapters.map((det, i) => {
+            const start = det.index;
+            const end = i + 1 < detectedChapters.length ? detectedChapters[i + 1].index : combinedHtml.length;
+            const chunkHtml = combinedHtml.slice(start, end);
+            const plainText = stripHtml(chunkHtml);
+            const cleanedCharCount = countChineseChars(plainText);
+            return {
+              order: i + 1,
+              title: det.title,
+              href: '',
+              htmlContent: chunkHtml,
+              wordCount: 0,
+              cleanedHtml: chunkHtml,
+              cleanedCharCount,
+            } as any;
+          });
+        } else {
+          console.log(`  zh-chapter-detector did not improve chapter count, keeping original`);
+        }
+      } catch (detErr) {
+        console.error(`  [warn] zh-chapter-detector failed, keeping original chapters:`, detErr instanceof Error ? detErr.message : detErr);
+      }
+    }
+
+    // Filter out near-empty chapters (< 20 CJK chars)
+    const usableChapters = finalChapters.filter(ch => ch.cleanedCharCount >= 20);
+    if (usableChapters.length < finalChapters.length) {
+      console.log(`  Filtered ${finalChapters.length - usableChapters.length} near-empty chapter(s) (< 20 CJK chars)`);
+    }
+
+    // Step 6: Quality check
+    console.log(`  [6/9] Running quality check...`);
+    const totalCharCount = usableChapters.reduce((sum, ch) => sum + ch.cleanedCharCount, 0);
+
+    const quality = checkZhBookQuality(
       {
         title: metadata.title,
-        chapterCount: cleanedChapters.length,
-        wordCount: totalWordCount,
+        chapterCount: usableChapters.length,
+        wordCount: totalCharCount,
         hasCover: !!coverData,
-        // Pass Gutendex subjects and the EPUB description so quality-checker
-        // can apply the Readmigo curation rules as a second-line filter
-        // (poetry / drama / multi-translator / preface-dominant).
-        subjects: gutBook.subjects,
-        description: metadata.description,
       },
-      cleanedChapters.map(ch => ({
+      usableChapters.map(ch => ({
         title: ch.title,
-        wordCount: ch.cleanedWordCount,
+        wordCount: ch.cleanedCharCount,
         htmlContent: ch.cleanedHtml,
       })),
     );
@@ -233,20 +208,24 @@ export async function processBook(gutenbergId: number, jobId?: string, jobAttemp
       console.log(`  Issues: ${quality.issues.join('; ')}`);
     }
 
-    // Step 6: Difficulty analysis
-    console.log(`  [6/9] Analyzing difficulty...`);
-    const difficulty = analyzeDifficulty(
-      cleanedChapters.map(ch => ch.cleanedHtml),
-      totalWordCount,
-    );
-    console.log(`  Flesch: ${difficulty.fleschScore}, CEFR: ${difficulty.cefrLevel}, Difficulty: ${difficulty.difficultyScore}, Reading: ${difficulty.estimatedReadingMinutes}min`);
+    // Step 7: Difficulty analysis (Chinese: HSK levels via jieba)
+    console.log(`  [7/9] Analyzing difficulty...`);
+    await initJieba();
+    const sampleText = stripHtml(usableChapters.slice(0, 3).map(ch => ch.cleanedHtml).join(' ')).slice(0, 5000);
+    const difficulty = analyzeZhDifficulty(sampleText);
+    // Map to ProcessResult fields:
+    //   fleschScore = 0 (not applicable for Chinese)
+    //   cefrLevel   = HSK${level} (e.g. "HSK3")
+    //   estimatedReadingMinutes = totalChars / 500
+    const estimatedReadingMinutes = Math.round(totalCharCount / 500);
+    console.log(`  HSK: ${difficulty.hskLevel}, Difficulty: ${difficulty.difficultyScore}, Reading: ${estimatedReadingMinutes}min`);
 
-    // Step 7: Upload to R2
-    console.log(`  [7/9] Uploading to R2...`);
+    // Step 8: Upload to R2
+    console.log(`  [8/9] Uploading to R2...`);
     await updateJobSafe(jobId, { status: 'uploading' });
 
-    const epubUrl2 = await uploadEpub(gutenbergId, Buffer.from(epubBuffer));
-    console.log(`  Uploaded EPUB: ${epubUrl2}`);
+    const uploadedEpubUrl = await uploadEpub(gutenbergId, Buffer.from(epubBuffer));
+    console.log(`  Uploaded EPUB: ${uploadedEpubUrl}`);
 
     let coverUrl: string | null = null;
     let coverSource: string | null = null;
@@ -278,44 +257,9 @@ export async function processBook(gutenbergId: number, jobId?: string, jobAttemp
       }
     }
 
-    // Upload inline images and build path mapping
-    const imageMapEntries: Array<{ href: string; r2Url: string }> = [];
-    for (const img of epubImages) {
-      const filename = getImageFilename(img.href);
-      const r2Url = await uploadImage(gutenbergId, filename, img.data, img.mimeType);
-      imageMapEntries.push({ href: img.href, r2Url });
-    }
-    const imageMap = buildImageMap(imageMapEntries);
-    if (epubImages.length > 0) {
-      console.log(`  Uploaded ${epubImages.length} inline images`);
-    }
-
-    // Rewrite image paths in chapter HTML and handle base64 images
-    for (const ch of cleanedChapters) {
-      const captions: string[] = (ch as any)._captions || [];
-      const base64Images: Array<{ index: number; data: Buffer; mimeType: string; filename: string }> = (ch as any)._base64Images || [];
-
-      // Upload base64 images and build placeholder→URL map
-      const base64UrlMap = new Map<number, string>();
-      for (const b64 of base64Images) {
-        const r2Url = await uploadImage(gutenbergId, b64.filename, b64.data, b64.mimeType);
-        base64UrlMap.set(b64.index, r2Url);
-      }
-
-      // Replace base64 placeholders
-      if (base64UrlMap.size > 0) {
-        ch.cleanedHtml = replaceBase64Placeholders(ch.cleanedHtml, base64UrlMap);
-      }
-
-      // Rewrite epub2-style image paths to R2 URLs and apply captions
-      if (imageMap.size > 0 || captions.length > 0) {
-        ch.cleanedHtml = rewriteImagePaths(ch.cleanedHtml, imageMap, captions);
-      }
-    }
-
     // Upload chapters with generated UUIDs
     const chapterEntries: Array<{ id: string; orderNum: number; title: string; contentUrl: string; wordCount: number; qualityOk: number }> = [];
-    for (const ch of cleanedChapters) {
+    for (const ch of usableChapters) {
       const chapterId = uuid();
       const contentUrl = await uploadChapter(gutenbergId, chapterId, ch.cleanedHtml);
       chapterEntries.push({
@@ -323,14 +267,14 @@ export async function processBook(gutenbergId: number, jobId?: string, jobAttemp
         orderNum: ch.order,
         title: ch.title,
         contentUrl,
-        wordCount: ch.cleanedWordCount,
-        qualityOk: ch.cleanedWordCount >= 50 ? 1 : 0,
+        wordCount: ch.cleanedCharCount,  // stored as wordCount in schema; for Chinese this is CJK char count
+        qualityOk: ch.cleanedCharCount >= 20 ? 1 : 0,
       });
     }
     console.log(`  Uploaded ${chapterEntries.length} chapters`);
 
-    // Step 8: Write to D1 via Worker API
-    console.log(`  [8/9] Creating book record...`);
+    // Step 9: Write to D1 via Worker API
+    console.log(`  [9/9] Creating book record...`);
     const author = gutBook.authors.map(a => a.name).join(', ') || metadata.author;
     const sourceUrl = `https://www.gutenberg.org/ebooks/${gutenbergId}`;
 
@@ -349,21 +293,22 @@ export async function processBook(gutenbergId: number, jobId?: string, jobAttemp
       gutenbergId: gutenbergId,
       title: metadata.title,
       author,
-      language: metadata.language,
+      language: 'zh',
       subjects: JSON.stringify(gutBook.subjects),
       description: metadata.description || null,
       coverUrl: coverUrl,
-      epubUrl: epubUrl2,
+      epubUrl: uploadedEpubUrl,
       sourceUrl: sourceUrl,
+      sourceType: 'gutenberg_zh',
       status: bookStatus,
       qualityScore: quality.score,
       qualityIssues: JSON.stringify(quality.issues),
       chapterCount: chapterEntries.length,
-      wordCount: totalWordCount,
-      fleschScore: difficulty.fleschScore,
-      cefrLevel: difficulty.cefrLevel,
+      wordCount: totalCharCount,
+      fleschScore: 0,
+      cefrLevel: `HSK${difficulty.hskLevel}`,
       difficultyScore: difficulty.difficultyScore,
-      estimatedReadingMinutes: difficulty.estimatedReadingMinutes,
+      estimatedReadingMinutes,
       coverSource: coverSource,
       pipelineVersion: PIPELINE_VERSION,
     });
@@ -373,11 +318,6 @@ export async function processBook(gutenbergId: number, jobId?: string, jobAttemp
     console.log(`  Book record saved: id=${bookId}, inserting ${chapterEntries.length} chapters...`);
 
     // Skip the chapter insert when the parser produced zero usable chapters.
-    // The worker's createChapters route rejects empty arrays with 400, which
-    // otherwise surfaces as a pipeline failure even though the book is just
-    // an extraction edge case that should be marked rejected. The book
-    // record itself is already persisted above with chapterCount=0 and the
-    // quality-checker has pushed the score below the rejected threshold.
     if (chapterEntries.length > 0) {
       await workerClient.createChapters(
         bookId,
@@ -394,7 +334,7 @@ export async function processBook(gutenbergId: number, jobId?: string, jobAttemp
       console.log(`  [warn] 0 chapters extracted - skipping chapter insert, book marked ${bookStatus}`);
     }
 
-    // Step 9: Mark job done
+    // Done
     console.log(`  [9/9] Done!`);
     await updateJobSafe(jobId, { status: 'done' });
 
@@ -403,14 +343,14 @@ export async function processBook(gutenbergId: number, jobId?: string, jobAttemp
       gutenbergId,
       title: metadata.title,
       chapterCount: chapterEntries.length,
-      wordCount: totalWordCount,
+      wordCount: totalCharCount,
       qualityScore: quality.score,
       qualityPass: quality.pass,
       qualityTier: quality.tier,
-      fleschScore: difficulty.fleschScore,
-      cefrLevel: difficulty.cefrLevel,
+      fleschScore: 0,
+      cefrLevel: `HSK${difficulty.hskLevel}`,
       difficultyScore: difficulty.difficultyScore,
-      estimatedReadingMinutes: difficulty.estimatedReadingMinutes,
+      estimatedReadingMinutes,
     };
   } catch (err: any) {
     // Update job to failed
