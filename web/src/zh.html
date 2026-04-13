@@ -465,8 +465,9 @@
         if (!res.ok) throw new Error('HTTP ' + res.status);
         return res.json();
       }).then(function(data) {
-        totalCount = data.total || 0;
-        renderBooks(data.data || data.books || []);
+        var books = Array.isArray(data) ? data : (data.data || data.books || []);
+        totalCount = Array.isArray(data) ? books.length : (data.total || 0);
+        renderBooks(books);
         updatePagination();
       }).catch(function(err) {
         clearNode(body);
