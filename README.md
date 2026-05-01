@@ -1,245 +1,113 @@
-# Gutenberg Platform
+# Gutenberg — 古登堡公版书内容平台
 
-Content acquisition and processing platform for public domain books from [Project Gutenberg](https://www.gutenberg.org/). Serves as the book content pipeline for [Readmigo](https://readmigo.com) — covering discovery, EPUB parsing, quality control, and API syndication.
+Readmigo 的独立微服务，负责从 Project Gutenberg 采集、处理、管理公版图书。提供书籍目录 API、管理后台、Web 前端，为 Readmigo 应用供应超过 10 万册免费电子书内容。
 
-## Architecture
+## 角色定位
 
-```mermaid
-graph TB
-    subgraph "GitHub Actions"
-        GA_CI["CI → Deploy Worker + Pages"]
-        GA_DISCOVER["Cron: Daily Discover (02:00 UTC)"]
-        GA_PROCESS["Cron: Daily Process (03:00 UTC)"]
-    end
+Gutenberg 平台是 Readmigo 内容供应链的核心。它独立部署在 Cloudflare 基础设施上，通过 REST API 向 Readmigo 应用同步审核通过的书籍。与其他子项目形成单向依赖：其他项目调用其 API，但不被其他项目依赖。
 
-    subgraph "Cloudflare"
-        W["Worker API<br/>(Hono + Drizzle)"]
-        D1["D1 Database"]
-        R2["R2 Storage"]
-        Pages["Pages<br/>(Admin + Catalog)"]
-    end
+## 技术栈
 
-    subgraph "Droplet (PM2)"
-        DISC["pg-discover"]
-        BATCH["pg-batch → pg-process"]
-        SYNC["pg-sync-readmigo"]
-    end
+- **Worker API**: Cloudflare Worker + Hono + Drizzle ORM
+- **数据库**: Cloudflare D1（SQLite）
+- **存储**: Cloudflare R2（EPUB、封面、章节 HTML）
+- **前端**: Cloudflare Pages（静态 HTML）
+- **脚本**: Node.js + PM2（Droplet 上运行）
+- **包管理**: pnpm
+- **CI/CD**: GitHub Actions
 
-    subgraph "External"
-        GX["Gutendex API"]
-        RM["Readmigo API"]
-    end
-
-    GA_CI --> W & Pages
-    GA_DISCOVER -->|SSH| DISC
-    GA_PROCESS -->|SSH| BATCH
-
-    DISC -->|Search new books| GX
-    DISC -->|Create jobs| W
-
-    BATCH -->|Download EPUB| GX
-    BATCH -->|Upload content| R2
-    BATCH -->|Update records| W
-
-    SYNC -->|Import approved books| RM
-
-    W --> D1 & R2
-    Pages -->|Fetch| W
-```
-
-## Tech Stack
-
-| Component | Technology | Role |
-|-----------|-----------|------|
-| API | Cloudflare Worker + Hono | REST API, Cron triggers |
-| Database | Cloudflare D1 + Drizzle ORM | Book metadata, chapters, jobs |
-| Storage | Cloudflare R2 | EPUB files, covers, chapter HTML |
-| Frontend | Cloudflare Pages | Admin dashboard + public catalog |
-| Processing | Node.js + PM2 on Droplet | EPUB download, parse, clean |
-| CI/CD | GitHub Actions | Auto-deploy + scheduled tasks |
-
-## Project Structure
-
-```
-gutenberg/
-├── worker/              # Cloudflare Worker API
-│   └── src/
-│       ├── index.ts           # App entry (Hono + Cron + Queue)
-│       ├── routes/
-│       │   ├── public.ts      # /books, /authors, /stats, /content/*
-│       │   ├── admin.ts       # /admin/* (token-protected)
-│       │   └── internal.ts    # /internal/* (key-protected)
-│       ├── db/schema.ts       # Drizzle schema
-│       ├── middleware/auth.ts  # Auth middleware
-│       └── services/discover.ts
-├── scripts/             # Droplet processing scripts
-│   ├── pg-discover.ts         # Find new books from Gutendex
-│   ├── pg-batch.ts            # Batch process queued jobs
-│   ├── pg-process.ts          # Single book: download → parse → upload
-│   ├── pg-quality-report.ts   # Quality audit report
-│   ├── pg-sync-readmigo.ts    # Sync approved books to Readmigo
-│   └── lib/
-│       ├── epub-parser.ts     # EPUB → chapters extraction
-│       ├── content-cleaner.ts # HTML cleaning & normalization
-│       ├── quality-checker.ts # Quality scoring (0-100)
-│       ├── gutendex-client.ts # Gutendex API client
-│       ├── worker-client.ts   # Worker API client
-│       ├── r2-client.ts       # R2 upload via Worker
-│       └── process-book.ts    # End-to-end book processing
-├── web/                 # Cloudflare Pages frontend
-│   └── src/
-│       ├── index.html         # Public book catalog
-│       ├── book.html          # Book detail + chapter list
-│       ├── chapter.html       # Chapter reader
-│       └── admin.html         # Admin dashboard
-└── .github/workflows/
-    ├── ci.yml                 # Lint + type check
-    ├── deploy-worker.yml      # Auto-deploy Worker on push
-    ├── deploy-web.yml         # Auto-deploy Pages on push
-    ├── daily-discover.yml     # Cron: discover new books
-    ├── daily-process.yml      # Cron: process queued books
-    └── manual-trigger.yml     # Manual workflow dispatch
-```
-
-## API Endpoints
-
-### Public (no auth)
-
-| Method | Path | Description |
-|--------|------|-------------|
-| GET | `/books` | Paginated book list (query: `page`, `limit`, `search`, `language`, `status`) |
-| GET | `/books/:id` | Book detail with author info |
-| GET | `/books/:id/chapters` | Chapter list for a book |
-| GET | `/books/:id/chapters/:cid` | Single chapter content |
-| GET | `/authors` | Paginated author list (query: `search`) |
-| GET | `/authors/:id` | Author detail with books |
-| GET | `/stats` | Aggregate counts (total, by status, by language) |
-| GET | `/content/*` | Serve R2-stored content (covers, chapter HTML) |
-
-### Admin (Bearer token)
-
-| Method | Path | Description |
-|--------|------|-------------|
-| POST | `/admin/discover` | Trigger book discovery |
-| POST | `/admin/process/:gutenbergId` | Trigger single book processing |
-| GET | `/admin/jobs` | Job queue list (query: `status`, `page`, `limit`) |
-| GET | `/admin/jobs/:id` | Job detail |
-| POST | `/admin/books/:id/approve` | Approve a book for Readmigo |
-| POST | `/admin/books/:id/reject` | Reject a book (requires `notes`) |
-| POST | `/admin/books/:id/sync` | Sync approved book to Readmigo |
-
-### Internal (API key)
-
-| Method | Path | Description |
-|--------|------|-------------|
-| POST | `/internal/books` | Create book record |
-| PUT | `/internal/books/:id` | Update book fields |
-| POST | `/internal/books/:id/chapters` | Batch create chapters |
-| GET | `/internal/books/exists` | Check existing books by Gutenberg IDs |
-| POST | `/internal/jobs` | Create processing job |
-| GET | `/internal/jobs` | Pull queued jobs |
-| PUT | `/internal/jobs/:id` | Update job status |
-| PUT | `/internal/r2/*` | Upload file to R2 |
-
-## Processing Pipeline
+## 架构
 
 ```mermaid
-flowchart LR
-    A[Gutendex API] -->|pg-discover| B[Job Queue<br/>in D1]
-    B -->|pg-batch| C[Download EPUB]
-    C --> D[Parse Chapters]
-    D --> E[Clean HTML]
-    E --> F[Quality Check<br/>Score 0-100]
-    F --> G[Upload to R2]
-    G --> H[Book: ready]
-    H -->|Admin approve| I[Book: approved]
-    I -->|pg-sync-readmigo| J[Readmigo API]
+graph LR
+    A["GitHub Actions<br/>CI + 定时任务"] -->|部署| B["Cloudflare Worker<br/>Hono API"]
+    A -->|SSH| C["Droplet<br/>PM2 脚本"]
+    D["Gutendex API"] -->|爬虫| C
+    C -->|调用| B
+    C -->|上传| E["Cloudflare R2<br/>存储"]
+    B -->|查询| F["Cloudflare D1<br/>数据库"]
+    B -->|读取| E
+    G["Cloudflare Pages<br/>前端"] -->|调用| B
+    H["Readmigo API"] -->|调用| B
 ```
 
-## GitHub Actions
+## 目录结构
 
-| Workflow | Trigger | What it does |
-|----------|---------|-------------|
-| **CI** | Push / PR | Lint + type check |
-| **Deploy Worker** | CI passes on `main` | `wrangler deploy` |
-| **Deploy Web** | Push to `main` | Deploy Pages |
-| **Daily Discover** | Cron 02:00 UTC | SSH → `pg-discover.ts` (50 books, min 100 downloads) |
-| **Daily Process** | Cron 03:00 UTC | SSH → `pg-batch.ts` (default 10 books) |
-| **Manual Trigger** | Manual dispatch | Ad-hoc script execution |
+- `worker/` — Cloudflare Worker（Hono REST API + Drizzle 数据库）
+  - `src/index.ts` — 应用入口（路由、Cron、队列）
+  - `src/routes/` — 路由处理（public、admin、internal）
+  - `src/db/schema.ts` — 数据库模式（Drizzle）
+  - `src/services/` — 业务逻辑
+  - `src/middleware/auth.ts` — 认证中间件
+- `scripts/` — Droplet 长运行脚本（Node.js）
+  - `pg-discover.ts` — 从 Gutendex 发现新书
+  - `pg-batch.ts` — 批量处理队列中的任务
+  - `pg-process.ts` — 单本处理：下载 → 解析 → 上传
+  - `pg-quality-report.ts` — 质量审计报告
+  - `pg-sync-readmigo.ts` — 同步已审核图书到 Readmigo
+  - `lib/` — 共享库（EPUB 解析、清理、质检等）
+- `web/` — Cloudflare Pages 前端（静态 HTML）
+  - `src/index.html` — 公开书籍目录
+  - `src/book.html` — 书籍详情 + 章节列表
+  - `src/chapter.html` — 章节阅读器
+  - `src/admin.html` — 管理后台
+- `.github/workflows/` — CI/CD 工作流
 
-## Database Schema
+## 本地开发
 
-```mermaid
-erDiagram
-    books ||--o{ chapters : has
-    books ||--o{ book_authors : has
-    authors ||--o{ book_authors : has
-    books ||--o{ process_jobs : tracks
-    books ||--o{ quality_reviews : reviewed
-
-    books {
-        text id PK
-        int gutenberg_id UK
-        text title
-        text author
-        text language
-        int word_count
-        int chapter_count
-        text status "pending/ready/approved/rejected"
-        real quality_score "0-100"
-    }
-
-    chapters {
-        text id PK
-        text book_id FK
-        int order_num
-        text title
-        text content_url
-        int word_count
-    }
-
-    authors {
-        text id PK
-        text name UK
-        int birth_year
-        int death_year
-    }
-
-    process_jobs {
-        text id PK
-        int gutenberg_id
-        text status "queued/done/failed"
-        int priority
-        int attempts
-    }
-```
-
-## Development
-
-### Prerequisites
+### 环境要求
 
 - Node.js 20+
 - pnpm 9+
-- Cloudflare account (Wrangler CLI)
+- Cloudflare 账户（Wrangler CLI）
 
-### Local Development
+### 安装与运行
 
 ```bash
+# 安装依赖
 pnpm install
 
-# Start Worker locally
+# 启动 Worker 本地环境
 pnpm dev:worker
 
-# Database migrations
-pnpm db:generate
-pnpm db:migrate:local   # local D1
-pnpm db:migrate:remote  # production D1
+# 访问 http://localhost:8787
+
+# 数据库操作
+pnpm db:generate      # 生成 Drizzle 类型
+pnpm db:migrate:local  # 本地 D1 迁移
+pnpm db:migrate:remote # 生产 D1 迁移（谨慎！）
 ```
 
-### Deployment
+## 部署
 
-Push to `main` triggers automatic deployment via GitHub Actions. No manual deployment needed.
+| 组件 | 平台 | 触发 | 命令 |
+|------|------|------|------|
+| Worker API | Cloudflare | push to main | `wrangler deploy` |
+| Pages 前端 | Cloudflare | push to main | 自动部署 |
+| Droplet 脚本 | PM2 | GitHub Actions SSH | `pg-discover.ts` 等 |
 
-## Content Source
+GitHub Actions 工作流在 `main` 分支检测到更新后，自动运行 CI（lint、type check）、部署 Worker 和 Pages。Cron 任务分别在 UTC 02:00（发现新书）和 03:00（处理任务）触发。
 
-All book content is sourced from [Project Gutenberg](https://www.gutenberg.org/) and is in the **public domain**. Metadata is retrieved via the [Gutendex API](https://gutendex.com/).
+## 环境变量
+
+REQUIRED（.env）：
+
+- `CLOUDFLARE_API_TOKEN` — Wrangler 认证
+- `CLOUDFLARE_ACCOUNT_ID` — Cloudflare 账户 ID
+- `CLOUDFLARE_DATABASE_ID` — D1 数据库 ID
+- `CLOUDFLARE_R2_BUCKET` — R2 bucket 名称
+- `GUTENDEX_API_URL` — Gutendex API 地址（http://gutendex.com）
+- `READMIGO_API_URL` — Readmigo 后端 URL
+- `READMIGO_API_KEY` — Readmigo API 认证密钥
+
+## 相关 Repo
+
+- **api** — Readmigo 后端（调用 Gutenberg API）
+- **web** — Web 应用（展示来自 Gutenberg 的图书）
+- **ios** — iOS 应用（展示来自 Gutenberg 的图书）
+- **android** — Android 应用（展示来自 Gutenberg 的图书）
+
+## 文档
+
+- 📚 在线文档: https://docs.readmigo.app
+- 📋 架构设计: https://docs.readmigo.app/plans/2026-02-17-gutenberg-platform-design
