@@ -20,26 +20,33 @@ jobs:
   discover:
     name: Discover New Books
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     env:
       DISCOVER_LIMIT: ${{ github.event.inputs.discover_limit || '200' }}
       MIN_DOWNLOADS: ${{ github.event.inputs.min_downloads || '10' }}
       EXCLUDE_SE: ${{ github.event.inputs.exclude_se || 'false' }}
     steps:
-      - name: Trigger discover on Droplet
+      - name: Trigger discover on Droplet (fire-and-forget)
         uses: appleboy/ssh-action@v1
         with:
           host: ${{ secrets.DROPLET_HOST }}
           username: readmigo
           key: ${{ secrets.DROPLET_SSH_KEY }}
           envs: DISCOVER_LIMIT,MIN_DOWNLOADS,EXCLUDE_SE
+          command_timeout: 30s
           script: |
             set -euo pipefail
-            cd /home/readmigo/projects/gutenberg && git checkout -- . && git pull --ff-only
-            cd scripts && pnpm install --no-frozen-lockfile 2>/dev/null || true
+            LOGFILE=/tmp/pg-discover-$(date -u +%Y%m%d-%H%M%S).log
             EXTRA_FLAGS=""
             if [ "$EXCLUDE_SE" = "true" ]; then EXTRA_FLAGS="--exclude-se"; fi
-            npx ts-node pg-discover.ts \
-              --discover-limit="$DISCOVER_LIMIT" \
-              --min-downloads="$MIN_DOWNLOADS" \
-              $EXTRA_FLAGS \
-              2>&1 | tee -a /tmp/pg-discover-$(date +%Y%m%d).log
+            nohup bash -lc "
+              cd /home/readmigo/projects/gutenberg && \
+              git checkout -- . && git pull --ff-only && \
+              cd scripts && pnpm install --no-frozen-lockfile 2>/dev/null || true && \
+              npx ts-node pg-discover.ts \
+                --discover-limit='$DISCOVER_LIMIT' \
+                --min-downloads='$MIN_DOWNLOADS' \
+                $EXTRA_FLAGS 2>&1
+            " >> "$LOGFILE" 2>&1 < /dev/null &
+            disown
+            echo "Started in background. PID=$!  Log: $LOGFILE"

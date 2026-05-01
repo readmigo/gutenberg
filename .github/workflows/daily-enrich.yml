@@ -12,16 +12,26 @@ jobs:
   enrich:
     name: AI Enrich Books
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    timeout-minutes: 5
+    env:
+      ENRICH_LIMIT: ${{ github.event.inputs.limit || '50' }}
     steps:
-      - name: Trigger AI enrichment on Droplet
+      - name: Trigger AI enrichment on Droplet (fire-and-forget)
         uses: appleboy/ssh-action@v1
         with:
           host: ${{ secrets.DROPLET_HOST }}
           username: readmigo
           key: ${{ secrets.DROPLET_SSH_KEY }}
-          command_timeout: 55m
+          envs: ENRICH_LIMIT
+          command_timeout: 30s
           script: |
-            cd /home/readmigo/projects/gutenberg && git checkout -- . && git pull --ff-only
-            cd scripts && pnpm install --no-frozen-lockfile 2>/dev/null || true
-            npx ts-node pg-enrich.ts --limit=${{ github.event.inputs.limit || '50' }} 2>&1 | tee -a /tmp/pg-enrich-$(date +%Y%m%d).log
+            set -euo pipefail
+            LOGFILE=/tmp/pg-enrich-$(date -u +%Y%m%d-%H%M%S).log
+            nohup bash -lc "
+              cd /home/readmigo/projects/gutenberg && \
+              git checkout -- . && git pull --ff-only && \
+              cd scripts && pnpm install --no-frozen-lockfile 2>/dev/null || true && \
+              npx ts-node pg-enrich.ts --limit='$ENRICH_LIMIT' 2>&1
+            " >> "$LOGFILE" 2>&1 < /dev/null &
+            disown
+            echo "Started in background. PID=$!  Log: $LOGFILE"

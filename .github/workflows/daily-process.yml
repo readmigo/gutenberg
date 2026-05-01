@@ -12,16 +12,26 @@ jobs:
   process:
     name: Process Books
     runs-on: ubuntu-latest
-    timeout-minutes: 358
+    timeout-minutes: 5
+    env:
+      MAX_BOOKS: ${{ github.event.inputs.max_books || '50' }}
     steps:
-      - name: Trigger batch processing on Droplet
+      - name: Trigger batch processing on Droplet (fire-and-forget)
         uses: appleboy/ssh-action@v1
         with:
           host: ${{ secrets.DROPLET_HOST }}
           username: readmigo
           key: ${{ secrets.DROPLET_SSH_KEY }}
-          command_timeout: 355m
+          envs: MAX_BOOKS
+          command_timeout: 30s
           script: |
-            cd /home/readmigo/projects/gutenberg && git checkout -- . && git pull --ff-only
-            cd scripts && pnpm install --no-frozen-lockfile 2>/dev/null || true
-            npx ts-node pg-batch.ts --max-books=${{ github.event.inputs.max_books || '50' }} --delay=2000 2>&1 | tee -a /tmp/pg-batch-$(date +%Y%m%d).log
+            set -euo pipefail
+            LOGFILE=/tmp/pg-batch-$(date -u +%Y%m%d-%H%M%S).log
+            nohup bash -lc "
+              cd /home/readmigo/projects/gutenberg && \
+              git checkout -- . && git pull --ff-only && \
+              cd scripts && pnpm install --no-frozen-lockfile 2>/dev/null || true && \
+              npx ts-node pg-batch.ts --max-books='$MAX_BOOKS' --delay=2000 2>&1
+            " >> "$LOGFILE" 2>&1 < /dev/null &
+            disown
+            echo "Started in background. PID=$!  Log: $LOGFILE"
